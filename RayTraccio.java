@@ -634,13 +634,14 @@ class RenderThread extends Thread {
 }
 
 class RayTracer extends Component {
+  private String VERSION="RayTraccio 0.99 (c)1999 Lapo Luchini";
   private Dimension size;
   private Image img;
   private int buff[];
   private MemoryImageSource src;
   private Scene scn;
   private int numCPU, scale;
-  private RenderThread t[];
+  private RenderThread t[];  
   RayTracer(Scene s, int n, int sc) {
     scn=s;
     numCPU=n;
@@ -671,15 +672,18 @@ class RayTracer extends Component {
       t[i]=null;
   }
   public void paint(Graphics g) {
-    //g.drawImage(img, 0, 0, this);
-    g.drawImage(img, 0, 0, size.width*scale, size.height*scale, this);
+    if(scale==1)
+      g.drawImage(img, 0, 0, this);
+    else
+      g.drawImage(img, 0, 0, size.width*scale, size.height*scale, this);
+    g.drawString(VERSION, 10, size.height*scale-10);
   }
 }
 
 public class RayTraccio extends Applet {
   private RayTracer rt;
   private Dimension size;
-  private int scala;
+  private int scala=1;
   private Scene scn;
   public void setRenderSize(Dimension s, int sc) {
     size=s;
@@ -781,7 +785,7 @@ public class RayTraccio extends Applet {
     f.addWindowListener(new MyAdapter());
   }
   public String getAppletInfo() {
-    return("RayTraccio 0.98\r\n"+
+    return("RayTraccio Applet (contains only the RayTracer component)\r\n"+
            "(c)1999 Lapo Luchini");
   }
   //fare più luci!!
