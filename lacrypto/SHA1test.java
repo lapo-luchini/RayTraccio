@@ -1,9 +1,9 @@
 package lacrypto;
 
 /**
- * Insert the type's description here.
+ * Standard and custom tests to SHA1 implementation.
  * Creation date: (05/04/2001 11:05:36)
- * @author: 
+ * @author: Lapo Luchini
  */
 public class SHA1test extends SHA1 {
 	public final static char[] hex = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
@@ -69,15 +69,15 @@ public static void selfTest() {
 	System.out.println("All is OK ("+(100000L*i)/tmn+" bytes/s).");
 }
 /**
- * Insert the method's description here.
+ * Convert a big number into hex form.
  * Creation date: (24/10/2000 23.42.34)
  * @return java.lang.String
- * @param v byte[]
+ * @param v big number in byte[] (big endian)
  */
 public final static String toHex(byte[] v) {
 	String out="";
 	for(int i=0; i<v.length; i++)
-		out=out+hex[(v[i]>>4)&0xF]+hex[v[i]&0xF];
+		out+=hex[(v[i]>>4)&0xF]+hex[v[i]&0xF];
 	return(out);
 }
 }
