@@ -1,3 +1,23 @@
+// RayTraccio ray-tracing library Copyright (c) 2001 Lapo Luchini <lapo@lapo.it>
+
+// This file is part of RayTraccio.
+//
+// RayTraccio is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// RayTraccio is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Foobar; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+// This file is $Revision$, released by $Author$ on $Date$
+
 /**
  * Figura tridimensionale. <br>
  * Questa classe definisce tutte i metodi necessari per la definizione di una figura 3D.
@@ -8,7 +28,7 @@ abstract class Shape3D {
  * Colore della figura calcolato nel punto richiesto.
  * Se non viene sovrascritto questo metodo scrive <code>"ILLEGAL COLOR"</code> su <code>System.err</code>
  * @param p vettore posizione del punto voluto
- * @return Colore {@link Color.BLACK nero} 
+ * @return Colore {@link Color.BLACK nero}
  */
 public Color color(Vector p) {
 	System.err.println("ILLEGAL COLOR");
@@ -28,7 +48,7 @@ abstract public Hit hit(Ray a);
  * Normale alla figura nel punto richiesto.
  * Se non viene sovrascritto questo metodo scrive <code>"ILLEGAL NORMAL"</code> su <code>System.err</code>
  * @param p vettore posizione del punto voluto
- * @return Versore {@link Vector.VERS_X X} 
+ * @return Versore {@link Vector.VERS_X X}
  */
 public Vector normal(Vector p) {
 	System.err.println("ILLEGAL NORMAL");
@@ -42,7 +62,7 @@ abstract public void overturn();
  * Coefficente di riflessione della figura calcolato nel punto richiesto.
  * Se non viene sovrascritto questo metodo scrive <code>"ILLEGAL REFLECT"</code> su <code>System.err</code>
  * @param p vettore posizione del punto voluto
- * @return <code>0.0</code> 
+ * @return <code>0.0</code>
  */
 public double reflect(Vector p) {
 	System.err.println("ILLEGAL REFLECT");
