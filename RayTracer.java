@@ -26,7 +26,7 @@ import java.awt.event.*;
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class RayTracer extends Component {
-	public String VERSION = "RayTraccio 1.55 (c)2001 Lapo Luchini";
+	public String VERSION = "RayTraccio 1.60 (c)2001 Lapo Luchini";
 	/** Oggetto origine dell'immagine */
 	private MemoryImageSource src = null;
 	/** Array di thread di rendering */

@@ -55,17 +55,23 @@ public ShapeTransform(Shape3D a, TransformMatrix b) {
  */
 public Hit hit(EyeRays a) {
 	Hit h;
-	if (t == TransformMatrix.IDENTITY)
-		h = s.hit(a);
-	else
+	if (t == TransformMatrix.IDENTITY) {
+		if ((c != null)||(ot < 0))
+			h = new HitTransform(s.hit(a), null, null, c, (ot < 0)); 
+		else
+			h = s.hit(a);
+	} else
 		h = new HitTransform(s.hit(a.transform(t)), a, t, c, (ot < 0));
 	return (h);
 }
 public Hit hit(Ray a) {
 	Hit h;
-	if (t == TransformMatrix.IDENTITY)
-		h = s.hit(a);
-	else
+	if (t == TransformMatrix.IDENTITY) {
+		if ((c != null)||(ot < 0))
+			h = new HitTransform(s.hit(a), null, null, c, (ot < 0)); 
+		else
+			h = s.hit(a);
+	} else
 		h = new HitTransform(s.hit(a.transform(t)), a, t, c, (ot < 0));
 	return (h);
 }

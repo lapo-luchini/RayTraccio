@@ -19,12 +19,12 @@
 
 /**
  * Matrice di trasformazione 4x4. <br>
- * Gestisce in realtà una matrice a dodici componenti di questo tipo:<br><code>
+ * Gestisce in realt&agrave; una matrice a dodici componenti di questo tipo:<br><code>
  * |a00 a01 a02 a03|<br>
  * |a04 a05 a06 a07|<br>
  * |a08 a09 a10 a11|<br>
  * |0.0 0.0 0.0 1.0|<br>
- * </code>che può quindi essere utilizzato per rotazioni, traslazioni e altre trasformazioni.
+ * </code>che pu&ograve; quindi essere utilizzata per rotazioni, traslazioni e altre trasformazioni.
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class TransformMatrix {

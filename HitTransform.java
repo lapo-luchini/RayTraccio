@@ -24,6 +24,8 @@
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class HitTransform extends Hit {
+	/** {@link Hit} da modificare */
+	private Hit ht;
 	/** Trasformazione da usare (se <code>null</code> non viene applicata trasformazione) */
 	private TransformMatrix tm;
 	/** Determinante(tm)^(-1/3) usato in {@link #normal()} */
@@ -44,6 +46,7 @@ class HitTransform extends Hit {
  */
 HitTransform(Hit h, Ray r, TransformMatrix tm, Texture tx, boolean ot) {
 	super(h.g, (r == null ? h.r : r));
+	this.ht = h;
 	this.h = h.h;
 	this.t = h.t;
 	if (tm == null) {
@@ -66,29 +69,32 @@ public Color color() {
 	return (c);
 }
 public Vector normal() {
-	if (n == null)
+	if (n == null) {
 		if (tm == TransformMatrix.IDENTITY)
 			n = g.normal(pointTransform());
 		else
 			n = tm.transformNormal(g.normal(pointTransform())).mul(tmid);
+	}
 	if (ot)                     // se l'oggetto è capovolto
 		n = Vector.ORIGIN.sub(n); // ribalta la normale
 	return (n);
 }
 public Vector pointTransform() {
-	if (pt == null)
+	if (pt == null) {
 		if (tm == TransformMatrix.IDENTITY)
 			pt = point();
 		else
 			pt = tm.transformVector(point());
+	}
 	return (pt);
 }
 public double reflect() {
-	if (Double.isNaN(rr))
+	if (Double.isNaN(rr)) {
 		if (tx == null)
 			rr = g.reflect(pointTransform());
 		else
 			rr = tx.reflect(point());
+	}
 	return (rr);
 }
 }

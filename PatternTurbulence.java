@@ -35,10 +35,10 @@ class PatternTurbulence extends Pattern {
 	/** Turbolenza della perturbazione nella direzione Z */
 	protected double tz;
 /**
- * Aplpica una turbulenza a un'altro pattern.
+ * Applica una turbulenza a un altro pattern.
  * @param pattern pattern da usare come base
  * @param noise rumore da usare come turbulenza
- * @param turbulence quanto il rumore perturba il pattern (anisotropo)
+ * @param turbulence quanto il rumore perturba il pattern (isotropo)
  */
 public PatternTurbulence(Pattern pattern, Pattern noise, double turbulence) {
 	pat = pattern;
@@ -46,10 +46,10 @@ public PatternTurbulence(Pattern pattern, Pattern noise, double turbulence) {
 	tx = ty = tz = turbulence;
 }
 /**
- * Aplpica una turbulenza a un'altro pattern.
+ * Applica una turbulenza a un altro pattern.
  * @param pattern pattern da usare come base
  * @param noise rumore da usare come turbulenza
- * @param turbulence quanto il rumore perturba il pattern (non anisotropo)
+ * @param turbulence quanto il rumore perturba il pattern (anisotropo)
  */
 public PatternTurbulence(Pattern pattern, Pattern noise, Vector turbulence) {
 	pat = pattern;

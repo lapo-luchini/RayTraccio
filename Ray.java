@@ -28,7 +28,7 @@ class Ray {
 	protected Vector o;
 	/** Punto di direzione (coseni direttori) */
 	protected Vector c;
-/** Crea un raggio copiandolo da un'altro.
+/** Crea un raggio copiandolo da un altro.
   * @params r raggio da cui copiare
   */
 Ray(Ray r) {

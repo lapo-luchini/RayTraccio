@@ -18,7 +18,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 /**
- * Materiale ottenuto trasformandone un'altro.
+ * Materiale ottenuto trasformandone un altro.
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class TextureTransform extends Texture {

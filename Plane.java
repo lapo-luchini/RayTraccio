@@ -25,13 +25,13 @@
 class Plane extends ShapeTextured {
 	/** Vettore normale: definisce i coseni direttori del piano */
 	private Vector n;
-	/** Distanza del piano dall'origine (l'origine è quindi tenuta sulato <b>esterno</b> del piano) */
+	/** Distanza del piano dall'origine (l'origine &egrave; quindi tenuta sul lato <b>esterno</b> del piano) */
 	private double d;
 	/** OTTIMIZAZIONE: origine dei dati cachati */
 	private Vector b_o=new Vector(1E30, 1E30, 1E30);
 	/** OTTIMIZAZIONE: parametro cachato */
 	private double b_t;
-	/** Entità per la statistica */
+	/** Entit&agrave; per la statistica */
 	private static byte stat=ShapeStats.register("Plane");
 /**
  * Crea un piano con parametri dati.

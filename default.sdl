@@ -119,14 +119,28 @@ union {
 }
 */
 
+Vs = 0
+
+SscanaC2 = quadric {
+	cylinder
+	//rotate <0, 0, 90> // da X a Y
+	scale <0.06>
+	//texture plain { color red } // nero
+	translate <0, 0,-0.545>
+	texture plain { color red } // giusto
+	rotate <0, -Vs, 0>
+	//texture plain { color red } // bianco
+}
+
 SscanaC = quadric {
 	cylinder
 	//rotate <0, 0, 90> // da X a Y
 	scale <0.06>
-	translate <0.545, 0.55, 0>
+	translate <0.545, 0, 0>
+	texture plain { color green }
 }
 
-SscanaC36 = intersection {
+/*SscanaC36 = intersection {
 	plane {
 		<0,-1, 0> 0.55
 	}
@@ -226,19 +240,24 @@ SscanaS36 = union {
 }
 
 Sscanalature = union {
-	SscanaC36 { }
-	SscanaS36 { }
-}
+	SscanaC { rotate <0, 270, 0> }
+	SscanaS { rotate <0, 270, 0> }
+}*/
 
 difference {
 	// Corpo
 	quadric {
 		cylinder
 		scale <0.5>
+		rotate <0, 0, 0>
 	}
 	// Corpo.Scanalature
-	Sscanalature {
-	}
+	//Sscanalature { }
+	SscanaC2 { rotate <0, Vs+10, 0> }
+	SscanaC { rotate <0, -90, 0> }
+	SscanaC2 { rotate <0, Vs-10, 0> }
+	SscanaC2 { rotate <0, Vs-20, 0> }
+	SscanaC2 { rotate <0, Vs+20, 0> }
 }
 
 
@@ -248,4 +267,10 @@ light {
 	< 1.0, 3.0,-5.0>													// posizione
 	<1, 1, 1>																	// colore
 	20																				// distanza alla quale ha potenza unitaria (decresce come r^-2)
+}
+
+light { // dietro agli occhi
+	<0, 0.5, -3>
+	<1, 1, 1>
+	3
 }

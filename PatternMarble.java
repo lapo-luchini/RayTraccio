@@ -21,7 +21,7 @@
  * Campo vettoriale di rumore di tipo marmo <code>0.5+0.5*cos(x+turbulence*noise.scalar(p))</code>. <br>
  * Questo tipo di marmo in realt&agrave; non &egrave; molto realistico, ci sono modi migliori,
  * come ad esempio applicare una turbolenza ad un pattern ad onda triangolare (applicare
- * {@link PatternTurbulence} a {@link PatternTriangle} aplpicato a {@link PatternSawtooth}).
+ * {@link PatternTurbulence} a {@link PatternTriangle} applicato a {@link PatternSawtooth}).
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class PatternMarble extends Pattern {

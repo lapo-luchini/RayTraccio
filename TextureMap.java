@@ -24,7 +24,7 @@
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class TextureMap extends Texture {
-	/** Pattern usato per come valore da usare nella mappa di colori */
+	/** Pattern usato come valore da usare nella mappa di colori */
   private Pattern pat;
   /** Array di valori */
 	private double v[];
