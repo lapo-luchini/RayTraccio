@@ -1,0 +1,119 @@
+//// ZONA INIZIALE: definizione dei parametri generali ////
+
+scene {
+	camera <0.0, 1.0,-3.0>										// posizione della camera
+	target <0.0,-0.5, 0.0>										// posizione guardata dalla camera (sarà al centro dell'immagine)
+	horizon <4.0, 0.0, 0.0>										// vettore (relativo) che definisce l'orizzonte (in questo caso un orizzonte orizzontale e largo 4 unità)
+	ratio 1/1																	// ratio orizzontale/verticale, usare 4/3 per immagini a tutto schermo
+}
+
+//// ZONA CENTRALE: definizione di costanti utili in seguito ////
+
+// POV-inspired stones
+
+T_Crack4 = map {
+	turbulence {
+		triangle { sawtooth { } }
+		noise_abs { octaves 5 persistence 0.5 seed 1234567003 }
+		turbulence <1.3>
+	}
+	0.00 plain { color <1.0, 1.0, 1.0, 0.7> }
+	0.03 plain { color <1.0, 1.0, 1.0, 0.0> }
+	0.03 plain { color <0.0, 0.0, 0.0, 0.3> }
+	0.97 plain { color <0.329412, 0.329412, 0.329412, 0.1> }
+	0.97 plain { color <1.0, 1.0, 1.0, 0.1> }
+	1.00 plain { color <1.0, 1.0, 1.0, 0.0> }
+}
+
+T_Grnt22 = map {
+	noise_abs { octaves 5 persistence 0.5 seed 1234567002 }
+	0.07 plain { color <1, 1, 1> }
+	0.20 plain { color <0.329412, 0.329412, 0.329412> }
+	0.30 plain { color <1, 1, 1, 0> }
+	0.70 plain { color <1, 1, 1, 0> }
+	1.00 plain { color <0.329412, 0.329412, 0.329412> }
+	scale <20%>
+}
+
+T_Grnt28 = map {
+	turbulence {
+		triangle { sawtooth { } }
+		noise { octaves 5 persistence 0.4 seed 1234567001 }
+		<2>
+	}
+	0.155 plain { color <0.686, 0.235, 0.282> }
+	0.328 plain { color <0.494, 0.243, 0.294> }
+	0.474 plain { color <0.769, 0.329, 0.373> }
+	0.647 plain { color <0.769, 0.329, 0.373> }
+	0.810 plain { color <0.686, 0.235, 0.282> }
+	0.922 plain { color <0.792, 0.388, 0.427> }
+	1.000 plain { color <0.686, 0.235, 0.282> }
+}
+
+T_Grnt8a = map {
+	turbulence {
+		triangle { sawtooth { } }
+		noise { octaves 5 persistence 0.4 seed 1234567004 }
+		<1.8>
+	}
+	0.000 plain { color <0.310, 0.384, 0.420, 1.0-0.631> }
+	0.119 plain { color <0.322, 0.369, 0.416, 1.0-0.847> }
+	0.322 plain { color <0.424, 0.369, 0.420, 1.0-0.549> }
+	0.449 plain { color <0.373, 0.424, 0.518, 1.0-0.965> }
+	0.729 plain { color <0.482, 0.573, 0.533, 1.0-0.741> }
+	1.000 plain { color <0.310, 0.384, 0.420, 1.0-0.631> }
+}
+
+T_Stone21 = layered {
+	T_Crack4 { scale <1.0, 0.6, 1.0> rotate <10, 0, 20> }
+	T_Grnt22 { scale <1.0, 2.0, 2.0> rotate < 0, 0,-40> }
+	T_Grnt28 { scale <1.3, 2.5, 1.7> rotate < 0, 0,-40> }
+}
+
+T_Stone22 = layered {
+	T_Crack4 { scale <1.0, 1.0, 1.0> rotate <10, 0, 40> }
+	T_Grnt22 { scale <2.0, 4.0, 1.5> rotate < 0, 0,-50> }
+	T_Grnt8a { scale <1.0, 2.0, 2.0> rotate < 0, 0,-40> }
+	plain { color <0.82, 0.57, 0.46> } // Feldspar
+}
+
+//// ZONA FINALE: definizione del singolo oggetto disegnato ////
+
+union {
+	plane {
+		<0, 1, 0> 0
+		texture map {
+			checker { }
+			0.0 plain { color red }
+			1.0 plain { color green }
+		}
+	}
+	quadric {
+		sphere
+		scale <50%>
+		translate <-1.0, 0,-1>
+		texture T_Stone22 { }
+	}
+	quadric {
+		sphere
+		scale <50%>
+		translate <+1.0, 0, 0>
+		texture T_Stone21 { }
+	}
+	rotate <0, 30, 0>
+	translate <0, 0, -0.5>
+}
+
+//// ZONA FINALE: definizione delle luci, se non si mettono luci si ottiene una colorazione flat ////
+
+light {
+	< 1.0, 3.0,-5.0>
+	<1, 1, 1>
+	18
+}
+
+light {
+	<-2.0, 3.0, 0.0>
+	<1, 1, 1>
+	6
+}
