@@ -3,9 +3,22 @@
 	<name>RayTraccio</name>
 	<comment>JavaCC Nature</comment>
 	<projects>
+		<project>lapint</project>
 	</projects>
 	<buildSpec>
+		<buildCommand>
+			<name>rk.eclipse.javacc.javaccbuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
 	</buildSpec>
 	<natures>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+		<nature>rk.eclipse.javacc.javaccnature</nature>
 	</natures>
 </projectDescription>
