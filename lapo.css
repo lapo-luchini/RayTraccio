@@ -1,0 +1,59 @@
+@font-face {
+  font-family: "Tubular Hollow";
+  src: url("TUBUL_HO.TTF") format("truetype");
+}
+
+BODY {
+  font-family: Arial, sans-serif;
+  background-color: #000000;
+  color: #33CCFF;
+}
+
+H1 {
+  font-family: "Tubular Hollow", Verdana, Arial, sans-serif;
+  font-weight: normal;
+  background-color: #33CCFF;
+  color: #000000;
+  border: solid #66FFFF;
+}
+
+H2 {
+  font-family: Arial, sans-serif;
+  background-color: #000000;
+  color: #33CCFF;
+}
+
+H3 {
+  font-family: Arial, sans-serif;
+  background-color: #000000;
+  color: #33CCFF;
+}
+
+P {
+  font-family: Arial, sans-serif;
+  background-color: #000000;
+  color: #33CCFF;
+}
+
+P.note {
+  font-family: Courier, monspace;
+  font-size: smaller;
+}
+
+TD {
+  font-family: Arial, sans-serif;
+  background-color: #000000;
+  color: #33CCFF;
+}
+
+TD.sml {
+  font-family: Arial, sans-serif;
+  background-color: #000000;
+  color: #33CCFF;
+  font-size: smaller;
+}
+
+A:link    { color: #66FFFF } /* unvisited links */
+A:visited { color: #66FFFF } /* visited links   */
+A:hover   { color: #66FFFF } /* user hovers     */
+A:active  { color: #66FFFF } /* active links    */

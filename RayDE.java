@@ -1,23 +1,3 @@
-// RayTraccio ray-tracing library Copyright (c) 2001 Lapo Luchini <lapo@lapo.it>
-
-// This file is part of RayTraccio.
-//
-// RayTraccio is free software; you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 2 of the License, or
-// (at your option) any later version.
-//
-// RayTraccio is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with Foobar; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-// This file is $Revision$, released by $Author$ on $Date$
-
 import java.applet.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -62,7 +42,7 @@ public class RayDE extends javax.swing.JApplet implements WindowListener, Runnab
 
 class IvjEventHandler implements java.awt.event.ActionListener {
 		public void actionPerformed(java.awt.event.ActionEvent e) {
-			if (e.getSource() == RayDE.this.getTraccia())
+			if (e.getSource() == RayDE.this.getTraccia()) 
 				connEtoC2(e);
 		};
 	};
@@ -93,11 +73,11 @@ private void connEtoC2(java.awt.event.ActionEvent arg1) {
  * @return a string of information about this applet
  */
 public String getAppletInfo() {
-	return "RayDE\n" +
-		"\n" +
-		"RayTracer IDE.\n" +
-		"Creation date: (13/02/2001 23.54.45)\n" +
-		"@author: Lapo Luchini <lapo@lapo.it>\n" +
+	return "RayDE\n" + 
+		"\n" + 
+		"RayTracer IDE.\n" + 
+		"Creation date: (13/02/2001 23.54.45)\n" + 
+		"@author: Lapo Luchini <lapo@lapo.it>\n" + 
 		"";
 }
 /**
@@ -644,7 +624,7 @@ private void handleException(java.lang.Throwable exception) {
 }
 /**
  * Initializes the applet.
- *
+ * 
  * @see #start
  * @see #stop
  * @see #destroy
@@ -701,7 +681,7 @@ public static void main(java.lang.String[] args) {
  * Paints the applet.
  * If the applet does not need to be painted (e.g. if it is only a container for other
  * awt components) then this method can be safely removed.
- *
+ * 
  * @param g  the specified Graphics window
  * @see #update
  */

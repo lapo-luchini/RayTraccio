@@ -1,23 +1,3 @@
-// RayTraccio ray-tracing library Copyright (c) 2001 Lapo Luchini <lapo@lapo.it>
-
-// This file is part of RayTraccio.
-//
-// RayTraccio is free software; you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 2 of the License, or
-// (at your option) any later version.
-//
-// RayTraccio is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with Foobar; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-// This file is $Revision$, released by $Author$ on $Date$
-
 /**
  * Campo di rumore tridimensionale a spettro 1/f. <br>
  * @author: Lapo Luchini <lapo@lapo.it>
@@ -147,13 +127,13 @@ public double[] vectorial(Vector p, byte dim) {
 		vect[0]=lx;   vect[1]=ly;   vect[2]=lz;   sha.update(vect); out=sha.digestInt();
 		for(dims=0; dims<dim; dims++)
 			noises[dims][0]=out[dims]*amp;
-		vect[0]=lx+1;                             sha.update(vect); out=sha.digestInt();
+		vect[0]=lx+1;                             sha.update(vect); out=sha.digestInt(); 
 		for(dims=0; dims<dim; dims++)
 			noises[dims][1]=out[dims]*amp;
 		vect[0]=lx;   vect[1]=ly+1;               sha.update(vect); out=sha.digestInt();
 		for(dims=0; dims<dim; dims++)
 			noises[dims][2]=out[dims]*amp;
-		vect[0]=lx+1;                             sha.update(vect); out=sha.digestInt();
+		vect[0]=lx+1;                             sha.update(vect); out=sha.digestInt(); 
 		for(dims=0; dims<dim; dims++)
 			noises[dims][3]=out[dims]*amp;
 		vect[0]=lx;   vect[1]=ly;   vect[2]=lz+1; sha.update(vect); out=sha.digestInt();
@@ -165,7 +145,7 @@ public double[] vectorial(Vector p, byte dim) {
 		vect[0]=lx;   vect[1]=ly+1;               sha.update(vect); out=sha.digestInt();
 		for(dims=0; dims<dim; dims++)
 			noises[dims][6]=out[dims]*amp;
-		vect[0]=lx+1;                             sha.update(vect); out=sha.digestInt();
+		vect[0]=lx+1;                             sha.update(vect); out=sha.digestInt(); 
 		for(dims=0; dims<dim; dims++)
 			noises[dims][7]=out[dims]*amp;
 		for(dims=0; dims<dim; dims++) {

@@ -1,23 +1,3 @@
-// RayTraccio ray-tracing library Copyright (c) 2001 Lapo Luchini <lapo@lapo.it>
-
-// This file is part of RayTraccio.
-//
-// RayTraccio is free software; you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 2 of the License, or
-// (at your option) any later version.
-//
-// RayTraccio is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with Foobar; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-// This file is $Revision$, released by $Author$ on $Date$
-
 /**
  * Matrice di trasformazione 4x4. <br>
  * Gestisce in realtà una matrice a dodici componenti di questo tipo:<br><code>
@@ -82,7 +62,7 @@ public TransformMatrix inv() {
 	double i=1.0/(a[ 0]*(a[ 5]*a[10]-a[ 6]*a[ 9])+
 	              a[ 1]*(a[ 6]*a[ 8]-a[ 4]*a[10])+
 	              a[ 2]*(a[ 4]*a[ 9]-a[ 5]*a[ 8]));
-
+	
 	return (new TransformMatrix(
 		i*(a[ 5]*a[10]-a[ 6]*a[ 9]),
 		i*(a[ 2]*a[ 9]-a[ 1]*a[10]),
@@ -123,12 +103,12 @@ public TransformMatrix mul(TransformMatrix z) {
 		a[ 0]*z.a[ 1]+a[ 1]*z.a[ 5]+a[ 2]*z.a[ 9],
 		a[ 0]*z.a[ 2]+a[ 1]*z.a[ 6]+a[ 2]*z.a[10],
 		a[ 0]*z.a[ 3]+a[ 1]*z.a[ 7]+a[ 2]*z.a[11]+a[ 3],
-
+		
 		a[ 4]*z.a[ 0]+a[ 5]*z.a[ 4]+a[ 6]*z.a[ 8],
 		a[ 4]*z.a[ 1]+a[ 5]*z.a[ 5]+a[ 6]*z.a[ 9],
 		a[ 4]*z.a[ 2]+a[ 5]*z.a[ 6]+a[ 6]*z.a[10],
 		a[ 4]*z.a[ 3]+a[ 5]*z.a[ 7]+a[ 6]*z.a[11]+a[ 7],
-
+		
 		a[ 8]*z.a[ 0]+a[ 9]*z.a[ 4]+a[10]*z.a[ 8],
 		a[ 8]*z.a[ 1]+a[ 9]*z.a[ 5]+a[10]*z.a[ 9],
 		a[ 8]*z.a[ 2]+a[ 9]*z.a[ 6]+a[10]*z.a[10],

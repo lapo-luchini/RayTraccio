@@ -1,23 +1,3 @@
-// RayTraccio ray-tracing library Copyright (c) 2001 Lapo Luchini <lapo@lapo.it>
-
-// This file is part of RayTraccio.
-//
-// RayTraccio is free software; you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 2 of the License, or
-// (at your option) any later version.
-//
-// RayTraccio is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with Foobar; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-// This file is $Revision$, released by $Author$ on $Date$
-
 import java.awt.*;
 import java.awt.event.*;
 /**
@@ -34,7 +14,7 @@ public void destroy() {
 }
 public String getAppletInfo() {
 	return ("RayTraccio Applet (contains a RayTracer component)\r\n" +
-		      "(c)1999 Lapo Luchini");
+		      "(c)2001 Lapo Luchini");
 }
 public void init() {
 	Scene scn=null;
@@ -72,7 +52,7 @@ public void init() {
 	rt.init(scn, 1 /*threads*/, size, scala, true);
 	setLayout(new BorderLayout());
 	add("Center", rt);
-}
+}  
 public static void main(String as[]) {
 	int dimX = 300, dimY = 300, scala = 3;
 	if (as.length >= 2) {
@@ -132,7 +112,7 @@ public void reInit() {
 	rt.init(scn, 1 /*threads*/, size, scala, true);
 	setLayout(new BorderLayout());
 	add("Center", rt);
-}
+}  
 public void reInit(String scene) {
 	Scene scn=null;
 	java.io.Reader r=new java.io.StringReader(scene);
@@ -157,7 +137,7 @@ public void reInit(String scene) {
 	rt.init(scn, 1 /*threads*/, size, scala, true);
 	setLayout(new BorderLayout());
 	add("Center", rt);
-}
+}  
 public void setRenderSize(Dimension s, int sc) {
 	size = s;
 	scala = sc;
