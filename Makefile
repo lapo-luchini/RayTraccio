@@ -1,15 +1,16 @@
-all: RayTraccio.class
-
-RayTraccio.class: SDL.class
+all: SDL.class RayTraccio.class
 
 %.class: %.java
-	javac -sourcepath . $^
+	javac -sourcepath . -classpath . $^
 
 SDL.java: SDL.jj
-	javacc $^
+	javacc.cmd $^
 
 jar:
-	jar cvfm RayTraccio.jar MANIFEST.MF *.class lacrypto/*.class
+	jar cfm RayTraccio.jar MANIFEST.MF gpl.txt gpl-ita.txt *.class lacrypto/*.class
+
+pkg:
+	tar cjf RayTraccio.tar.bz2 --exclude=SDL*.java --exclude=ASCII_CharStream.java --exclude=Token*.java --exclude=ParseException.java Makefile MANIFEST.MF gpl.txt gpl-ita.txt SDL.jj RayTraccio.html default.sdl *.java lacrypto/*.java
 
 doc:
 	javadoc -verbose -private -d docs -author -version -windowtitle RayTraccio -doctitle RayTraccio -use *.java lacrypto/*.java -bottom '<a href="http://www.lapo.it/RayTraccio.html">RayTraccio</a> by <a href="mailto:lapo@lapo.it?subject=Feedback RayTraccio" title="Feedback RayTraccio">Lapo Luchini</a>'
@@ -17,4 +18,5 @@ doc:
 clean:
 	rm -f *.class
 	rm -f lacrypto/*.class
-	rm -f *.jar
+	rm -f RayTraccio.jar
+	rm -f RayTracio.tar.bz2
