@@ -1,0 +1,36 @@
+<html>
+<head>
+  <title>LAPO.it</title>
+  <meta name=Author content="Lapo Luchini <lapo@lapo.it>">
+  <link rel=stylesheet href="plain.css" type="text/css">
+</head>
+<body bgcolor=#000000 text=#FFFFFF>
+
+<h1>RayTraccio</h1>
+
+<applet code=RayTraccio.class archive=RayTraccio.jar width=500 height=500>
+Your browser doesn't support Java!
+</applet>
+
+<p>This is my first attemp at Java programming, a SLOW (it has no great optimization, insofar) raytracing program that supports</p>
+<ul>
+  <li>One 3D shape</li>
+  <li>One Light</li>
+  <li>One Camera</li>
+  <li>First reflection</li>
+  <li>A number of shapes:<ul>
+    <li>Quadric (generic support for spheres, paraboloids, hyperboloids, cones, ...)</li>
+    <li>Plane</li>
+    <li>CSG Union (draws various sub-shapes altogether)</li>
+    <li>CSG Intersection (intersecates the sub-shapes)</li>
+  </ul></li>
+  <li>A number of procedural textures:<ul>
+    <li>Plain</li>
+    <li>Checker (draws the two sub-textures checkered along all the axes)</li>
+    <li>Stripes (draws the two sub-textures divided in stripes along Y axes)</li>
+    <li>[yes, I know the last two are bugged as the stripe around zero is double-size... I'll correct it someday!]</li>
+  </ul></li>
+</ul>
+
+</BODY>
+</HTML>
