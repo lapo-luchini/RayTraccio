@@ -19,10 +19,19 @@
 	</tr>
 	<tr align=center>
 		<td>
-			<input type=button value="Default" onClick="RT.reInit(); RT.start();">
+			<select name=filename>
+				<option>default.sdl</option>
+				<option>vigo.sdl</option>
+				<option>forato.sdl</option>
+				<option>default-real.sdl</option>
+				<option>marmi.sdl</option>
+				<option>poly.sdl</option>
+				<option>solito.sdl</option>
+			</select>
+			<input type=button value="GO" onClick="RT.reInit(myf.filename.options[myf.filename.selectedIndex].text); RT.start();">
 		</td>
 		<td>
-			<input type=button value="Trace this!" onClick="RT.reInit(myf.txt.value); RT.start();">
+			<input type=button value="Trace this!" onClick="RT.reInit(myf.text.value); RT.start();">
 		</td>
 		<td>
 			<input type=button value="Stop" onClick="RT.stop();">
@@ -30,7 +39,7 @@
 	</tr>
 	<tr align=center>
 		<td colspan=3>
-			<textarea name=txt cols=40 rows=10></textarea>
+			<textarea name=text cols=40 rows=10></textarea>
 		</td>
 	</tr>
 </table></form>
@@ -70,7 +79,11 @@
 	<li><code>N/A (N/A) secs</code> on Netscape Java 1.1.5 (Netscape Navigator 4.77) [it causes a bug in Symantec JIT (T_T)]</li>
 </ul>
 
-<p>This program is OpenSource, under the <a href="http://www.gnu.org/copyleft/gpl.html">GNU GPL</a>, you can find its latest source on my developement <a href="http://home.lapo.it/cgi-bin/viewcvs.cgi/raytraccio/">CVS Repository</a> (not always online).</p>
+<p>This program is OpenSource, under the <a href="http://www.gnu.org/copyleft/gpl.html">GNU GPL</a></p>
+<ul>
+	<li>latest <a href=RayTraccio.tar.bz2>release</a></li>
+	<li>latest sources on my developement <a href="http://home.lapo.it/cgi-bin/viewcvs.cgi/raytraccio/">CVS Repository</a> (not always online)</li>
+</ul>
 
 </body>
 </html>
