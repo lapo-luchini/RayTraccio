@@ -4,6 +4,7 @@ import java.awt.event.*;
 
 /**
  * Luce puntiforme.
+ * @author: Lapo Luchini <lapo@lapo.it>
  */
 class Light {
 	/** Vettore posizione */

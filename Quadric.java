@@ -1,8 +1,9 @@
 /**
  * Quadrica generica. <br>
  * Equazione: <code>k0*x²+k1*xy+k2*y²+k3*xz+k4*yz+k5*z²+k6*x+k7*y+k8*z+k9=0</code>
+ * @author: Lapo Luchini <lapo@lapo.it>
  */
-class Quadric extends Shape3D {
+class Quadric extends ShapeTextured {
   // ax²+bxy+cy²+dxz+eyz+fz²+gx+hy+iz+l=0
   // | a ½b ½d|
   // |½b  c ½e|
@@ -31,29 +32,18 @@ class Quadric extends Shape3D {
 	public static double IPE_Y[]= { 1.0, 0.0,-1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,-1.0};
 	/** I 10 parametri della quadrica */
 	private double k[];
-	/** Materiale della quarica */
-  private Texture c;
 	/** OTTIMIZAZIONE: origine dei dati cachati */
 	private Vector b_o=new Vector(1E30, 1E30, 1E30);
 	/** OTTIMIZAZIONE: parametro cachato */
 	private double b_tc, b_tbA, b_tbB, b_tbC, b_tbINC;
-	/** STATISTICA: numero di raggi intersecati */
-	protected static transient int stat_numrays;
-	/** STATISTICA: numero di raggi intersecati */
-	protected static transient int stat_numeyerays;
-	/** STATISTICA: numero di raggi cachati */
-	protected static transient int stat_numcachedrays;
-	/** STATISTICA: numero di effettive intersezioni */
-	protected static transient int stat_numhits;
-Quadric(double a[], Texture b) {
+	/** Entità per la statistica */
+	private static byte stat=ShapeStats.register("Quadric");
+public Quadric(double a[], Texture c) {
+	super(c);
 	if (a.length != 10)
 		throw (new IllegalArgumentException("Requires a 10 elements array"));
-	c = b;
 	k = new double[10];
 	System.arraycopy(a, 0, k, 0, 10); // copia locale dei coefficenti
-}
-public Color color(Vector p) {
-	return (c.color(p));
 }
 /** Versione ottimizzata di hit con un raggio di telecamera.
   */
@@ -64,9 +54,9 @@ public Hit hit(EyeRays a) {
 	// z=o.z+c.z*t
 	double tc, ta;
 	byte i;
-	stat_numeyerays++;
+	ShapeStats.count(stat, ShapeStats.TYPE_EYERAY);
 	if((b_o==a.o)&&(a.cnt!=0)) {
-		stat_numcachedrays++;
+		ShapeStats.count(stat, ShapeStats.TYPE_CACHEDRAY);
 	  tc=b_tc;
 	  //tb=b_tbx*a.c.x+b_tby*a.c.y+b_tbz*a.c.z;
 	  if(a.i==0)
@@ -110,7 +100,7 @@ public Hit hit(EyeRays a) {
 	  u.addT((-b_tbINC+rdelta)*ta);
 	}
 	if(u.h)
-		stat_numhits++;
+		ShapeStats.count(stat, ShapeStats.TYPE_HIT);
 	return(u);
 }
 public Hit hit(Ray a) {
@@ -122,7 +112,7 @@ public Hit hit(Ray a) {
 		return(hit((EyeRays)a));*/
 	double tc, tb, ta;
 	byte i;
-	stat_numrays++;
+	ShapeStats.count(stat, ShapeStats.TYPE_RAY);
   tc=k[0]*(a.o.x*a.o.x)+
 	   k[1]*(a.o.x*a.o.y)+
 	   k[2]*(a.o.y*a.o.y)+
@@ -151,7 +141,7 @@ public Hit hit(Ray a) {
 	  u.addT((-tb+rdelta)*ta);
 	}
 	if(u.h)
-		stat_numhits++;
+		ShapeStats.count(stat, ShapeStats.TYPE_HIT);
 	return(u);
 }
 public Vector normal(Vector p) {
@@ -167,9 +157,6 @@ public Vector normal(Vector p) {
 public void overturn() {
 	for (int i = 0; i < 10; i++)
 		k[i] = -k[i];
-}
-public double reflect(Vector p) {
-	return (c.reflect(p));
 }
 public void scale(Vector i) {
 	// ax²+bxy+cy²+dxz+eyz+fz²+gx+hy+iz+l=0
@@ -191,22 +178,8 @@ public void scale(Vector i) {
 	k[8] *= iz;
 }
 /**
- * Crea una stringa contenente le statistiche di uso degli oggetti di questa classe
- * @return stringa di statistiche
- */
-public static String stats() {
-	return("QUADRIC\n"+
-	       "Number of rays:        "+stat_numrays+"\n"+
-	       "Number of eye-rays:    "+stat_numeyerays+"\n"+
-	       "Number of cached rays: "+stat_numcachedrays+" ("+((stat_numcachedrays*100.0)/(stat_numrays+stat_numeyerays))+"%)\n"+
-	       "Number of hits:        "+stat_numhits+" ("+((stat_numhits*100.0)/(stat_numrays+stat_numeyerays))+"%)");
-}
-public void texture(Texture t) {
-	c = t;
-}
-/**
  * Rappresentazione testuale dell'oggetto. <br>
- * Esempio: <code>Quadric[[0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,TexturePlain[Color[1.0,0.0,0.0],0.0]]]</code> <br>
+ * Esempio: <code>Quadric[0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,TexturePlain[Color[1.0,0.0,0.0],0.0]]]</code> <br>
  */
 public String toString() {
 	String u = "Quadric[";

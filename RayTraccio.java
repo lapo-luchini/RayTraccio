@@ -1,7 +1,7 @@
 import java.awt.*;
 import java.awt.event.*;
 
-public class RayTraccio extends java.applet.Applet {
+public class RayTraccio extends java.applet.Applet implements WindowListener {
 	private RayTracer rt;
 	private Dimension size;
 	private int scala = 1;
@@ -53,10 +53,11 @@ public void init() {
 	add("Center", rt);
 }  
 public static void main(String as[]) {
-	int dimX = 100, dimY = 100, scala = 5;
+	int dimX = 300, dimY = 300, scala = 3;
 	if (as.length >= 2) {
 		dimX = Integer.parseInt(as[0]);
 		dimY = Integer.parseInt(as[1]);
+		scala = 1;
 		if (as.length >= 3) {
 			scala = Integer.parseInt(as[2]);
 		}
@@ -72,11 +73,7 @@ public static void main(String as[]) {
 	f.add("Center", RT);
 	f.setSize(dimX + 20, dimY + 40);
 	f.show();
-	f.addWindowListener(new WindowAdapter() {
-		public void windowClosing(WindowEvent e) {
-			System.exit(0);
-		}
-	});
+	f.addWindowListener(RT);
 }
 public void setRenderSize(Dimension s, int sc) {
 	size = s;
@@ -92,4 +89,13 @@ public void update(Graphics g) {
 	// evito di cancellare prima della paint
 	paint(g);
 }
+public void windowActivated(java.awt.event.WindowEvent e) {}
+public void windowClosed(java.awt.event.WindowEvent e) {}
+public void windowClosing(java.awt.event.WindowEvent e) {
+	System.exit(0);
+}
+public void windowDeactivated(java.awt.event.WindowEvent e) {}
+public void windowDeiconified(java.awt.event.WindowEvent e) {}
+public void windowIconified(java.awt.event.WindowEvent e) {}
+public void windowOpened(java.awt.event.WindowEvent e) {}
 }

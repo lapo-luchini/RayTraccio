@@ -1,6 +1,7 @@
 /**
  * Figura formata dall'unione delle figure della collezione. <br>
  * Esiste quindi solo dove esistono <b>almeno una</b> delle sottofigure.
+ * @author: Lapo Luchini <lapo@lapo.it>
  */
 class CSG_Union extends CSG_Collection {
 /**

@@ -1,6 +1,7 @@
 /**
  * Vettore nello spazio tridimensionale.<br>
  * Le tre componenti sono valori <code>double</code> sui tre assi x, y, z.
+ * @author: Lapo Luchini <lapo@lapo.it>
  */
 class Vector {
 	/** Componente X */

@@ -5,6 +5,7 @@ import java.awt.event.*;
 /**
  * Singola scena da visualizzare. <br>
  * Contiene tutti i parametri che definiscono il 'mondo virtuale' che si vuole rappresentare.
+ * @author: Lapo Luchini <lapo@lapo.it>
  */
 class Scene {
 	/** Una singola figura (questo non è un limite in quanto esiste la figura {@link CSG_Union CSG_Union}) */

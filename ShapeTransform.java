@@ -1,5 +1,5 @@
 /**
- * Figura 'finta' che in realtà deforma lo spazio intorno ad una figura data.
+ * Figura virtuale che deforma lo spazio intorno ad una figura data.
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class ShapeTransform extends Shape3D {
@@ -15,7 +15,7 @@ class ShapeTransform extends Shape3D {
  * Crea un wrapper per l'oggetto passato senza specificare trasformazioni.
  * @param a l'oggetto originale da usare
  */
-ShapeTransform(Shape3D a) {
+public ShapeTransform(Shape3D a) {
 	s = a;
 	t = TransformMatrix.IDENTITY;
 	c = null;
@@ -25,7 +25,7 @@ ShapeTransform(Shape3D a) {
  * @param a l'oggetto originale da usare
  * @param b la trasformazioneda usare
  */
-ShapeTransform(Shape3D a, TransformMatrix b) {
+public ShapeTransform(Shape3D a, TransformMatrix b) {
 	s = a;
 	t = b.inv();
 	c = null;
@@ -54,7 +54,7 @@ public void overturn() {
 	ot = -ot;
 }
 public void rotate(Vector i) {
-	t=t.mul(TransformMatrix.Rotate(-i.x, -i.y, -i.z));
+	t=t.mul(TransformMatrix.RotateZYX(-i.x, -i.y, -i.z));
 }
 public void scale(Vector i) {
 	t=t.mul(TransformMatrix.Scale(1.0/i.x, 1.0/i.y, 1.0/i.z));

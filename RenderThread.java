@@ -1,10 +1,10 @@
 import java.awt.*;
 import java.awt.image.*;
 import java.awt.event.*;
-
 /**
  * Thread di rendering dell'immagine. <br>
  * Prevede di non essere l'unico thread, in modo da rendere facilmente multi-threaded il rendering stesso.
+ * @author: Lapo Luchini <lapo@lapo.it>
  */
 class RenderThread extends Thread {
 	/** Dimensione dell'immagine da produrre */
@@ -24,8 +24,10 @@ class RenderThread extends Thread {
 	/** Valore che indica se si deve proseguire o fermarsi */
 	protected boolean running = true;
 	/** Valore che indica lo stato del processo */
-	protected int status = 0;
-	/** Valore preso da {@link status status} quando ilprocesso ha finito ilsuo lavoro */
+	protected int status = WAITING;
+	/** Valore preso da {@link status status} quando il processo non è ancora partito */
+	public final static int WAITING = Integer.MIN_VALUE;
+	/** Valore preso da {@link status status} quando il processo ha finito il suo lavoro */
 	public final static int FINISHED = Integer.MAX_VALUE;
 RenderThread(Scene s, Dimension sz, int b[], int act, int num, RayTracer rt) {
 	scn = s;

@@ -1,6 +1,7 @@
 /**
  * Genera i raggi visuali (ottimizzati) che scandiscono un area rettangolare. <br>
  * L'origine dei raggi è sempre la stessa (l'<i>occhio</i> dell'osservatore).
+ * @author: Lapo Luchini <lapo@lapo.it>
  */
 class EyeRays extends Ray {
 	/** Punto di angolo in alto a sinistra */

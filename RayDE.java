@@ -5,7 +5,7 @@ import javax.swing.event.*;
 /**
  * Insert the type's description here.
  * Creation date: (13/02/2001 23.55.09)
- * @author: 
+ * @author: Lapo Luchini <lapo@lapo.it>
  */
 public class RayDE extends javax.swing.JApplet implements WindowListener, Runnable, DocumentListener {
 	Thread thread;
@@ -666,7 +666,7 @@ public void insertUpdate(javax.swing.event.DocumentEvent e) {
  */
 public static void main(java.lang.String[] args) {
 	RayDE applet = new RayDE();
-	java.awt.Frame frame = new java.awt.Frame("Applet");
+	java.awt.Frame frame = new java.awt.Frame("RayTraccio IDE");
 
 	frame.addWindowListener(applet);
 	frame.add("Center", applet);
@@ -706,8 +706,10 @@ public void run() {
 			try {
 				if(parser==null)
 					parser=new SDL(new java.io.StringReader(getEditorSDL().getText()));
-				else
+				else {
+					parser.cons.clear();
 					parser.ReInit(new java.io.StringReader(getEditorSDL().getText()));
+				}
 				scene=parser.sdlScene();
 				getParserError().setText("Scene succesfully parsed in "+(System.currentTimeMillis()-time_parse)+" ms.");
 			} catch(Throwable e) {

@@ -1,5 +1,6 @@
 /**
  * Materiale di colore e coefficente di riflessione uniformi.
+ * @author: Lapo Luchini <lapo@lapo.it>
  */
 class TexturePlain extends Texture {
 	/** Colore */
@@ -18,6 +19,10 @@ public Color color(Vector p) {
 public double reflect(Vector p) {
 	return (r);
 }
+/**
+ * Rappresentazione testuale dell'oggetto. <br>
+ * Esempio: <code>TextureChecker[Color[1.0,0.0,0.0],0.7]</code> <br>
+ */
 public String toString() {
 	return ("TexturePlain[" + c + "," + r + "]");
 }

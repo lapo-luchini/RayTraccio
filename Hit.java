@@ -1,7 +1,6 @@
 import java.awt.*;
 import java.awt.image.*;
 import java.awt.event.*;
-
 /**
  * Punto di intersezione tra {@link Ray raggio} e {@link Shape3D figura}.
  * @author: Lapo Luchini <lapo@lapo.it>

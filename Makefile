@@ -1,12 +1,12 @@
 all: RayTraccio.class
 
 %.class: %.java
-	javac $^
+	javac -sourcepath . $^
 
 jar:
-	jar cvfm RayTraccio.jar MANIFEST.MF *.class
-	rm *.class
+	jar cvfm RayTraccio.jar MANIFEST.MF *.class lacrypto/*.class
 
 clean:
-	rm *.class
-	rm *.jar
+	rm -f *.class
+	rm -f lacrypto/*.class
+	rm -f *.jar

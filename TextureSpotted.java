@@ -1,5 +1,6 @@
 /**
  * Materiale sperimentale che macchietta un materiale dato (è brutto!).
+ * @author: Lapo Luchini <lapo@lapo.it>
  */
 class TextureSpotted extends Texture {
 	/** Colore da macchiettare */
@@ -19,7 +20,11 @@ class TextureSpotted extends Texture {
   public double reflect(Vector p) {
 	return(c.reflect(p));
   }  
+/**
+ * Rappresentazione testuale dell'oggetto. <br>
+ * Esempio: <code>TextureChecker[Texture[...],0.001]</code> <br>
+ */
   public String toString() {
 	return("TextureSpotted["+c+","+z+"]");
-  }  
+  }      
 }

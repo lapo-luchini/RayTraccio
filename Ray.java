@@ -1,7 +1,8 @@
 /**
  * Raggio visuale. <br>
- * Il raggio ha una coordinata parametrica <code>t</code> che vale <code>0.0</code> nel punto di partenza
- * e <code>1.0</code> nel punto di arrivo.
+ * Il raggio ha una coordinata parametrica <code>t</code> che vale <code>0.0</code>
+ * nel punto di partenza e <code>1.0</code> nel punto di arrivo.
+ * @author: Lapo Luchini <lapo@lapo.it>
  */
 class Ray {
 	/** Punto di origine */

@@ -1,5 +1,8 @@
 /**
- * Mix di due sottomateriali.
+ * Mix di due sottomateriali. <br>
+ * Il colore viene calcolato moltiplicando il colore dei due sottomateriali
+ * per il relativo coefficente.
+ * @author: Lapo Luchini <lapo@lapo.it>
  */
 class TextureMix extends Texture {
 	/** Array contenente i due sottomateriali */
@@ -20,6 +23,10 @@ public Color color(Vector p) {
 public double reflect(Vector p) {
 	return (c[0].reflect(p) * v[0] + c[1].reflect(p) * v[1]);
 }
+/**
+ * Rappresentazione testuale dell'oggetto. <br>
+ * Esempio: <code>TextureChecker[0.3,Texture[...],0.7,Texture[...]]</code> <br>
+ */
 public String toString() {
 	return ("TextureMix[" + c[0] + "," + v[0] + "," + c[1] + "," + v[1] + "]");
 }

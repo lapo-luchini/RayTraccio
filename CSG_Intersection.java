@@ -1,6 +1,7 @@
 /**
  * Figura formata dall'intersezione delle figure della collezione. <br>
  * Esiste quindi solo dove esistono <b>tutte</b> le sottofigure.
+ * @author: Lapo Luchini <lapo@lapo.it>
  */
 class CSG_Intersection extends CSG_Collection {
 /**
@@ -29,14 +30,14 @@ public Hit hit(EyeRays a) {
 }
 public Hit hit(Ray a) {
 	Hit l = new Hit(this, a), z;
-	int i;
+	int i, i2;
+	boolean v;
 	for (i = 0; i < n; i++) {
 		z = s[i].hit(a);
 		if (z.h)
 			if (z.t > 1E-10)
 				if ((z.t < l.t) || (!l.h)) { // è un hit più vicino, ora controllo se tutti gli altri sono "dentro"
-					boolean v = true;
-					int i2;
+					v = true;
 					for (i2 = 0; (i2 < n) && v; i2++)
 						if (i2 != i)
 							if (s[i2].value(z.point()) > 0.0)

@@ -1,8 +1,12 @@
-/** Colore RGB con precisione <code>double</code>. <br>
-  * I tre valori variano da <code>0.0</code> a <code>1.0</code>. <br>
-  * I valori negativi vengono annullati.
-  */
+/**
+ * Colore RGB con precisione <code>double</code>. <br>
+ * I tre valori variano da <code>0.0</code> a <code>1.0</code>. <br>
+ * I valori negativi vengono annullati.
+ * @author: Lapo Luchini <lapo@lapo.it>
+ */
 class Color {
+	/** Componente Ahlpa */
+	protected double a;
 	/** Componente Red */
 	protected double r;
 	/** Componente Green */
@@ -35,34 +39,51 @@ Color(double r, double g, double b) {
 	this.r = r;
 	this.g = g;
 	this.b = b;
+	this.a = 1.0;
+	this.check();
+}
+/**
+ * Crea un colore date le componenti.
+ * @param r componente Red
+ * @param g componente Green
+ * @param b componente Blue
+ * @param a componente Alpha
+ */
+Color(double r, double g, double b, double a) {
+	this.r = r;
+	this.g = g;
+	this.b = b;
+	this.a = a;
 	this.check();
 }
 /**
  * Crea un colore copiandolo da un altro.
- * @param a colore da usare
+ * @param c colore da usare
  */
-Color(Color a) {
-	this.r = a.r;
-	this.g = a.g;
-	this.b = a.b;
+Color(Color c) {
+	this.r = c.r;
+	this.g = c.g;
+	this.b = c.b;
+	this.a = c.a;
 }
 /**
  * Somma di colori.
- * @param a colore da usare
+ * @param c colore da usare
  * @return un nuovo oggetto
  */
-public Color add(Color a) {
-	return (new Color(r + a.r, g + a.g, b + a.b));
+public Color add(Color c) {
+	return (new Color(r + c.r, g + c.g, b + c.b, a + c.a));
 }
 /**
  * Somma di colori.
- * @param a colore da usare
+ * @param c colore da usare
  * @return questo stesso oggetto
  */
-public Color addU(Color a) {
-	r += a.r;
-	g += a.g;
-	b += a.b;
+public Color addU(Color c) {
+	r += c.r;
+	g += c.g;
+	b += c.b;
+	a += c.a;
 	return (this);
 }
 /**
@@ -76,27 +97,55 @@ public void check() {
 		this.g = 0.0;
 	if (this.b < 0.0)
 		this.b = 0.0;
+	if (this.a < 0.0)
+		this.a = 0.0;
+	//le medie non funzionerebbero più...
+	//if (this.a > 1.0)
+	//	this.a = 1.0;
 }
 /**
- * Trasforma il colore in formato 32 bit ARGB (Alpha, Red, Green, Blue). <br>
- * Il valore di Alpha è fissato a 255.
+ * Trasforma il colore in formato 32 bit ARGB (Alpha, Red, Green, Blue).
  * @return colore in formato ARGB
  */
 public int getARGB() {
-	return (0xFF000000 | getRGB());
+	int u = 0, r = (int) (this.r * 255), g = (int) (this.g * 255), b = (int) (this.b * 255), a = (int) (this.a * 255);
+	if (a > 0)
+		if (a < 255)
+			u |= a;
+		else
+			u |= 255;
+	u = u << 8;
+	if (r > 0)
+		if (r < 255)
+			u |= r;
+		else
+			u |= 255;
+	u = u << 8;
+	if (g > 0)
+		if (g < 255)
+			u |= g;
+		else
+			u |= 255;
+	u = u << 8;
+	if (b > 0)
+		if (b < 255)
+			u |= b;
+		else
+			u |= 255;
+	return (u);
 }
 /**
  * Trasforma il colore in formato 24 bit RGB (Red, Green, Blue). <br>
- * Gli 8 bit più significativi sono fissati a zero.
+ * Gli 8 bit più significativi sono fissati a uno.
  * @return colore in formato RGB
  */
 public int getRGB() {
-	int u = 0, r = (int) (this.r * 255), g = (int) (this.g * 255), b = (int) (this.b * 255);
+	int u = 0x0000FF00, r = (int) (this.r * 255), g = (int) (this.g * 255), b = (int) (this.b * 255);
 	if (r > 0)
 		if (r < 255)
-			u = r;
+			u |= r;
 		else
-			u = 255;
+			u |= 255;
 	u = u << 8;
 	if (g > 0)
 		if (g < 255)
@@ -114,77 +163,82 @@ public int getRGB() {
 /**
  * Moltiplicazione componente-per-costante del colore. <br>
  * Valori negativi del parametro generano un avvertimento su <code>System.err</code>.
- * @param a costante da usare
+ * @param c costante da usare
  * @return un nuovo oggetto
  */
-public Color mul(double a) {
-	if (a < 0.0)
-		System.err.println("Invalid parameter 'a' [" + a + "]: it must be >= 0.0");
-	return (new Color(r * a, g * a, b * a));
+public Color mul(double c) {
+	if (c < 0.0)
+		System.err.println("Color.mul: invalid parameter [" + c + "]: it must be >= 0.0");
+	return (new Color(r * c, g * c, b * c, a * c));
 }
 /**
  * Moltiplicazione componente-per-componente di colori.
- * @param a colore da usare
+ * @param c colore da usare
  * @return un nuovo oggetto
  */
-public Color mul(Color a) {
-	return (new Color(r * a.r, g * a.g, b * a.b));
+public Color mul(Color c) {
+	return (new Color(r * c.r, g * c.g, b * c.b, a * c.a));
 }
 /**
  * Moltiplicazione componente-per-costante del colore.
  * Valori negativi del parametro generano un avvertimento su <code>System.err</code>.
- * @param a costante da usare
+ * @param c costante da usare
  * @return questo stesso oggetto
  */
-public Color mulU(double a) {
-	if (a < 0.0)
-		System.err.println("Invalid parameter 'a' [" + a + "]: it must be >= 0.0");
-	r *= a;
-	g *= a;
-	b *= a;
+public Color mulU(double c) {
+	if (c < 0.0)
+		System.err.println("Color.mulU: invalid parameter [" + c + "]: it must be >= 0.0");
+	r *= c;
+	g *= c;
+	b *= c;
+	a *= c;
 	return (this);
 }
 /**
  * Moltiplicazione componente-per-componente di colori.
- * @param a colore da usare
+ * @param c colore da usare
  * @return questo stesso oggetto
  */
-public Color mulU(Color a) {
-	r *= a.r;
-	g *= a.g;
-	b *= a.b;
+public Color mulU(Color c) {
+	r *= c.r;
+	g *= c.g;
+	b *= c.b;
+	a *= c.a;
 	return (this);
 }
 /**
  * Sottrazione di colori.
- * @param a colore da usare
+ * @param c colore da usare
  * @return un nuovo oggetto
  */
-public Color sub(Color a) {
-	return (new Color(r - a.r, g - a.g, b - a.b));
+public Color sub(Color c) {
+	return (new Color(r - c.r, g - c.g, b - c.b, a - c.a));
 }
 /**
  * Sottrazione di colori.
- * @param a colore da usare
+ * @param c colore da usare
  * @return questo stesso oggetto
  */
-public Color subU(Color a) {
-	r -= a.r;
-	g -= a.g;
-	b -= a.b;
+public Color subU(Color c) {
+	r -= c.r;
+	g -= c.g;
+	b -= c.b;
+	a -= c.a;
 	if (r < 0.0)
 		r = 0.0;
 	if (g < 0.0)
 		g = 0.0;
 	if (b < 0.0)
 		b = 0.0;
+	if (a < 0.0)
+		a = 0.0;
 	return (this);
 }
 /**
  * Rappresentazione testuale dell'oggetto. <br>
- * Esempio: <code>Color[0.1,0.23,1.0]</code>
+ * Esempio: <code>Color[0.1,0.23,1.0,1.0]</code>
  */
 public String toString() {
-	return ("Color[" + r + "," + g + "," + b + "]");
+	return ("Color[" + r + "," + g + "," + b + "," + a + "]");
 }
 }

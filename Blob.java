@@ -1,6 +1,5 @@
 /**
- * Insert the type's description here.
- * Creation date: (12/01/2001 23.59.15)
+ * Blob experimental type, does NOT work yet.
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class Blob extends Shape3D {
@@ -8,7 +7,7 @@ class Blob extends Shape3D {
 	protected int n = 0;
 	private Texture c;
 	private double r;
-Blob(double d, Texture b) {
+public Blob(double d, Texture b) {
 	c = b;
 	r = d;
 }

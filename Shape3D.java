@@ -1,6 +1,7 @@
 /**
  * Figura tridimensionale. <br>
  * Questa classe definisce tutte i metodi necessari per la definizione di una figura 3D.
+ * @author: Lapo Luchini <lapo@lapo.it>
  */
 abstract class Shape3D {
 /**

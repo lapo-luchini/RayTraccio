@@ -1,5 +1,6 @@
 /**
  * Figura astratta formata da un insieme di altre figure.
+ * @author: Lapo Luchini <lapo@lapo.it>
  */
 abstract class CSG_Collection extends Shape3D {
 	/** Array di figure */
