@@ -79,15 +79,16 @@ class EyeRays extends Ray { // porta il rendering da 8 a 6 secondi
 
 class Color {
   protected double r, g, b;
-  Color(int r, int g, int b) {
-    this.r=r/255.0;
-    this.g=g/255.0;
-    this.b=b/255.0;
-  }
   Color(double r, double g, double b) {
     this.r=r;
     this.g=g;
     this.b=b;
+    if(this.r<0.0)
+      this.r=0.0;
+    if(this.g<0.0)
+      this.g=0.0;
+    if(this.b<0.0)
+      this.b=0.0;
   }
   public static Color BLACK=new Color(0.0, 0.0, 0.0),
                       RED=new Color(1.0, 0.0, 0.0),
@@ -102,9 +103,6 @@ class Color {
   }
   public Color sub(Color a) {
     return(new Color(r-a.r, g-a.g, b-a.b));
-  }
-  public Color mul(int a) {
-    return(new Color(r*a, g*a, b*a));
   }
   public Color mul(double a) {
     return(new Color(r*a, g*a, b*a));
@@ -268,6 +266,15 @@ abstract class Shape3D {
 }
 
 class Quadrica extends Shape3D {
+  // ax²+bxy+cy²+dxz+eyz+fz²+gx+hy+iz+l=0
+  // | a ½b ½d|
+  // |½b  c ½e|
+  // |½d ½e  f|
+  public static double SFERA[]={1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,-1.0},
+                       CIL_X[]={0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,-1.0},
+                       CIL_Y[]={1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,-1.0},
+                       CIL_Z[]={1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,-1.0},
+                   IPE_RIG_Y[]={1.0, 0.0,-1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,-1.0};
   private double k[];
   private Texture c;
   Quadrica(double a[], Texture b) {
@@ -279,12 +286,6 @@ class Quadrica extends Shape3D {
     //  k[i]=a[i];
     System.arraycopy(a, 0, k, 0, 10);
   }
-  public static double SFERA[]={1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,-1.0},
-                       CIL_X[]={0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,-1.0},
-                       CIL_Y[]={1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,-1.0},
-                       CIL_Z[]={1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,-1.0},
-                   IPE_RIG_Y[]={1.0, 0.0,-1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,-1.0},
-                       PIPPO[]={1.0, 0.0,-1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,-0.1};
   public String toString() {
     String u="Quadrica[";
     for(int i=0; i<10; i++)
@@ -293,6 +294,11 @@ class Quadrica extends Shape3D {
     return(u);
   }
   public Hit hit(Ray a) {
+    // ax²+bxy+cy²+dxz+eyz+fz²+gx+hy+iz+l=0
+    // x=o.x+c.x*t
+    // y=o.y+c.y*t
+    // z=o.z+c.z*t
+    // ta²+tb+tc=0
     double tc=k[0]*(a.o.x*a.o.x)+
               k[1]*(a.o.x*a.o.y)+
               k[2]*(a.o.y*a.o.y)+
@@ -337,12 +343,14 @@ class Quadrica extends Shape3D {
       //  u.t=(-tb+rdelta)/ta;
       u.g=this;
       u.r=a;
-    } else {
-      u.h=false; //inUUUUUUUUtile
     }
     return(u);
   }
   public Vector normal(Vector p) {
+    // ax²+bxy+cy²+dxz+eyz+fz²+gx+hy+iz+l=0
+    // f'x=2ax+by+dz+g
+    // f'y=bx+2cy+ez+h
+    // f'z=dx+ey+2fz+i
     return(new Vector(
       2.0*k[0]*p.x+k[1]*p.y+k[3]*p.z+k[6],
       k[1]*p.x+2.0*k[2]*p.y+k[4]*p.z+k[7],
@@ -355,6 +363,10 @@ class Quadrica extends Shape3D {
     return(c.reflect(p));
   }
   public void scale(Vector i) {
+    // ax²+bxy+cy²+dxz+eyz+fz²+gx+hy+iz+l=0
+    // X=zx*x     x=X/zx
+    // Y=zy*y ==> y=Y/zy
+    // Z=zz*z     z=Z/zz
     i.x=1.0/i.x;
     i.y=1.0/i.y;
     i.z=1.0/i.z;
@@ -369,13 +381,72 @@ class Quadrica extends Shape3D {
     k[8]*=i.z;
   }
   public void translate(Vector i) {
+    // ax²+bxy+cy²+dxz+eyz+fz²+gx+hy+iz+l=0
+    // X=zx+x     x=X-zx
+    // Y=zy+y ==> y=Y-zy
+    // Z=zz+z     z=Z-zz
+    // a(X+x)²+     b(X+x)(Y+y)+    c(Y+y)²+     d(X+x)(Z+z)+    e(Y+y)(Z+z)+    f(Z+z)²+     g(X+x)+h(Y+y)+i(Z+z)+l=0
+    // aX²+2aXx+ax²+bXY+bXy+bYx+bxy+cY²+2cYy+cy²+dXZ+dXz+dZx+dzx+eYZ+eYz+eZy+ezy+fZ²+2fZz+fz²+gX+gx+ hY+hy +iZ+iz +l=0
+    // X²=a XY=b Y²=c XZ=d YZ=e Z²=f
+    // X =2ax+by+dz+g
+    // Y =bx+2cy+ez+h
+    // Z =dx+ey+2fz+i
+    //   =ax²+bxy+cy²+dzx+ezy+fz²+gx+hy+iz+l
     i=i.mul(-1.0);
-    k[9]+=(k[0]*i.x*i.x)+(k[2]*i.y*i.y)+(k[5]*i.z*i.z)+ // prima perch‚ usa 678
+    k[9]+=(k[0]*i.x*i.x)+(k[2]*i.y*i.y)+(k[5]*i.z*i.z)+ // prima perché‚ usa 678
           (k[1]*i.x*i.y)+(k[3]*i.x*i.z)+(k[4]*i.y*i.z)+
           (k[6]*i.x)+(k[7]*i.y)+(k[8]*i.z);
     k[6]+=(2*k[0]*i.x)+(k[1]*i.y)+(k[3]*i.z);
     k[7]+=(k[1]*i.x)+(2*k[2]*i.y)+(k[4]*i.z);
     k[8]+=(k[3]*i.x)+(k[4]*i.y)+(2*k[5]*i.z);
+  }
+}
+
+class Plane extends Shape3D {
+  // ax+by+cz+d=0
+  public static double PIANO_XY[]={0.0, 0.0, 1.0, 0.0},
+                          PIPPO[]={0.0, 1.0, 0.0, 0.5};
+                          //PIPPO[]={0.0, 0.0, 1.0,-2.0};
+  private Vector n;
+  private double d;
+  private Texture c;
+  Plane(double a[], Texture b) {
+    if(a.length!=4)
+      throw(new NumberFormatException("Requires a 4 elements array"));      
+    c=b;
+    n=new Vector(a[0], a[1], a[2]);
+    d=a[3]/n.mod(); // scala la costante perché non cambi nulla se n è versore
+    n=n.vers();
+    //System.out.println(n+" "+d);
+  }
+  public Hit hit(Ray a) {
+    // ax+by+cz+d=0
+    // x=o.x+c.x*t
+    // y=o.y+c.y*t
+    // z=o.z+c.z*t
+    // ta²+tb+tc=0
+    Hit u=new Hit();
+    double t=n.dot(a.c);
+    if(t!=0.0) {
+      //System.out.println((-(d+n.dot(a.o))/t)+"="+n+"*\n"+a.o+" "+n.dot(a.o)+"\n"+a.c+" "+n.dot(a.c));
+      u.addT(-(d+n.dot(a.o))/t);
+      u.g=this;
+      u.r=a;
+    }
+    return(u);  
+  }
+  public Vector normal(Vector p) {
+    return(n);
+  }
+  public Color color(Vector p) {
+    return(c.color(p));
+  }
+  public double reflect(Vector p) {
+    return(c.reflect(p));
+  }
+  public void scale(Vector i) {
+  }
+  public void translate(Vector i) {
   }
 }
 
@@ -437,10 +508,11 @@ class Scene {
       if(hl.h)
         c=Color.BLACK;
       else {
-        //if(h.reflect()<0.999)
+        //System.out.println(h.normal());
+        if(h.reflect()<0.999)
           c=l.c.mul(h.normal().dot(rl.c.vers())).mul(l.p/rl.c.mod());
-        //else
-        //  c=Color.BLACK;
+        else
+          c=Color.BLACK;
         if(h.reflect()>0.001) {
           Color nc=Color.BLACK;
           Ray rr=new Ray(h.point(), Vector.ORIGIN);
@@ -454,7 +526,8 @@ class Scene {
           }
           c=c.mul(1.0-h.reflect()).add(nc.mul(h.reflect()));
         }
-        c=h.color().mul(c);
+        c=h.color().mul(c); // messo dopo per filtrare anche lo specchio
+        // c=h.color(); // FLAT SHADED
       }
     }
     return(c);
@@ -501,11 +574,12 @@ class RayTracer extends Component {
   private int buff[];
   private MemoryImageSource src;
   private Scene scn;
-  private int numCPU;
+  private int numCPU, scale;
   private RenderThread t[];
-  RayTracer(Scene s, int n) {
+  RayTracer(Scene s, int n, int sc) {
     scn=s;
     numCPU=n;
+    scale=sc;
   }
   public void init() {
     int i, j;
@@ -532,16 +606,18 @@ class RayTracer extends Component {
       t[i]=null;
   }
   public void paint(Graphics g) {
-    g.drawImage(img, 0, 0, this);
+    g.drawImage(img, 0, 0, size.width*scale, size.height*scale, this);
   }
 }
 
 public class RayTraccio extends Applet {
   private RayTracer rt;
   private Dimension size;
+  private int scala;
   private Scene scn;
-  public void setRenderSize(Dimension s) {
+  public void setRenderSize(Dimension s, int sc) {
     size=s;
+    scala=sc;
   }
   public void init() {
     Quadrica q1=new Quadrica(Quadrica.SFERA,
@@ -550,8 +626,8 @@ public class RayTraccio extends Applet {
                                  new TexturePlain(Color.CYAN, 0.0),
                                  new TexturePlain(Color.RED, 0.0)),
                                0.1)),
-             q2=new Quadrica(Quadrica.CIL_X,
-                             new TexturePlain(Color.RED, 0.5)),
+             q2=new Quadrica(Quadrica.CIL_Y,
+                             new TexturePlain(Color.RED, 0.3)),
              q3=new Quadrica(Quadrica.IPE_RIG_Y,
                              new TextureScale(
                                new TextureChecker(
@@ -560,14 +636,16 @@ public class RayTraccio extends Applet {
                              0.2)),
              q4=new Quadrica(Quadrica.SFERA,
                              new TexturePlain(Color.PURPLE, 0.0));
+    Plane p=new Plane(Plane.PIPPO, new TexturePlain(Color.WHITE, 0.5));
     q1.scale(new Vector(1.2, 1.0, 0.8));
     q1.translate(new Vector(1.0, 1.0, 0.0));
     q2.scale(new Vector(0.5, 0.5, 0.5));
-    q2.translate(new Vector(0.0, -1.0, -0.5));
+    q2.translate(new Vector(-1.0, 0.0, -0.5));
     q3.scale(new Vector(0.25, 0.25, 0.25));
     q4.scale(new Vector(0.2, 0.2, 0.2));
     q4.translate(new Vector(0.5, 0.0, -2.0));
     CSG_Union q=new CSG_Union();
+    q.add(p);
     q.add(q1);
     q.add(q2);
     q.add(q3);
@@ -579,7 +657,7 @@ public class RayTraccio extends Applet {
     scn=new Scene(q, l, eye);
     if(size==null)
       size=getSize();
-    rt=new RayTracer(scn, 1);
+    rt=new RayTracer(scn, 1, scala);
     rt.setSize(size);
     rt.init();
     setLayout(new BorderLayout());
@@ -604,26 +682,28 @@ public class RayTraccio extends Applet {
     }
   }
   public static void main(String as[]) {
-    int dimX=500, dimY=500;
-    if(as.length==2) {
+    int dimX=500, dimY=500, scala=1;
+    if(as.length>=2) {
       dimX=Integer.parseInt(as[0]);
       dimY=Integer.parseInt(as[1]);
+      if(as.length==3)
+        scala=Integer.parseInt(as[2]);
     } else if(as.length!=0) {
-      System.out.println("USO: java RayTraccio [dimX dimY]");
+      System.out.println("USO: java RayTraccio [dimX dimY [scala]]");
       System.exit(1);
     }
     Frame f=new Frame("RayTraccio");
     RayTraccio RT=new RayTraccio();
-    RT.setRenderSize(new Dimension(dimX, dimY));
+    RT.setRenderSize(new Dimension(dimX, dimY), scala);
     RT.init();
     RT.start();
     f.add("Center", RT);
-    f.setSize(dimX+40, dimY+40);
+    f.setSize(dimX*scala+20, dimY*scala+40);
     f.show();
     f.addWindowListener(new MyAdapter());
   }
   public String getAppletInfo() {
-    return("RayTraccio 0.95\r\n"+
+    return("RayTraccio 0.96\r\n"+
            "(c)1999 Lapo Luchini");
   }
   //fare più luci!!
