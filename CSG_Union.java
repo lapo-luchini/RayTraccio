@@ -1,3 +1,22 @@
+// RayTraccio ray-tracing library Copyright (c) 2001 Lapo Luchini <lapo@lapo.it>
+// $Header$
+
+// This file is part of RayTraccio.
+//
+// RayTraccio is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// RayTraccio is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with RayTraccio; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
 /**
  * Figura formata dall'unione delle figure della collezione. <br>
  * Esiste quindi solo dove esistono <b>almeno una</b> delle sottofigure.
@@ -9,7 +28,16 @@ class CSG_Union extends CSG_Collection {
  * @param a il raggio voluto
  */
 public Hit hit(EyeRays a) {
-	return (hit((Ray) a));
+	Hit l = s[0].hit(a), z;
+	int i;
+	for (i = 1; i < n; i++) {
+		z = s[i].hit(a);
+		if (z.h)
+			if (z.t > 1E-10)
+				if ((z.t < l.t) || (!l.h))
+					l = z;
+	}
+	return (l);
 }
 public Hit hit(Ray a) {
 	Hit l = s[0].hit(a), z;

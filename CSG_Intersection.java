@@ -1,3 +1,22 @@
+// RayTraccio ray-tracing library Copyright (c) 2001 Lapo Luchini <lapo@lapo.it>
+// $Header$
+
+// This file is part of RayTraccio.
+//
+// RayTraccio is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// RayTraccio is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with RayTraccio; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
 /**
  * Figura formata dall'intersezione delle figure della collezione. <br>
  * Esiste quindi solo dove esistono <b>tutte</b> le sottofigure.
@@ -9,7 +28,24 @@ class CSG_Intersection extends CSG_Collection {
  * @param a il raggio voluto
  */
 public Hit hit(EyeRays a) {
-	return (hit((Ray) a));
+	Hit l = new Hit(this, a), z;
+	int i, i2;
+	boolean v;
+	for (i = 0; i < n; i++) {
+		z = s[i].hit(a);
+		if (z.h)
+			if (z.t > 1E-10)
+				if ((z.t < l.t) || (!l.h)) { // è un hit più vicino, ora controllo se tutti gli altri sono "dentro"
+					v = true;
+					for (i2 = 0; (i2 < n) && v; i2++)
+						if (i2 != i)
+							if (s[i2].value(z.point()) > 0.0)
+								v = false;
+					if (v)
+						l = z;
+				}
+	}
+	return (l);
 }
 public Hit hit(Ray a) {
 	Hit l = new Hit(this, a), z;
