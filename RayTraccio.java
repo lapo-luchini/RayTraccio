@@ -3,6 +3,69 @@ import java.awt.*;
 import java.awt.image.*;
 import java.awt.event.*;
 
+class TransformMatrix {
+  protected double a, b, c,
+                   d, e, f,
+                   g, h, i;
+  TransformMatrix(double a, double b, double c,
+                  double d, double e, double f,
+                  double g, double h, double i) {
+    this.a=a; this.b=b; this.c=c;
+    this.d=d; this.e=e; this.f=f;
+    this.g=g; this.h=h; this.i=i;
+  }
+  static TransformMatrix RotateX(double r) {
+    //r=Math.toRadians(r); non va nei browser
+    r*=Math.PI/180.0;
+    return(new TransformMatrix(1.0, 0.0, 0.0,
+                               0.0, Math.cos(r), Math.sin(r),
+                               0.0, -Math.sin(r), Math.cos(r)));
+  }
+  static TransformMatrix RotateY(double r) {
+    //r=Math.toRadians(r);
+    r*=Math.PI/180.0;
+    return(new TransformMatrix(Math.cos(r), 0.0, -Math.sin(r),
+                               0.0, 1.0, 0.0,
+                               Math.sin(r), 0.0, Math.cos(r)));
+  }
+  static TransformMatrix RotateZ(double r) {
+    //r=Math.toRadians(r);
+    r*=Math.PI/180.0;
+    return(new TransformMatrix(Math.cos(r), Math.sin(r), 0.0,
+                               -Math.sin(r), Math.cos(r), 0.0,
+                               0.0, 0.0, 1.0));
+  }
+  static TransformMatrix Rotate(double x, double y, double z) {
+    return(RotateX(x).mul(RotateY(y)).mul(RotateZ(z)));
+  }
+  static TransformMatrix Scale(double x, double y, double z) {
+    return(new TransformMatrix(x, 0.0, 0.0,
+                               0.0, y, 0.0,
+                               0.0, 0.0, z));
+  }
+  public double det() {
+    return(a*(e*i-f*h)+b*(f*g-d*i)+c*(d*h-e*g));
+  }
+  public TransformMatrix mul(double z) {
+    return(new TransformMatrix(a*z, b*z, c*z,
+                               d*z, e*z, f*z,
+                               g*z, h*z, i*z));
+  }
+  public TransformMatrix mul(TransformMatrix z) {
+    return(new TransformMatrix(a*z.a+b*z.d+c*z.g, a*z.b+b*z.e+c*z.h, a*z.c+b*z.f+c*z.i,
+                               d*z.a+e*z.d+f*z.g, d*z.b+e*z.e+f*z.h, d*z.c+e*z.f+f*z.i,
+                               g*z.a+h*z.d*i*z.g, g*z.b+h*z.e+i*z.h, g*z.c+h*z.f+i*z.i));
+  }
+  public TransformMatrix inv() {
+    return(new TransformMatrix((e*i-f*h), (c*h-b*i), (b*f-c*e),
+                               (f*g-d*i), (a*i-c*g), (c*d-a*f),
+                               (d*h-e*g), (b*g-a*h), (a*e-b*d)).mul(1.0/det()));
+  }
+  public String toString() {
+    return("Matrix:["+a+","+b+","+c+"|"+d+","+e+","+f+"|"+g+","+h+","+i+"]");
+  }
+}
+
 class Vector {
   protected double x, y, z;
   Vector(double x, double y, double z) {
@@ -10,10 +73,10 @@ class Vector {
     this.y=y;
     this.z=z;
   }
-  public static Vector ORIGIN=new Vector(0.0, 0.0, 0.0),
-                       VERS_X=new Vector(1.0, 0.0, 0.0),
-                       VERS_Y=new Vector(0.0, 1.0, 0.0),
-                       VERS_Z=new Vector(0.0, 0.0, 1.0);
+  public static final Vector ORIGIN=new Vector(0.0, 0.0, 0.0),
+                             VERS_X=new Vector(1.0, 0.0, 0.0),
+                             VERS_Y=new Vector(0.0, 1.0, 0.0),
+                             VERS_Z=new Vector(0.0, 0.0, 1.0);
   public Vector add(Vector a) {
     return(new Vector(x+a.x, y+a.y, z+a.z));
   }
@@ -25,6 +88,14 @@ class Vector {
   }
   public double dot(Vector a) {
     return(x*a.x+y*a.y+z*a.z);
+  }
+  public Vector cross(Vector a) {
+    return(new Vector(y*a.z-z*a.y, z*a.x-x*a.z, x*a.y-y*a.x));
+  }
+  public Vector transform(TransformMatrix a) { // moltiplica A·v
+    return(new Vector(x*a.a+y*a.a+z*a.g,
+                      x*a.b+y*a.e+z*a.h,
+                      x*a.c+y*a.f+z*a.i));
   }
   public double mod2() {
     return(this.dot(this));
@@ -61,12 +132,17 @@ class EyeRays extends Ray { // porta il rendering da 8 a 6 secondi
   private Vector d, h, v;
   private int i, maxx;
   EyeRays(Vector o, Vector d, Vector h, Vector v, int x, int y) {
-    super(o, d);
+    super(o, d.sub(h.mul(0.5)).sub(v.mul(0.5)));
     this.h=h.mul(1.0/x);
     this.v=v.mul(1.0/y);
-    this.d=this.c.sub(this.h);
+    this.c=this.d=this.c.add(this.h.mul(0.5)).add(this.v.mul(0.5));
     maxx=x;
     i=0;
+    //System.out.println("EYERAY INIT");
+    //System.out.println("O: "+this.o+" "+o);
+    //System.out.println("C: "+this.c+" "+d);
+    //System.out.println("H: "+this.h+" "+h);
+    //System.out.println("V: "+this.v+" "+v);
   }
   public void next() {
     if(i==maxx-1) {
@@ -184,25 +260,25 @@ class TextureChecker extends Texture {
     c[1]=b;
   }
   public Color color(Vector p) {
-    return(c[(((int)(p.x))^((int)p.y)^((int)p.z))&1].color(p));
+    return(c[(((int)Math.ceil(p.x))^((int)Math.ceil(p.y))^((int)Math.ceil(p.z)))&1].color(p));
   }
   public double reflect(Vector p) {
-    return(c[(((int)p.x)^((int)p.y)^((int)p.z))&1].reflect(p));
+    return(c[(((int)Math.ceil(p.x))^((int)Math.ceil(p.y))^((int)Math.ceil(p.z)))&1].reflect(p));
   }
 }
 
-class TextureStrip extends Texture {
+class TextureStripes extends Texture {
   private Texture c[];
-  TextureStrip(Texture a, Texture b) {
+  TextureStripes(Texture a, Texture b) {
     c=new Texture[2];
     c[0]=a;
     c[1]=b;
   }
   public Color color(Vector p) {
-    return(c[((int)p.y)&1].color(p));
+    return(c[((int)Math.ceil(p.y))&1].color(p));
   }
   public double reflect(Vector p) {
-    return(c[((int)p.y)&1].reflect(p));
+    return(c[((int)Math.ceil(p.y))&1].reflect(p));
   }
 }
 
@@ -218,6 +294,40 @@ class TextureScale extends Texture {
   }
   public double reflect(Vector p) {
     return(c.reflect(p.mul(z)));
+  }
+}
+
+class TextureTransform extends Texture {
+  private Texture c;
+  private TransformMatrix t;
+  TextureTransform(Texture a, TransformMatrix b) {
+    c=a;
+    t=b.inv();
+  }
+  public Color color(Vector p) {
+    return(c.color(p.transform(t)));
+  }
+  public double reflect(Vector p) {
+    return(c.reflect(p.transform(t)));
+  }
+}
+
+class TextureMix extends Texture {
+  private Texture c[];
+  private double v[];
+  TextureMix(Texture a, double b, Texture d, double e) {
+    c=new Texture[2];
+    c[0]=a;
+    c[1]=d;
+    v=new double[2];
+    v[0]=b/(b+e);
+    v[1]=e/(b+e);
+  }
+  public Color color(Vector p) {
+    return(c[0].color(p).mul(v[0]).add(c[1].color(p).mul(v[1])));
+  }
+  public double reflect(Vector p) {
+    return(c[0].reflect(p)*v[0]+c[1].reflect(p)*v[1]);
   }
 }
 
@@ -285,8 +395,7 @@ class Quadric extends Shape3D {
                       PARA_X[]={ 0.0, 0.0, 1.0, 0.0, 0.0, 1.0,-1.0, 0.0, 0.0, 0.0},
                       PARA_Y[]={ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0,-1.0, 0.0, 0.0},
                       PARA_Z[]={ 1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0,-1.0, 0.0},
-                   IPE_Y[]={ 1.0, 0.0,-1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,-1.0},
-                       PIPPO[]={ 1.0, 0.0,-1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,-1.0};
+                       IPE_Y[]={ 1.0, 0.0,-1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,-1.0};
   private double k[];
   private Texture c;
   Quadric(double a[], Texture b) {
@@ -398,12 +507,13 @@ class Quadric extends Shape3D {
     // Y =bx+2cy+ez+h
     // Z =dx+ey+2fz+i
     //   =ax²+bxy+cy²+dzx+ezy+fz²+gx+hy+iz+l
+    i=Vector.ORIGIN.sub(i); // i=i.mul(-1.0) dev'essere più lento
     k[9]+=(k[0]*i.x*i.x)+(k[2]*i.y*i.y)+(k[5]*i.z*i.z)+ // prima perché‚ usa 678
-          (k[1]*i.x*i.y)+(k[3]*i.x*i.z)+(k[4]*i.y*i.z)-
+          (k[1]*i.x*i.y)+(k[3]*i.x*i.z)+(k[4]*i.y*i.z)+
           (k[6]*i.x)+(k[7]*i.y)+(k[8]*i.z);
-    k[6]-=(2*k[0]*i.x)+(k[1]*i.y)+(k[3]*i.z);
-    k[7]-=(k[1]*i.x)+(2*k[2]*i.y)+(k[4]*i.z);
-    k[8]-=(k[3]*i.x)+(k[4]*i.y)+(2*k[5]*i.z);
+    k[6]+=(2*k[0]*i.x)+(k[1]*i.y)+(k[3]*i.z);
+    k[7]+=(k[1]*i.x)+(2*k[2]*i.y)+(k[4]*i.z);
+    k[8]+=(k[3]*i.x)+(k[4]*i.y)+(2*k[5]*i.z);
   }
   public void overturn() {
     for(int i=0; i<10; i++)
@@ -450,13 +560,15 @@ class Plane extends Shape3D {
     return(c.reflect(p));
   }
   public void scale(Vector i) {
-    System.out.println("ILLEGAL SCALE");
+    n.x/=i.x;
+    n.y/=i.x;
+    n.z/=i.y;
   }
   public void translate(Vector i) {
-    System.out.println("ILLEGAL TRANSLATE");
+    n.sub(i);
   }
   public void overturn() {
-    n=n.mul(-1.0);
+    n=Vector.ORIGIN.sub(n);
     d=-d;
   }
 }
@@ -470,6 +582,7 @@ abstract class CSG_Collection extends Shape3D {
 }
 
 class CSG_Union extends CSG_Collection {
+  int ot=1;
   public Hit hit(Ray a) {
     Hit l=s[0].hit(a), z;
     int i;
@@ -487,8 +600,12 @@ class CSG_Union extends CSG_Collection {
     return(Vector.ORIGIN);
   }
   public double value(Vector p) {
-    System.out.println("ILLEGAL VALUE");
-    return(0); // FARE!!
+    // non sono sicuro che vada
+    double a=1.0; // di defualt è esterno
+    for(int i=0; i<n; i++)
+      if(s[i].value(p)*ot<0.0)
+        a=-1.0;
+    return(a);
   }
   public Color color(Vector p) {
     System.out.println("ILLEGAL COLOR");
@@ -505,11 +622,12 @@ class CSG_Union extends CSG_Collection {
     System.out.println("ILLEGAL TRANSLATE");
   }
   public void overturn() {
-    System.out.println("ILLEGAL OVERTURN");
+    ot=-ot;
   }
 }
 
 class CSG_Intersection extends CSG_Collection {
+  int ot=1;
   public Hit hit(Ray a) {
     Hit l=new Hit(), z;
     int i;
@@ -535,8 +653,12 @@ class CSG_Intersection extends CSG_Collection {
     return(Vector.ORIGIN);
   }
   public double value(Vector p) {
-    System.out.println("ILLEGAL VALUE");
-    return(0); // FARE!!
+    // non sono sicuro che vada
+    double a=-1.0; // di defualt è interno
+    for(int i=0; i<n; i++)
+      if(s[i].value(p)*ot>0.0)
+        a=1.0;
+    return(a);
   }
   public Color color(Vector p) {
     System.out.println("ILLEGAL COLOR");
@@ -553,18 +675,29 @@ class CSG_Intersection extends CSG_Collection {
     System.out.println("ILLEGAL TRANSLATE");
   }
   public void overturn() {
-    System.out.println("ILLEGAL OVERTURN");
+    ot=-ot;
   }
 }
 
 class Scene {
   private Shape3D s;
   private Light l;
-  protected Vector eye;
-  Scene(Shape3D a, Light b, Vector c) {
+  protected Vector eye, c, h, v;
+  Scene(Shape3D a, Light b, Vector ex, Vector ox, Vector hx, double ratio) {
     s=a;
     l=b;
-    eye=c;
+    eye=ex;
+    c=ox;
+    if(hx.dot(ox.sub(ex))!=0.0)
+      h=hx.sub(ox.sub(ex).mul(1.0/(hx.dot(ox.sub(ex)))));
+    else
+      h=hx;
+    v=ox.sub(ex).vers().cross(h).mul(1.0/ratio);
+    //System.out.println("SCENE INIT");
+    //System.out.println("E: "+eye);
+    //System.out.println("C: "+c);
+    //System.out.println("H: "+hx+" DOT:"+(1.0/hx.dot(ox.sub(ex)))+" -> "+h);
+    //System.out.println("V: "+v);
   }
   public Color hit(Ray a) {
     Hit h=s.hit(a);
@@ -617,15 +750,18 @@ class RenderThread extends Thread {
   }
   public void run() {
     int i, j, sizY=size.height/numCPU;
-    EyeRays r=new EyeRays(scn.eye, new Vector(-2.0, 2.0-(4.0/numCPU*actCPU), 0.0),
-                                   new Vector( 4.0, 0.0, 0.0),
-                                   new Vector( 0.0,-4.0, 0.0),
-                                   size.width, size.height);
+    EyeRays r=new EyeRays(scn.eye,
+                          scn.c.sub(scn.v.mul((double)actCPU/numCPU)),
+                          scn.h,
+                          Vector.ORIGIN.sub(scn.v),
+                          size.width, size.height);
     timer=System.currentTimeMillis();
     for (j=actCPU*sizY; j<(actCPU+1)*sizY; j++) { // CPU a blocchi
     //for (j=actCPU; j<size.height; j+=numCPU) { // CPU interlacciate
-      for (i=0; i<size.width; i++, r.next())
+      for (i=0; i<size.width; i++, r.next()) {
         buff[j*size.width+i]=scn.hit(r).getARGB();
+        //System.out.println(r);
+      }
       src.newPixels(0, j, size.width, 1);
     }
     //src.newPixels(0, actCPU*sizY, size.width, sizY);
@@ -634,7 +770,7 @@ class RenderThread extends Thread {
 }
 
 class RayTracer extends Component {
-  private String VERSION="RayTraccio 0.99 (c)1999 Lapo Luchini";
+  public String VERSION="RayTraccio 0.9992 (c)1999 Lapo Luchini";
   private Dimension size;
   private Image img;
   private int buff[];
@@ -695,12 +831,20 @@ public class RayTraccio extends Applet {
     u.add(new Plane(Vector.VERS_Y, 0.5, new TexturePlain(Color.WHITE, 0.5)));
     t=new Quadric(Quadric.SFERA,
                   new TextureScale(
-                    new TextureStrip(
-                      new TexturePlain(Color.CYAN, 0.0),
-                      new TexturePlain(Color.RED, 0.0)),
+                    new TextureMix(
+                      new TextureStripes(
+                        new TexturePlain(Color.CYAN, 0.0),
+                        new TexturePlain(Color.RED, 0.0)),
+                      0.6,
+                      new TextureTransform(
+                        new TextureStripes(
+                          new TexturePlain(Color.WHITE, 0.0),
+                          new TexturePlain(Color.WHITE.mul(0.9), 0.0)),
+                        TransformMatrix.RotateZ(-30.0)),
+                      0.4),
                   0.1));
-    t.scale(new Vector(1.2, 1.0, 0.8));
-    t.translate(new Vector(1.0, 1.0, 0.0));
+    t.scale(new Vector(0.8, 0.6, 0.5));
+    t.translate(new Vector(1.0, 1.0, -0.6));
     u.add(t);
     t=new Quadric(Quadric.IPE_Y,
                   new TextureScale(
@@ -716,12 +860,18 @@ public class RayTraccio extends Applet {
     t.translate(new Vector(0.5, 0.0, -2.0));
     u.add(t);
     CSG_Intersection u2=new CSG_Intersection();
-    t=new Plane(Vector.VERS_Z.mul(-1.0),-2.75, new TexturePlain(Color.GREEN, 0.0));
+    Texture t2=new TextureTransform(
+                    new TextureScale(
+                      new TextureStripes(
+                        new TexturePlain(Color.GREEN, 0.0),
+                        new TexturePlain(Color.GREEN.mul(0.9), 0.0)),
+                      0.05),
+                    TransformMatrix.RotateZ(30.0));
+    t=new Plane(Vector.VERS_Z.mul(-1.0),-3.25, t2);
     u2.add(t);
-    t=new Quadric(Quadric.PARA_Y,
-                  new TexturePlain(Color.GREEN, 0.0));
+    t=new Quadric(Quadric.PARA_Y, t2);
     t.scale(new Vector(0.5,-1.0, 0.5));
-    t.translate(new Vector(-0.2, 0.0,-2.5));
+    t.translate(new Vector(-0.2, 0.0,-3.0));
     u2.add(t);
     u.add(u2);
     u2=new CSG_Intersection();
@@ -735,10 +885,9 @@ public class RayTraccio extends Applet {
     u.add(u2);
     Light l=new Light(new Vector(1.0, 3.0, -5.0), Color.WHITE, 20.0),
           l2=new Light(new Vector(-1.0, 2.0, -4.0), Color.YELLOW, 3.0);
-    Vector eye=new Vector(0.0, 0.0, -5.0);
-    scn=new Scene(u, l, eye);
     if(size==null)
       size=getSize();
+    scn=new Scene(u, l, new Vector(0.0, 0.0, -5.0), Vector.ORIGIN, new Vector(4.0, 0.0, 0.0), ((double)size.width)/size.height);
     rt=new RayTracer(scn, 1, scala);
     rt.setSize(size);
     rt.init();
