@@ -1,6 +1,7 @@
 import java.applet.*;
 import java.awt.*;
 import java.awt.image.*;
+import java.awt.event.*;
 
 class Vector {
   protected double x, y, z;
@@ -33,6 +34,43 @@ class Vector {
   }
   public String toString() { 
     return("Vector["+x+","+y+","+z+"]");
+  }
+}
+
+class Ray {
+  protected Vector o, c;
+  Ray(Vector o, Vector a) {
+    this.o=o;
+    this.c=a.sub(o); //.vers();
+  }
+  public String toString() { 
+    return("("+o+"+t*"+c+")");
+  }
+  public Vector point(double a) {
+    return(new Vector(o.x+a*c.x, o.y+a*c.y, o.z+a*c.z));
+  }
+}
+
+class EyeRays extends Ray { // porta il rendering da 8 a 6 secondi
+  private Vector d, h, v;
+  private int i, maxx;
+  EyeRays(Vector o, Vector d, Vector h, Vector v, int x, int y) {
+    super(o, d);
+    this.h=h.mul(1.0/x);
+    this.v=v.mul(1.0/y);
+    this.d=this.c.sub(this.h);
+    maxx=x;
+    i=0;
+  }
+  public void next() {
+    if(i==maxx-1) {
+      i=0;
+      d=d.add(v);
+      c=d;
+    } else {
+      c=c.add(h);
+      i++;
+    }
   }
 }
 
@@ -120,14 +158,50 @@ class TexturePlain extends Texture {
   }
 }
 
+class TextureChecker extends Texture {
+  private Color c[];
+  TextureChecker(Color a, Color b) {
+    c=new Color[2];
+    c[0]=a;
+    c[1]=b;
+  }
+  public Color color(Vector p) {
+    return(c[(((int)p.x)^((int)p.y)^((int)p.z))&0x01]);
+  }
+}
+
+class TextureStrip extends Texture {
+  private Color c[];
+  TextureStrip(Color a, Color b) {
+    c=new Color[2];
+    c[0]=a;
+    c[1]=b;
+  }
+  public Color color(Vector p) {
+    return(c[((int)p.y)&0x01]);
+  }
+}
+
+class TextureScale extends Texture {
+  private Texture c;
+  private double z;
+  TextureScale(Texture a, double b) {
+    c=a;
+    z=1.0/b;
+  }
+  public Color color(Vector p) {
+    return(c.color(p.mul(z)));
+  }
+}
+
 class Hit {
   public boolean h=false; // ha colpito o no?
   public double t;  // punto parametrico del raggio
   public Ray r;     // raggio generatore
   public Shape3D g; // oggetto generatore
-  private Vector p;  // [autocalcolato] punto colpito
-  private Vector n;  // [autocalcolato] normale
-  private Color c;   // [autocalcolato] colore
+  private Vector p; // [autocalcolato] punto colpito
+  private Vector n; // [autocalcolato] normale
+  private Color c;  // [autocalcolato] colore
   public Vector point() {
     if(p==null)
       p=r.point(t);
@@ -169,7 +243,8 @@ class Quadrica extends Shape3D {
                        CIL_X[]={0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,-1.0},
                        CIL_Y[]={1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,-1.0},
                        CIL_Z[]={1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,-1.0},
-                   IPE_RIG_Y[]={1.0, 0.0,-1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,-1.0};
+                   IPE_RIG_Y[]={1.0, 0.0,-1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,-1.0},
+                       PIPPO[]={1.0, 0.0,-1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,-0.1};
   public String toString() {
     String u="Quadrica[";
     for(int i=0; i<10; i++)
@@ -244,9 +319,7 @@ class Quadrica extends Shape3D {
     k[8]*=i.z;
   }
   public void translate(Vector i) {
-    i.x=-i.x;
-    i.y=-i.y;
-    i.z=-i.z;
+    i=i.mul(-1.0);
     k[9]+=(k[0]*i.x*i.x)+(k[2]*i.y*i.y)+(k[5]*i.z*i.z)+ // prima perch‚ usa 678
           (k[1]*i.x*i.y)+(k[3]*i.x*i.z)+(k[4]*i.y*i.z)+
           (k[6]*i.x)+(k[7]*i.y)+(k[8]*i.z);
@@ -268,8 +341,9 @@ class CSG_Union extends Shape3D {
     for(i=1; i<n; i++) {
       z=s[i].hit(a);
       if(z.h)
-        if((z.t<l.t)||(!l.h))
-          l=z;
+        if(z.t>1E-10)
+          if((z.t<l.t)||(!l.h))
+            l=z;
     }
     return(l);
   }
@@ -301,48 +375,19 @@ class Scene {
   public Color hit(Ray a) {
     Hit h=s.hit(a);
     Color c;
-    if(h.h)
-      c=h.color().mul(h.normal().dot(l.o.sub(h.point()).vers())).mul(l.c).mul(l.p/l.o.sub(h.point()).mod());
-    else
+    if(h.h) {
+      Ray rl=new Ray(h.point(), l.o);
+      Hit hl=s.hit(rl);
+      if(hl.h) {
+        if(hl.t>1E-10)
+          c=Color.BLACK;
+        else
+          c=h.color().mul(h.normal().dot(rl.c.vers())).mul(l.c).mul(l.p/rl.c.mod());
+      } else
+        c=h.color().mul(h.normal().dot(rl.c.vers())).mul(l.c).mul(l.p/rl.c.mod());
+    } else
       c=Color.BLACK;
     return(c);
-  }
-}
-
-class Ray {
-  protected Vector o, c;
-  Ray(Vector o, Vector a) {
-    this.o=o;
-    this.c=a.sub(o); //.vers();
-  }
-  public String toString() { 
-    return("("+o+"+t*"+c+")");
-  }
-  public Vector point(double a) {
-    return(new Vector(o.x+a*c.x, o.y+a*c.y, o.z+a*c.z));
-  }
-}
-
-class EyeRays extends Ray { // porta il rendering da 8 a 6 secondi
-  private Vector d, h, v;
-  private int i, maxx;
-  EyeRays(Vector o, Vector d, Vector h, Vector v, int x, int y) {
-    super(o, d);
-    this.h=h.mul(1.0/x);
-    this.v=v.mul(1.0/y);
-    this.d=this.c.sub(this.h);
-    maxx=x;
-    i=0;
-  }
-  public void next() {
-    if(i==maxx-1) {
-      i=0;
-      d=d.add(v);
-      c=d;
-    } else {
-      c=c.add(h);
-      i++;
-    }
   }
 }
 
@@ -364,7 +409,7 @@ class RenderThread extends Thread {
   }
   public void run() {
     int i, j;
-    EyeRays r=new EyeRays(scn.eye, new Vector(-2.0, 2.0, 0.0),
+    EyeRays r=new EyeRays(scn.eye, new Vector(-2.0, 2.0-(4.0/numCPU*actCPU), 0.0),
                                    new Vector( 4.0, 0.0, 0.0),
                                    new Vector( 0.0,-4.0, 0.0),
                                    size.width, size.height);
@@ -373,9 +418,9 @@ class RenderThread extends Thread {
     //for (j=actCPU; j<size.height; j+=numCPU) { // CPU interlacciate
       for (i=0; i<size.width; i++, r.next())
         buff[j*size.width+i]=scn.hit(r).getARGB();
-      //src.newPixels(0, j, size.width, 1);
+      src.newPixels(0, j, size.width, 1);
     }
-    src.newPixels(0, actCPU*(size.height/numCPU), size.width, size.height/numCPU);
+    //src.newPixels(0, actCPU*(size.height/numCPU), size.width, size.height/numCPU);
     System.out.println("CPU"+(actCPU+1)+"/"+numCPU+" Time:"+(System.currentTimeMillis()-timer));
   }
 }
@@ -401,7 +446,7 @@ class RayTracer extends Component {
     img=createImage(src);
     for(j=0; j<size.height; j++)
       for(i=0; i<size.width; i++)
-        buff[j*size.width+i]=0x7F000000;
+        buff[j*size.width+i]=0xFF7F7F7F;
     t=new RenderThread[numCPU];
   }
   public void start() {
@@ -429,18 +474,25 @@ public class RayTraccio extends Applet {
     size=s;
   }
   public void init() {
-    Quadrica q1=new Quadrica(Quadrica.SFERA, new TexturePlain(Color.CYAN)),
+    Quadrica q1=new Quadrica(Quadrica.SFERA, new TextureScale(new TextureStrip(Color.CYAN, Color.WHITE), 0.1)),
              q2=new Quadrica(Quadrica.CIL_X, new TexturePlain(Color.RED)),
-             q3=new Quadrica(Quadrica.CIL_Y, new TexturePlain(Color.BLUE));
-    q1.scale(new Vector(1.2, 1.2, 1.2));
-    q1.translate(new Vector(0.0, -0.85, 0.0));
-    q2.scale(new Vector(0.4, 0.4, 0.4));
-    q2.translate(new Vector(0.0, 0.0, -0.6));
+             q3=new Quadrica(Quadrica.IPE_RIG_Y, new TextureScale(new TextureChecker(Color.BLUE, Color.YELLOW), 0.2)),
+             q4=new Quadrica(Quadrica.SFERA, new TexturePlain(Color.PURPLE));
+    q1.scale(new Vector(1.2, 1.0, 0.8));
+    q1.translate(new Vector(1.0, 1.0, 0.0));
+    q2.scale(new Vector(0.5, 0.5, 0.5));
+    q2.translate(new Vector(0.0, -1.0, -0.5));
+    q3.scale(new Vector(0.25, 0.25, 0.25));
+    q4.scale(new Vector(0.2, 0.2, 0.2));
+    q4.translate(new Vector(0.5, 0.0, -2.0));
     CSG_Union q=new CSG_Union();
     q.add(q1);
     q.add(q2);
     q.add(q3);
-    Light l=new Light(new Vector(1.0, 3.0, -5.0), Color.WHITE, 5.0);
+    q.add(q4);
+    //Quadrica q=new Quadrica(Quadrica.PIPPO, new TexturePlain(Color.RED));
+    Light l=new Light(new Vector(1.0, 3.0, -5.0), Color.WHITE, 5.0),
+          l2=new Light(new Vector(-1.0, 2.0, -4.0), Color.YELLOW, 3.0);
     Vector eye=new Vector(0.0, 0.0, -5.0);
     scn=new Scene(q, l, eye);
     if(size==null)
@@ -460,6 +512,15 @@ public class RayTraccio extends Applet {
   public void destroy() {
     remove(rt);
   }
+  public void update(Graphics g) {
+    // evito di cancellare prima della paint
+    paint(g);
+  }
+  static class MyAdapter extends WindowAdapter {
+    public void windowClosing(WindowEvent e) {
+      System.exit(0);
+    }
+  }
   public static void main(String as[]) {
     int dimX=500, dimY=500;
     if(as.length==2) {
@@ -477,9 +538,11 @@ public class RayTraccio extends Applet {
     f.add("Center", RT);
     f.setSize(dimX+40, dimY+40);
     f.show();
+    f.addWindowListener(new MyAdapter());
   }
   public String getAppletInfo() {
-    return("RayTraccio 0.7\r\n"+
+    return("RayTraccio 0.9\r\n"+
            "(c)1999 Lapo Luchini");
   }
+  fare più luci!!
 }
