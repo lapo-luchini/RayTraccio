@@ -17,23 +17,23 @@ class TransformMatrix {
   static TransformMatrix RotateX(double r) {
     //r=Math.toRadians(r); non va nei browser
     r*=Math.PI/180.0;
-    return(new TransformMatrix(1.0, 0.0, 0.0,
-                               0.0, Math.cos(r), Math.sin(r),
-                               0.0, -Math.sin(r), Math.cos(r)));
+    return(new TransformMatrix( 1.0, 0.0,         0.0,
+                                0.0, Math.cos(r), Math.sin(r),
+                                0.0,-Math.sin(r), Math.cos(r)));
   }
   static TransformMatrix RotateY(double r) {
     //r=Math.toRadians(r);
     r*=Math.PI/180.0;
-    return(new TransformMatrix(Math.cos(r), 0.0, -Math.sin(r),
-                               0.0, 1.0, 0.0,
-                               Math.sin(r), 0.0, Math.cos(r)));
+    return(new TransformMatrix( Math.cos(r), 0.0,-Math.sin(r),
+                                0.0,         1.0, 0.0,
+                                Math.sin(r), 0.0, Math.cos(r)));
   }
   static TransformMatrix RotateZ(double r) {
     //r=Math.toRadians(r);
     r*=Math.PI/180.0;
-    return(new TransformMatrix(Math.cos(r), Math.sin(r), 0.0,
+    return(new TransformMatrix( Math.cos(r), Math.sin(r), 0.0,
                                -Math.sin(r), Math.cos(r), 0.0,
-                               0.0, 0.0, 1.0));
+                                0.0,         0.0,         1.0));
   }
   static TransformMatrix Rotate(double x, double y, double z) {
     return(RotateX(x).mul(RotateY(y)).mul(RotateZ(z)));
@@ -62,7 +62,7 @@ class TransformMatrix {
                                (d*h-e*g), (b*g-a*h), (a*e-b*d)).mul(1.0/det()));
   }
   public String toString() {
-    return("Matrix:["+a+","+b+","+c+"|"+d+","+e+","+f+"|"+g+","+h+","+i+"]");
+    return("Matrix["+a+","+b+","+c+"|"+d+","+e+","+f+"|"+g+","+h+","+i+"]");
   }
 }
 
@@ -77,6 +77,11 @@ class Vector {
                              VERS_X=new Vector(1.0, 0.0, 0.0),
                              VERS_Y=new Vector(0.0, 1.0, 0.0),
                              VERS_Z=new Vector(0.0, 0.0, 1.0);
+  public boolean equals(Object a) {
+    if (!(a instanceof Vector))
+      return(false);
+    return((x==((Vector)a).x)&&(x==((Vector)a).y)&&(x==((Vector)a).z));
+  }
   public Vector add(Vector a) {
     return(new Vector(x+a.x, y+a.y, z+a.z));
   }
@@ -120,11 +125,11 @@ class Ray {
     this.o=o;
     this.c=a.sub(o); //.vers();
   }
-  public String toString() { 
-    return("("+o+"+t*"+c+")");
-  }
   public Vector point(double a) {
     return(new Vector(o.x+a*c.x, o.y+a*c.y, o.z+a*c.z));
+  }
+  public String toString() { 
+    return("Ray["+o+"+t*"+c+"]");
   }
 }
 
@@ -217,7 +222,7 @@ class Color {
     return(0xFF000000|getRGB());
   }
   public String toString() { 
-    return("["+r+","+g+","+b+"]");
+    return("Color["+r+","+g+","+b+"]");
   }
 }
 
@@ -229,6 +234,9 @@ class Light {
     this.o=o;
     this.c=c;
     this.p=p;
+  }
+  public String toString() { 
+    return("Light["+o+","+c+","+p+"]");
   }
 }
 
@@ -250,6 +258,9 @@ class TexturePlain extends Texture {
   public double reflect(Vector p) {
     return(r);
   }
+  public String toString() { 
+    return("TexturePlain["+c+","+r+"]");
+  }
 }
 
 class TextureChecker extends Texture {
@@ -264,6 +275,9 @@ class TextureChecker extends Texture {
   }
   public double reflect(Vector p) {
     return(c[(((int)Math.ceil(p.x))^((int)Math.ceil(p.y))^((int)Math.ceil(p.z)))&1].reflect(p));
+  }
+  public String toString() { 
+    return("TextureChecker["+c[0]+","+c[1]+"]");
   }
 }
 
@@ -280,6 +294,9 @@ class TextureStripes extends Texture {
   public double reflect(Vector p) {
     return(c[((int)Math.ceil(p.y))&1].reflect(p));
   }
+  public String toString() { 
+    return("TextureStripes["+c[0]+","+c[1]+"]");
+  }
 }
 
 class TextureScale extends Texture {
@@ -295,6 +312,9 @@ class TextureScale extends Texture {
   public double reflect(Vector p) {
     return(c.reflect(p.mul(z)));
   }
+  public String toString() { 
+    return("TextureScale["+c+","+z+"]");
+  }
 }
 
 class TextureTransform extends Texture {
@@ -309,6 +329,9 @@ class TextureTransform extends Texture {
   }
   public double reflect(Vector p) {
     return(c.reflect(p.transform(t)));
+  }
+  public String toString() { 
+    return("TextureTransform["+c+","+t+"]");
   }
 }
 
@@ -328,6 +351,9 @@ class TextureMix extends Texture {
   }
   public double reflect(Vector p) {
     return(c[0].reflect(p)*v[0]+c[1].reflect(p)*v[1]);
+  }
+  public String toString() { 
+    return("TextureMix["+c[0]+","+v[0]+","+c[1]+","+v[1]+"]");
   }
 }
 
@@ -366,6 +392,9 @@ class Hit {
   }
   public double reflect() {
     return(g.reflect(point()));
+  }
+  public String toString() { 
+    return("Hit["+h+(h ? ",t:"+t+",g:"+g+",r:"+r : "")+"]");
   }
 }
 
@@ -407,19 +436,11 @@ class Quadric extends Shape3D {
     //  k[i]=a[i];
     System.arraycopy(a, 0, k, 0, 10);
   }
-  public String toString() {
-    String u="Quadric[";
-    for(int i=0; i<10; i++)
-      u+=k[i]+",";
-    u+="texture:"+c+"]";
-    return(u);
-  }
   public Hit hit(Ray a) {
     // ax²+bxy+cy²+dxz+eyz+fz²+gx+hy+iz+l=0
     // x=o.x+c.x*t
     // y=o.y+c.y*t
     // z=o.z+c.z*t
-    // ta²+tb+tc=0
     double tc=k[0]*(a.o.x*a.o.x)+
               k[1]*(a.o.x*a.o.y)+
               k[2]*(a.o.y*a.o.y)+
@@ -447,7 +468,7 @@ class Quadric extends Shape3D {
               k[5]*(a.c.z*a.c.z),
            delta=tb*tb-4.0*ta*tc;
     Hit u=new Hit();
-    if (delta>=0.0) {
+    if (delta>=0.0) {    
       double rdelta=Math.sqrt(delta);
       ta*=2.0;
       u.addT((-tb-rdelta)/ta);
@@ -519,6 +540,13 @@ class Quadric extends Shape3D {
     for(int i=0; i<10; i++)
       k[i]=-k[i];
   }
+  public String toString() {
+    String u="Quadric[";
+    for(int i=0; i<10; i++)
+      u+=k[i]+",";
+    u+="tx:"+c+"]";
+    return(u);
+  }
 }
 
 class Plane extends Shape3D {
@@ -538,9 +566,9 @@ class Plane extends Shape3D {
     // y=o.y+c.y*t
     // z=o.z+c.z*t
     Hit u=new Hit();
-    double t=n.dot(a.c);
-    if(t!=0.0) {
-      u.addT(-(d+n.dot(a.o))/t);
+    double tmp=n.dot(a.c);
+    if(tmp!=0.0) {
+      u.addT(-(d+n.dot(a.o))/tmp);
       u.g=this;
       u.r=a;
     }
@@ -565,11 +593,14 @@ class Plane extends Shape3D {
     n.z/=i.y;
   }
   public void translate(Vector i) {
-    n.sub(i);
+    d+=n.dot(i);
   }
   public void overturn() {
     n=Vector.ORIGIN.sub(n);
     d=-d;
+  }
+  public String toString() {
+    return("Plane["+n+","+d+"]");
   }
 }
 
@@ -577,7 +608,15 @@ abstract class CSG_Collection extends Shape3D {
   protected Shape3D[] s=new Shape3D[10];
   protected int n=0;
   public void add(Shape3D a) {
+    if(n==s.length) {
+      Shape3D old[]=s;
+      s=new Shape3D[(s.length*3)/2+1]; // dimensione ispirata da ArrayList.java
+      System.arraycopy(old, 0, s, 0, n);
+    }
     s[n++]=a;
+  }
+  public String toString() {
+    return("CSG_Collection["+n+" shapes]");
   }
 }
 
@@ -634,17 +673,17 @@ class CSG_Intersection extends CSG_Collection {
     for(i=0; i<n; i++) {
       z=s[i].hit(a);
       if(z.h)
-        if(z.t>1E-10) { // è un hit, ora controllo se tutti gli altri sono "dentro"
-          boolean v=true;
-          int i2;
-          for(i2=0; (i2<n)&&v; i2++)
-            if(i2!=i)
-              if(s[i2].value(z.point())>0.0)
-                v=false;
-          if(v)
-            if((z.t<l.t)||(!l.h))
+        if(z.t>1E-10)
+          if((z.t<l.t)||(!l.h)) { // è un hit più vicino, ora controllo se tutti gli altri sono "dentro"
+            boolean v=true;
+            int i2;
+            for(i2=0; (i2<n)&&v; i2++)
+              if(i2!=i)
+                if(s[i2].value(z.point())>0.0)
+                  v=false;
+            if(v)
               l=z;
-        }
+          }
     }
     return(l);
   }
@@ -654,7 +693,7 @@ class CSG_Intersection extends CSG_Collection {
   }
   public double value(Vector p) {
     // non sono sicuro che vada
-    double a=-1.0; // di defualt è interno
+    double a=-1.0; // di default è interno
     for(int i=0; i<n; i++)
       if(s[i].value(p)*ot>0.0)
         a=1.0;
@@ -770,7 +809,7 @@ class RenderThread extends Thread {
 }
 
 class RayTracer extends Component {
-  public String VERSION="RayTraccio 0.9992 (c)1999 Lapo Luchini";
+  public String VERSION="RayTraccio 0.9993 (c)1999 Lapo Luchini";
   private Dimension size;
   private Image img;
   private int buff[];
@@ -920,7 +959,7 @@ public class RayTraccio extends Applet {
       if(as.length==3)
         scala=Integer.parseInt(as[2]);
     } else if(as.length!=0) {
-      System.out.println("USO: java RayTraccio [dimX dimY [scala]]");
+      System.out.println("USE: java RayTraccio [dimX dimY [scale]]");
       System.exit(1);
     }
     Frame f=new Frame("RayTraccio");
@@ -934,8 +973,7 @@ public class RayTraccio extends Applet {
     f.addWindowListener(new MyAdapter());
   }
   public String getAppletInfo() {
-    return("RayTraccio Applet (contains only the RayTracer component)\r\n"+
+    return("RayTraccio Applet (contains a RayTracer component)\r\n"+
            "(c)1999 Lapo Luchini");
   }
-  //fare più luci!!
 }
