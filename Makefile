@@ -1,10 +1,12 @@
 all: RayTraccio.class
 
+RayTraccio.class: SDL.class
+
 %.class: %.java
 	javac -sourcepath . $^
 
-#SDL.java: SDL.jj
-#	cmd /C javacc $^
+SDL.java: SDL.jj
+	javacc $^
 
 jar:
 	jar cvfm RayTraccio.jar MANIFEST.MF *.class lacrypto/*.class
