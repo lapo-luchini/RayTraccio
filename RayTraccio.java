@@ -10,7 +10,10 @@ class Vector {
     this.y=y;
     this.z=z;
   }
-  public static Vector ORIGIN=new Vector(0.0, 0.0, 0.0);
+  public static Vector ORIGIN=new Vector(0.0, 0.0, 0.0),
+                       VERS_X=new Vector(1.0, 0.0, 0.0),
+                       VERS_Y=new Vector(0.0, 1.0, 0.0),
+                       VERS_Z=new Vector(0.0, 0.0, 1.0);
   public Vector add(Vector a) {
     return(new Vector(x+a.x, y+a.y, z+a.z));
   }
@@ -262,8 +265,9 @@ abstract class Shape3D {
   abstract public double value(Vector p);
   abstract public Color color(Vector p);
   abstract public double reflect(Vector p);
-  abstract public void scale(Vector i);
-  abstract public void translate(Vector i);
+  abstract public void scale(Vector i);     // cambia la figura di dimensioni
+  abstract public void translate(Vector i); // trasla la figura
+  abstract public void overturn();          // capovolge la figura (scambia interno ed esterno)
 }
 
 class Quadric extends Shape3D {
@@ -356,7 +360,7 @@ class Quadric extends Shape3D {
   }
   public double value(Vector p) {
     // ax²+bxy+cy²+dxz+eyz+fz²+gx+hy+iz+l
-    return(k[0]*p.x*p.x+k[1]*p.x*p.y+k[2]*p.y*p.y+k[3]*p.x*p.z+k[4]*p.y*p.z+k[5]*p.x+k[6]*p.y+k[7]*p.z+k[8]);
+    return(k[0]*p.x*p.x+k[1]*p.x*p.y+k[2]*p.y*p.y+k[3]*p.x*p.z+k[4]*p.y*p.z+k[5]*p.z*p.z+k[6]*p.x+k[7]*p.y+k[8]*p.z+k[9]);
   }
   public Color color(Vector p) {
     return(c.color(p));
@@ -401,22 +405,21 @@ class Quadric extends Shape3D {
     k[7]-=(k[1]*i.x)+(2*k[2]*i.y)+(k[4]*i.z);
     k[8]-=(k[3]*i.x)+(k[4]*i.y)+(2*k[5]*i.z);
   }
+  public void overturn() {
+    for(int i=0; i<10; i++)
+      k[i]=-k[i];
+  }
 }
 
 class Plane extends Shape3D {
   // ax+by+cz+d=0
-  public static double PIANO_XY[]={0.0, 0.0, 1.0, 0.0},
-                          PIPPO[]={0.0, 1.0, 0.0, 0.5};
-                          //PIPPO[]={0.0, 0.0, 1.0,-2.0};
-  private Vector n;
+  private Vector n; // (a, b, c)
   private double d;
   private Texture c;
-  Plane(double a[], Texture b) {
-    if(a.length!=4)
-      throw(new NumberFormatException("Requires a 4 elements array"));      
+  Plane(Vector a, double e, Texture b) {
     c=b;
-    n=new Vector(a[0], a[1], a[2]);
-    d=a[3]/n.mod(); // scala la costante perché non cambi nulla se n è versore
+    n=a;
+    d=e/n.mod(); // scala la costante perché non cambi nulla se n è versore
     n=n.vers();
   }
   public Hit hit(Ray a) {
@@ -424,7 +427,6 @@ class Plane extends Shape3D {
     // x=o.x+c.x*t
     // y=o.y+c.y*t
     // z=o.z+c.z*t
-    // ta²+tb+tc=0
     Hit u=new Hit();
     double t=n.dot(a.c);
     if(t!=0.0) {
@@ -448,20 +450,26 @@ class Plane extends Shape3D {
     return(c.reflect(p));
   }
   public void scale(Vector i) {
+    System.out.println("ILLEGAL SCALE");
   }
   public void translate(Vector i) {
+    System.out.println("ILLEGAL TRANSLATE");
+  }
+  public void overturn() {
+    n=n.mul(-1.0);
+    d=-d;
   }
 }
 
-class CSG_Union extends Shape3D {
-  private Shape3D[] s;
-  private int n=0;
-  CSG_Union(int maxs) {
-    s=new Shape3D[maxs];
-  }
+abstract class CSG_Collection extends Shape3D {
+  protected Shape3D[] s=new Shape3D[10];
+  protected int n=0;
   public void add(Shape3D a) {
     s[n++]=a;
   }
+}
+
+class CSG_Union extends CSG_Collection {
   public Hit hit(Ray a) {
     Hit l=s[0].hit(a), z;
     int i;
@@ -496,26 +504,29 @@ class CSG_Union extends Shape3D {
   public void translate(Vector i) {
     System.out.println("ILLEGAL TRANSLATE");
   }
+  public void overturn() {
+    System.out.println("ILLEGAL OVERTURN");
+  }
 }
 
-/*class CSG_Intersection extends Shape3D {
-  private Shape3D[] s;
-  private int n=0;
-  CSG_Union(int maxs) {
-    s=new Shape3D[maxs];
-  }
-  public void add(Shape3D a) {
-    s[n++]=a;
-  }
+class CSG_Intersection extends CSG_Collection {
   public Hit hit(Ray a) {
-    Hit l=s[0].hit(a), z;
+    Hit l=new Hit(), z;
     int i;
-    for(i=1; i<n; i++) {
+    for(i=0; i<n; i++) {
       z=s[i].hit(a);
       if(z.h)
-        if(z.t>1E-10)
-          if((z.t<l.t)||(!l.h))
-            l=z;
+        if(z.t>1E-10) { // è un hit, ora controllo se tutti gli altri sono "dentro"
+          boolean v=true;
+          int i2;
+          for(i2=0; (i2<n)&&v; i2++)
+            if(i2!=i)
+              if(s[i2].value(z.point())>0.0)
+                v=false;
+          if(v)
+            if((z.t<l.t)||(!l.h))
+              l=z;
+        }
     }
     return(l);
   }
@@ -541,7 +552,10 @@ class CSG_Union extends Shape3D {
   public void translate(Vector i) {
     System.out.println("ILLEGAL TRANSLATE");
   }
-}*/
+  public void overturn() {
+    System.out.println("ILLEGAL OVERTURN");
+  }
+}
 
 class Scene {
   private Shape3D s;
@@ -672,9 +686,9 @@ public class RayTraccio extends Applet {
     scala=sc;
   }
   public void init() {
-    CSG_Union u=new CSG_Union(10);
+    CSG_Union u=new CSG_Union();
     Shape3D t;
-    u.add(new Plane(Plane.PIPPO, new TexturePlain(Color.WHITE, 0.5)));
+    u.add(new Plane(Vector.VERS_Y, 0.5, new TexturePlain(Color.WHITE, 0.5)));
     t=new Quadric(Quadric.SFERA,
                   new TextureScale(
                     new TextureStrip(
@@ -683,11 +697,6 @@ public class RayTraccio extends Applet {
                   0.1));
     t.scale(new Vector(1.2, 1.0, 0.8));
     t.translate(new Vector(1.0, 1.0, 0.0));
-    u.add(t);
-    t=new Quadric(Quadric.CIL_Y,
-                  new TexturePlain(Color.RED, 0.3));
-    t.scale(new Vector(0.25, 0.25, 0.25));
-    t.translate(new Vector(-1.0, 0.0, -1.0));
     u.add(t);
     t=new Quadric(Quadric.IPE_Y,
                   new TextureScale(
@@ -702,16 +711,24 @@ public class RayTraccio extends Applet {
     t.scale(new Vector(0.2, 0.2, 0.2));
     t.translate(new Vector(0.5, 0.0, -2.0));
     u.add(t);
+    CSG_Intersection u2=new CSG_Intersection();
+    t=new Plane(Vector.VERS_Z.mul(-1.0),-2.75, new TexturePlain(Color.GREEN, 0.0));
+    u2.add(t);
     t=new Quadric(Quadric.PARA_Y,
                   new TexturePlain(Color.GREEN, 0.0));
     t.scale(new Vector(0.5,-1.0, 0.5));
-    t.translate(new Vector(-0.4, 0.0,-2.5));
-    u.add(t);
-    //t=new Quadric(Quadric.SFERA,
-    //              new TexturePlain(Color.GREEN, 0.0));
-    //t.scale(new Vector(10.0, 10.0, 10.0));
-    //t.translate(new Vector(0.0, 0.0, -5.0));
-    //u.add(t);
+    t.translate(new Vector(-0.2, 0.0,-2.5));
+    u2.add(t);
+    u.add(u2);
+    u2=new CSG_Intersection();
+    t=new Plane((new Vector(1.0, 1.0,-0.8)).vers(),-0.5, new TexturePlain(Color.RED, 0.3));
+    u2.add(t);
+    t=new Quadric(Quadric.CIL_Y,
+                  new TexturePlain(Color.RED, 0.3));
+    t.scale(new Vector(0.25, 0.25, 0.25));
+    t.translate(new Vector(-1.0, 0.0, -1.0));
+    u2.add(t);
+    u.add(u2);
     Light l=new Light(new Vector(1.0, 3.0, -5.0), Color.WHITE, 20.0),
           l2=new Light(new Vector(-1.0, 2.0, -4.0), Color.YELLOW, 3.0);
     Vector eye=new Vector(0.0, 0.0, -5.0);
@@ -764,7 +781,7 @@ public class RayTraccio extends Applet {
     f.addWindowListener(new MyAdapter());
   }
   public String getAppletInfo() {
-    return("RayTraccio 0.97\r\n"+
+    return("RayTraccio 0.98\r\n"+
            "(c)1999 Lapo Luchini");
   }
   //fare più luci!!
