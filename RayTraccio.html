@@ -11,7 +11,7 @@
 <form name=myf><table>
 	<tr>
 		<td colspan=3>
-			<applet name=RT code=RayTraccio archive=RayTraccio.jar width=500 height=500>
+			<applet name=RT code=RayTraccio archive=ETI/RayTraccio.jar width=500 height=500>
 			There should appear the actual Java applet.
 			Maybe you browser doesn't support it!
 			</applet>
@@ -20,15 +20,16 @@
 	<tr align=center>
 		<td>
 			<select name=filename>
-				<option>default.sdl</option>
-				<option>vigo.sdl</option>
-				<option>forato.sdl</option>
-				<option>default-real.sdl</option>
-				<option>marmi.sdl</option>
-				<option>poly.sdl</option>
-				<option>solito.sdl</option>
+				<option>ETI/default.sdl</option>
+				<option>ETI/vigo.sdl</option>
+				<option>ETI/forato.sdl</option>
+				<option>ETI/default-real.sdl</option>
+				<option>ETI/marmi.sdl</option>
+				<option>ETI/poly.sdl</option>
+				<option>ETI/solito.sdl</option>
 			</select>
 			<input type=button value="GO" onClick="RT.reInit(myf.filename.options[myf.filename.selectedIndex].text); RT.start();">
+			<input type=button value="View" onClick="window.open(myf.filename.options[myf.filename.selectedIndex].text);">
 		</td>
 		<td>
 			<input type=button value="Trace this!" onClick="RT.reInit(myf.text.value); RT.start();">
@@ -53,6 +54,7 @@
 		<li>Plane</li>
 		<li>CSG Union (draws various sub-shapes altogether)</li>
 		<li>CSG Intersection (intersecates the sub-shapes)</li>
+		<li>CSG Difference (substract the sub-shapes from the first sub-shape)</li>
 		<li>Generic shapes up to 4th degree (as of now)</li>
 	</ul></li>
 	<li>A number of procedural textures:<ul>
@@ -75,13 +77,13 @@
 <p>As of version 1.50 I objtained the following rendering times viewing this very page (with and without antialiasing):</p>
 <ul>
 	<li><code>407 (172) secs</code> on Sun Java2 1.3.0</li>
-	<li><code>541 (223) secs</code> on Microsoft JVM 5.0.0.3234 (Internet Explorer 5.5)</li>
+	<li><code>541 (223) secs</code> on Microsoft JVM 5.0.0.3802 (Internet Explorer 5.5)</li>
 	<li><code>N/A (N/A) secs</code> on Netscape Java 1.1.5 (Netscape Navigator 4.77) [it causes a bug in Symantec JIT (T_T)]</li>
 </ul>
 
 <p>This program is OpenSource, under the <a href="http://www.gnu.org/copyleft/gpl.html">GNU GPL</a></p>
 <ul>
-	<li>latest <a href=RayTraccio.tar.bz2>release</a></li>
+	<li>latest <a href=ETI/RayTraccio.tar.bz2>release</a></li>
 	<li>latest sources on my developement <a href="http://home.lapo.it/cgi-bin/viewcvs.cgi/raytraccio/">CVS Repository</a> (not always online)</li>
 </ul>
 
