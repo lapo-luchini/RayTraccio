@@ -1,5 +1,5 @@
 // LapInt number theory library Copyright (c) 2001-2002 Lapo Luchini <lapo@lapo.it>
-// $Header: /usr/local/cvsroot/lapint/crypto/SHA1.java,v 1.6 2002/02/20 22:57:38 lapo Exp $
+// $Header: /usr/local/cvsroot/lapint/crypto/SHA1.java,v 1.7 2002/02/23 14:49:43 lapo Exp $
 
 // This file is part of LapInt.
 //
@@ -21,7 +21,8 @@ package lacrypto;
 
 /**
  * SHA-1 Message Digest class. <br>
- * Elaborates a message digest from given data (legnth<2^64 bytes). <br>
+ * Follows the <a href="http://www.itl.nist.gov/fipspubs/fip180-1.htm">FIPS PUB 180-1</a> standard
+ * which elaborates a message digest from given data (legnth<2^64 bytes). <br>
  * On the same machine (Linux 2.4.8 on P3-850) I obtained the following stats: <ul>
  *   <li><b>20.32 Mb/s</b> - Adam Back C implementation, compiled with GCC 2.95</li>
  *   <li><b>9.21 Mb/s</b> - This Java implementation, compiled natively with GCC 2.95 -O2</li>
@@ -69,13 +70,33 @@ public class SHA1 {
   }
 
   /**
-   * Returns the digest and resets the object to calculate another digest.
+   * Returns the digest and resets the object to calculate another digest. <br>
    * The array returned will NOT be reused by this object.
-   * Creation date: (24/10/2000 23.10.19)
-   * @return digest of the data (20 bytes)
+   * @return byte[20] array containing the required hash
    */
-  public byte[] digest() {
-    byte out[];
+  public byte[] digest8() {
+    digest_finalize();
+    byte[] out=new byte[20];
+    for(int i=0; i<20; i++)
+      out[i]=(byte)((H[i>>2]>>(8*(3-(i&3))))&0xFF);
+    return(out);
+  }
+
+  /**
+   * Returns the digest and resets the object to calculate another digest. <br>
+   * The array returned will NOT be reused by this object.
+   * @return int[5] array containing the required hash
+   */
+  public int[] digest32() {
+    digest_finalize();
+    int[] out=new int[5];
+    System.arraycopy(H, 0, out, 0, 5);
+    return(out);
+  }
+  /**
+   * Finalize the hash calculation, as defined in the standard.
+   */
+  private final void digest_finalize() {
     int i;
     if(bufs<64) {
       if((bufs&3)==0)
@@ -95,11 +116,7 @@ public class SHA1 {
       W[15]=(int)(totb&0xFFFFFFFF);
       update_buffers();
     }
-    out=new byte[20];
-    for(i=0; i<20; i++)
-      out[i]=(byte)((H[i>>2]>>(8*(3-(i&3))))&0xFF);
     reset=true;
-    return(out);
   }
 
   /**
@@ -113,7 +130,7 @@ public class SHA1 {
     else {
       SHA1 sha=new SHA1();
       sha.update(args[0].getBytes());
-      System.out.println(sha.toHex(sha.digest()));
+      System.out.println(sha.toHex(sha.digest8()));
     }
   }
 
@@ -126,14 +143,14 @@ public class SHA1 {
     byte[] hash;
     int i;
     sha.update(TEST_0_STRING.getBytes());
-    hash=sha.digest();
+    hash=sha.digest8();
     for(i=0; i<20; i+=4) {
       if((((hash[i]&0xFF)<<24)|((hash[i+1]&0xFF)<<16)+((hash[i+2]&0xFF)<<8)+(hash[i+3]&0xFF))!=TEST_0_HASH[i>>2])
 	throw(new RuntimeException("Hash not valid."));
     }
     System.out.println(TEST_0_STRING+" => "+sha.toHex(hash));
     sha.update(TEST_1_STRING.getBytes());
-    hash=sha.digest();
+    hash=sha.digest8();
     for(i=0; i<20; i+=4) {
       if((((hash[i]&0xFF)<<24)|((hash[i+1]&0xFF)<<16)+((hash[i+2]&0xFF)<<8)+(hash[i+3]&0xFF))!=TEST_1_HASH[i>>2])
 	throw(new RuntimeException("Hash not valid."));
@@ -142,7 +159,7 @@ public class SHA1 {
     byte[] s="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa".getBytes();
     for(i=0; i<10000; i++)
       sha.update(s);
-    hash=sha.digest();
+    hash=sha.digest8();
     for(i=0; i<20; i+=4) {
       if((((hash[i]&0xFF)<<24)|((hash[i+1]&0xFF)<<16)+((hash[i+2]&0xFF)<<8)+(hash[i+3]&0xFF))!=TEST_2_HASH[i>>2])
 	throw(new RuntimeException("Hash not valid."));
@@ -153,7 +170,7 @@ public class SHA1 {
     while((tmn=(System.currentTimeMillis()-tm))<2000)
       for(int j=0; j<100; j++, i++)
 	sha.update(s);
-    hash=sha.digest();
+    hash=sha.digest8();
     tmn=System.currentTimeMillis()-tm;
     System.out.println("All is OK ("+(s.length*i*1000L)/tmn+" bytes/s).");
   }
@@ -202,11 +219,47 @@ public class SHA1 {
   }
 
   /**
+   * Updates the hash with more ints (big-endian).
+   * Creation date: (24/10/2000 17.54.31)
+   * @param m an array of ints to add
+   */
+  public void update(int[] m) {
+    byte[] vect=new byte[4];
+    for(int i=0; i<m.length; i++) {
+      vect[0]=(byte)((m[i]>>24)&0xFF);
+      vect[1]=(byte)((m[i]>>16)&0xFF);
+      vect[2]=(byte)((m[i]>> 8)&0xFF);
+      vect[3]=(byte)((m[i]    )&0xFF);
+      update(vect);
+    }
+  }
+
+  /**
+   * Updates the hash with more longs (big-endian).
+   * Creation date: (24/10/2000 17.54.31)
+   * @param m an array of ints to add
+   */
+  public void update(long[] m) {
+    byte[] vect=new byte[8];
+    for(int i=0; i<m.length; i++) {
+      vect[0]=(byte)((m[i]>>56)&0xFF);
+      vect[1]=(byte)((m[i]>>48)&0xFF);
+      vect[2]=(byte)((m[i]>>40)&0xFF);
+      vect[3]=(byte)((m[i]>>32)&0xFF);
+      vect[4]=(byte)((m[i]>>24)&0xFF);
+      vect[5]=(byte)((m[i]>>16)&0xFF);
+      vect[6]=(byte)((m[i]>> 8)&0xFF);
+      vect[7]=(byte)((m[i]    )&0xFF);
+      update(vect);
+    }
+  }
+
+  /**
    * Internally used when the buffer is ready for the digest. <br>
    * Completely unrolled for maximum performance (almost 1/3 of optimized C speed!).
    * Creation date: (24/10/2000 19.17.40)
    */
-  protected void update_buffers() {
+  private final void update_buffers() {
     for(int j=16; j<80; j++) {
       W[j]=W[j-3]^W[j-8]^W[j-14]^W[j-16];
       W[j]=(W[j]<<1)|(W[j]>>>31);
