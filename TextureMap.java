@@ -18,11 +18,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 /**
- * Materiale che utilizza un {@link Pattern} per scegliere colori da una {@link Colormap}.
+ * Materiale che utilizza un {@link Pattern} per scegliere colori da una mappa di colori. <br>
+ * Una mappa di colori assegna una {@link Texture} ad ogni valore in [0.0-1.0], definendo il valore
+ * in un numero finito di punti e usando interpolazione lineare nei punti mancanti.
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class TextureMap extends Texture {
-	/** Pattern usato per come valore nella {@link Colormap} */
+	/** Pattern usato per come valore da usare nella mappa di colori */
   private Pattern pat;
   /** Array di valori */
 	private double v[];
@@ -50,11 +52,9 @@ public TextureMap(Pattern p, int num) {
 	n = 0;
 }
 /**
- * Insert the method's description here.
- * Creation date: (21/04/2001 19:26:41)
- * @return int
- * @param value double
- * @param color Color
+ * Aggiunge una definizione di punto.
+ * @param value punto della mappa dove definire la {@link Texture} data, deve essere >= del valore predecende e comunque in [0.0-1.0]
+ * @param tex {@link Texture} da usare nel punto <code>value</code>
  */
 public void add(double value, Texture tex) {
 	if (n == v.length) {

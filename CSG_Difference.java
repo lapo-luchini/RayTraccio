@@ -19,7 +19,7 @@
 
 /**
  * Figura formata dall'intersezione delle figure della collezione. <br>
- * Esiste quindi solo dove esistono <b>tutte</b> le sottofigure.
+ * Esiste quindi solo dove esiste <b>solo la prima</b> delle sottofigure.
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class CSG_Difference extends CSG_Collection {

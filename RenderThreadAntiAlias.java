@@ -18,25 +18,25 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 /**
- * Thread specializzato per applicare l'anti-aliasing a un'immagine già creata. <br>
+ * Thread specializzato per applicare l'anti-aliasing a un'immagine gi&agrave; creata. <br>
  * Viene utilizzato un metodo adattivo per calcolare solo i raggi necessari: per quei
  * raggi che differiscono da un loro vicino di almeno 30 livelli di colore (sommando le
  * differenze assolute delle tre componenti) vengono tracciati altri 8 raggi, posti in
- * modo da formare nel suo intorno un reticolo 3x3 volte più denso, e il colore finale
+ * modo da formare nel suo intorno un reticolo 3x3 volte pi&ugrave; denso, e il colore finale
  * viene posto alla media di tutti e nove. <br>
  * Il metodo potrebbe essere reso parametrico o addirittura ricorsivo per fargli
- * tracciare con sempre più precisione l'edge tra i due colori (in modo da avere
+ * tracciare con sempre pi&ugrave; precisione l'edge tra i due colori (in modo da avere
  * sfumature sempre più continue sui bordi). <br>
  * Nota: a differenza della classe genitrice questa classe non supporta la ripartizione
- * del proprio lavoro in più thread, anche perché (per immagini particolarmente grandi,
+ * del proprio lavoro in pi&ugrave; thread, anche perch&eacute; (per immagini particolarmente grandi,
  * dove potrebbe servire) questa classe esegue un compito notevolmente più breve,
- * dovendo tracciare solo le aree dove c'è un edge.
+ * dovendo tracciare solo le aree dove c'&egrave; un edge.
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class RenderThreadAntiAlias extends RenderThread {
-	/** {@link BitSet BitSet} che indica a quali raggi della riga precedente va applicato l'antialias */
+	/** {@link java.util.BitSet BitSet} che indica a quali raggi della riga precedente va applicato l'antialias */
 	private java.util.BitSet bs_p;
-	/** {@link BitSet BitSet} che indica a quali raggi della riga corrente va applicato l'antialias */
+	/** {@link java.util.BitSet BitSet} che indica a quali raggi della riga corrente va applicato l'antialias */
 	private java.util.BitSet bs_a;
 /**
  * RenderThreadAntiAlias constructor comment.

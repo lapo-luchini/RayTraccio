@@ -27,7 +27,7 @@ abstract class Shape3D {
  * Colore della figura calcolato nel punto richiesto.
  * Se non viene sovrascritto questo metodo scrive <code>"ILLEGAL COLOR"</code> su <code>System.err</code>
  * @param p vettore posizione del punto voluto
- * @return Colore {@link Color.BLACK nero} 
+ * @return Colore {@link Color#BLACK nero} 
  */
 public Color color(Vector p) {
 	System.err.println("ILLEGAL COLOR");
@@ -47,7 +47,7 @@ abstract public Hit hit(Ray a);
  * Normale alla figura nel punto richiesto.
  * Se non viene sovrascritto questo metodo scrive <code>"ILLEGAL NORMAL"</code> su <code>System.err</code>
  * @param p vettore posizione del punto voluto
- * @return Versore {@link Vector.VERS_X X} 
+ * @return Versore {@link Vector#VERS_X X} 
  */
 public Vector normal(Vector p) {
 	System.err.println("ILLEGAL NORMAL");
@@ -58,7 +58,7 @@ public Vector normal(Vector p) {
  */
 abstract public void overturn();
 /**
- * Coefficente di riflessione della figura calcolato nel punto richiesto.
+ * Coefficiente di riflessione della figura calcolato nel punto richiesto.
  * Se non viene sovrascritto questo metodo scrive <code>"ILLEGAL REFLECT"</code> su <code>System.err</code>
  * @param p vettore posizione del punto voluto
  * @return <code>0.0</code> 

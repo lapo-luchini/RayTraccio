@@ -18,13 +18,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 /**
- * Materiale di colore e coefficente di riflessione uniformi.
+ * Materiale di colore e coefficiente di riflessione uniformi.
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class TexturePlain extends Texture {
 	/** Colore */
   private Color c;
-	/** Coefficente di riflessione */
+	/** Coefficiente di riflessione */
   private double r;
 	/** Texture standard bianca non riflettente */
   public static TexturePlain WHITE = new TexturePlain(Color.WHITE, 0.0);

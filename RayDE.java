@@ -24,7 +24,8 @@ import javax.swing.event.*;
 /**
  * Comoda interfaccia utente Swing per l'editing delle scene. <br>
  * Il fatto che Swing non funzioni nei browser mi ha spinto a creare
- * un'interfaccia alternativa direttamente in HTML/Javascript.
+ * un'interfaccia alternativa direttamente in HTML/Javascript. <br>
+ * Lo sviluppo di RayDE è attualmente fermo.
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 public class RayDE extends javax.swing.JApplet implements WindowListener, Runnable, DocumentListener {

@@ -228,7 +228,10 @@ CSG_Collection sdlCSG() :
 	|	"difference" { u=new CSG_Difference(); }
 	) "{"
 		( t=sdlShape() { u.add(t); } )+
-	{ return(u); }
+	{
+		u.optimize();
+		return(u);
+	}
 }
 
 Plane sdlPlane() :
@@ -395,7 +398,10 @@ TextureMap sdlTextureMap() :
 			b=sdlTexture()
 			{ u.add(a, b); }
 		)+
-	{ return(u); }
+	{
+		u.optimize();
+		return(u);
+	}
 }
 
 TextureLayered sdlTextureLayered() :
@@ -406,7 +412,10 @@ TextureLayered sdlTextureLayered() :
 {
 	"layered" "{"
 		( a=sdlTexture() { u.add(a); } )+
-	{ return(u); }
+	{
+		u.optimize();
+		return(u);
+	}
 }
 
 Color sdlColor() :

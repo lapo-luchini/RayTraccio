@@ -2,7 +2,7 @@ package lacrypto;
 
 /**
  * SHA-1 Message Digest class. <br>
- * Follows the <a href="http://www.itl.nist.gov/fipspubs/fip180-1.htm">FIPS PUB 180-1</a> standard.
+ * Follows the <a href="http://www.itl.nist.gov/fipspubs/fip180-1.htm">FIPS PUB 180-1</a> standard. <br>
  * Creation date: (24/10/2000 17.50.12)
  * @author: Lapo Luchini <lapo@lapo.it>
  */

@@ -43,6 +43,16 @@ public void add(Shape3D a) {
 	}
 	s[n++] = a;
 }
+/**
+ * Ottimizza l'occupazione di memoria (da usare dopo aver aggiunto tutti i valori).
+ */
+public void optimize() {
+	if (s.length > n) {
+		Shape3D old[] = s;
+		s = new Shape3D[n];
+		System.arraycopy(old, 0, s, 0, n);
+	}
+}
 public void overturn() {
 	ot = -ot;
 }

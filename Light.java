@@ -28,9 +28,9 @@ import java.awt.event.*;
 class Light {
 	/** Vettore posizione */
   protected Vector o;
-  /** Colore della luce (alla distanza {@link p p}) */
+  /** Colore della luce (alla distanza <code>p</code>) */
   protected Color c;
-  /** Potenza della luce (distanza alla quale usare il colore {@link c c} invariato) */
+  /** Potenza della luce (distanza alla quale usare il colore <code>c</code> invariato) */
   protected double p;
 /**
  * Crea una luce puntiforme cno parametri dati. <br>

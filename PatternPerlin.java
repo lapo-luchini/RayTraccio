@@ -19,6 +19,10 @@
 
 /**
  * Campo di rumore tridimensionale a spettro 1/f. <br>
+ * &Egrave; una versione leggermente semplificata della versione di
+ * <a href="http://mrl.nyu.edu/~perlin/">Ken Perlin</a>, più rapida
+ * da calcolare ma più "cubettosa" se usata con poche ottave (è un pattern
+ * sommatoria di componenti anisotrope, isotropo solo in somma).
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 public class PatternPerlin extends Pattern {

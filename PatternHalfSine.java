@@ -18,7 +18,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 /**
- * Modifica un'alto pattern modificando il suo range comprimendolo sulla parte alta <code>sin((PI/2)*x)</code>.
+ * Modifica un altro pattern modificando il suo range comprimendolo sulla parte alta <code>sin((PI/2)*x)</code>.
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class PatternHalfSine extends Pattern {

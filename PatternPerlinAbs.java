@@ -19,6 +19,7 @@
 
 /**
  * Campo di rumore tridimensionale a spettro |1/f|. <br>
+ * Ha gli stessi problemi di anisotropia di {@link PatternPerlin}.
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 public class PatternPerlinAbs extends Pattern {

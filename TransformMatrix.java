@@ -72,7 +72,7 @@ public double det() {
 	        a[ 2]*(a[ 4]*a[ 9]-a[ 5]*a[ 8]));
 }
 /**
- * Calcola la matrice di trasformazione inversa.
+ * Calcola la matrice di trasformazione inversa. <br>
  * Attualmente questa classe non funziona in Netscape a causa di un bug del Symantec JIT,
  * la VM ricompilante utilizzata (anche) da Netscape fino alla versione 4.7x.
  * @return la matrice inversa voluta
@@ -102,7 +102,7 @@ public TransformMatrix inv() {
 	));
 }
 /**
- * Costruisce una nuova matrice di trasformazione moltiplicando per {link z} ogni suo coefficente.
+ * Costruisce una nuova matrice di trasformazione moltiplicando per {link z} ogni suo coefficiente.
  * @param z il valore per cui moltiplicare
  * @return una nuova matrice di trasformazione
  */
@@ -137,7 +137,7 @@ public TransformMatrix mul(TransformMatrix z) {
 	));
 }
 /**
- * Modifica la matrice di trasformazione moltiplicando per {link z} ogni suo coefficente.
+ * Modifica la matrice di trasformazione moltiplicando per {link z} ogni suo coefficiente (modifica l'oggetto origine).
  * @param z il valore per cui moltiplicare
  * @return la matrice di trasformazione stessa
  */

@@ -19,7 +19,7 @@
 
 /**
  * Colore RGB con precisione <code>double</code>. <br>
- * I quattro valori (Red, Green, blue, alpha) variano da <code>0.0</code> a <code>1.0</code>. <br>
+ * I quattro valori (Red, Green, Blue, Alpha) variano da <code>0.0</code> a <code>1.0</code>. <br>
  * I valori negativi vengono annullati.
  * @author: Lapo Luchini <lapo@lapo.it>
  */
@@ -95,7 +95,7 @@ public Color add(Color c) {
 	return (new Color(r + c.r, g + c.g, b + c.b, a + c.a));
 }
 /**
- * Somma di colori.
+ * Somma di colori (modifica l'oggetto origine).
  * @param c colore da usare
  * @return questo stesso oggetto
  */
@@ -200,7 +200,7 @@ public Color mul(Color c) {
 	return (new Color(r * c.r, g * c.g, b * c.b, a * c.a));
 }
 /**
- * Moltiplicazione componente-per-costante del colore.
+ * Moltiplicazione componente-per-costante del colore (modifica l'oggetto origine).
  * Valori negativi del parametro generano un avvertimento su <code>System.err</code>.
  * @param c costante da usare
  * @return questo stesso oggetto
@@ -215,7 +215,7 @@ public Color mulU(double c) {
 	return (this);
 }
 /**
- * Moltiplicazione componente-per-componente di colori.
+ * Moltiplicazione componente-per-componente di colori (modifica l'oggetto origine).
  * @param c colore da usare
  * @return questo stesso oggetto
  */
@@ -235,7 +235,7 @@ public Color sub(Color c) {
 	return (new Color(r - c.r, g - c.g, b - c.b, a - c.a));
 }
 /**
- * Sottrazione di colori.
+ * Sottrazione di colori (modifica l'oggetto origine).
  * @param c colore da usare
  * @return questo stesso oggetto
  */

@@ -22,9 +22,9 @@
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 public final class ShapeStats {
-	/** Tipo di statistica: un raggio normale è stato intersecato */
+	/** Tipo di statistica: un raggio normale &egrave; stato intersecato */
 	public static byte TYPE_RAY=0;
-	/** Tipo di statistica: un raggio a origine fissa è stato intersecato */
+	/** Tipo di statistica: un raggio a origine fissa &egrave; stato intersecato */
 	public static byte TYPE_EYERAY=1;
 	/** Tipo di statistica: un raggio è stato calcolato in modo ottimizzato */
 	public static byte TYPE_CACHEDRAY=2;
@@ -32,11 +32,11 @@ public final class ShapeStats {
 	public static byte TYPE_HIT=3;
 	/** Indica l'ultima costante di tipo statistica */
 	public static byte TYPE_LAST=3;
-	/** Entità registrate per la statistica */
+	/** Entit&agrave; registrate per la statistica */
 	private static String entities[]=new String[0];
-	/** Statistiche per tutte le entità registrate */
+	/** Statistiche per tutte le entit&agrave; registrate */
 	private static int stats[][]=new int[TYPE_LAST+1][0];
-	/** Numero di entità effettivamente registrate */
+	/** Numero di entit&agrave; effettivamente registrate */
 	private static byte n=0;
 /**
  * Aumenta di uno la statistica voluta.

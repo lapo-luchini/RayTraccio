@@ -18,7 +18,9 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 /**
- * Modifica un'alto pattern perturbandolo (applica una turbolenza pseudocasuale).
+ * Modifica un altro pattern perturbandolo. <br>
+ * La turbolenza da applicare &egrave; data da un'altro pattern, spesso
+ * si usa un {@link PatternPerlin} per produrre effetti molto realistici.
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class PatternTurbulence extends Pattern {

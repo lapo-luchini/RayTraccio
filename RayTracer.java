@@ -21,7 +21,8 @@ import java.awt.*;
 import java.awt.image.*;
 import java.awt.event.*;
 /**
- * Componente che gestisce il ray-tracing della scena.
+ * Componente che gestisce il ray-tracing e la visualizzazione di una
+ * scena data.
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class RayTracer extends Component {

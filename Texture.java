@@ -30,9 +30,9 @@ abstract class Texture {
  */
 abstract public Color color(Vector p);
 /**
- * Coefficente di riflessione del materiale calcolato nel punto richiesto.
+ * Coefficiente di riflessione del materiale calcolato nel punto richiesto.
  * @param p vettore posizione del punto voluto
- * @return coefficente di riflessione voluto
+ * @return coefficiente di riflessione voluto
  */
 abstract public double reflect(Vector p);
 }

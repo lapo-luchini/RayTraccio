@@ -18,7 +18,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 /**
- * Intersezione speciale usata per deformare lo spazio.
+ * Intersezione speciale usata per deformare lo spazio e le proprietà della figura.
  * @see ShapeTransform
  * @see TransformMatrix
  * @author: Lapo Luchini <lapo@lapo.it>
@@ -26,13 +26,13 @@
 class HitTransform extends Hit {
 	/** Trasformazione da usare (se <code>null</code> non viene applicata trasformazione) */
 	private TransformMatrix tm;
-	/** Determinante(tm)^(-1/3) usato in {@link normal() normal()} */
+	/** Determinante(tm)^(-1/3) usato in {@link #normal()} */
 	private double tmid;
-	/** {@link Texture Texture} da usare (se <code>null</code> viene usata quella dell'oggetto originale) */
+	/** {@link Texture} da usare (se <code>null</code> viene usata quella dell'oggetto originale) */
 	private Texture tx;
 	/** indica se "capovolgere" o no l'oggetto, invertendone le normali */
 	private boolean ot;
-	/** Vettore posizione del punto dell'intersezione nello spazio trasformato (autocalcolato al primo richiamo di {@link pointTransform() pointTransform()}) */
+	/** Vettore posizione del punto dell'intersezione nello spazio trasformato (autocalcolato al primo richiamo di {@link #pointTransform()}) */
 	protected Vector pt;
 /**
  * Prepara un nuovo oggetto {@link HitTransform HitTransform} deformando lo spazio di un {@link Hit Hit} già esistente.

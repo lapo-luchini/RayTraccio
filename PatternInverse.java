@@ -18,7 +18,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 /**
- * Modifica un'alto pattern invertendo il suo range <code>(1.0-x)</code>.
+ * Modifica un altro pattern invertendo il suo range <code>(1.0-x)</code>.
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class PatternInverse extends Pattern {

@@ -44,9 +44,9 @@ class RenderThread extends Thread {
 	protected boolean running = true;
 	/** Valore che indica lo stato del processo */
 	protected int status = WAITING;
-	/** Valore preso da {@link status status} quando il processo non è ancora partito */
+	/** Valore preso da {@link #status status} quando il processo non &egrave; ancora partito */
 	public final static int WAITING = Integer.MIN_VALUE;
-	/** Valore preso da {@link status status} quando il processo ha finito il suo lavoro */
+	/** Valore preso da {@link #status status} quando il processo ha finito il suo lavoro */
 	public final static int FINISHED = Integer.MAX_VALUE;
 RenderThread(Scene s, Dimension sz, int b[], int act, int num, RayTracer rt) {
 	scn = s;

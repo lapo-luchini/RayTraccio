@@ -18,8 +18,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 /**
- * Campo vettotriale di rumore di tipo marmo <code>0.5+0.5*cos(x+turbulence*noise.scalar(p))</code>. <br>
- * Questo tipo di marmo in realt&agrave; non &egrave; molto realistico, ci sono modi migliori (vedi gli esempi).
+ * Campo vettoriale di rumore di tipo marmo <code>0.5+0.5*cos(x+turbulence*noise.scalar(p))</code>. <br>
+ * Questo tipo di marmo in realt&agrave; non &egrave; molto realistico, ci sono modi migliori,
+ * come ad esempio applicare una turbolenza ad un pattern ad onda triangolare (applicare
+ * {@link PatternTurbulence} a {@link PatternTriangle} aplpicato a {@link PatternSawtooth}).
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class PatternMarble extends Pattern {

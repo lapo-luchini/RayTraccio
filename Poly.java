@@ -26,7 +26,7 @@ public final class Poly {
 	public final static double ALMOST_ZERO = 1.0E-10;
 	/** Valore costante utile nel caso di polinomi di quarto grado (due terzi di pi greco) */
 	public final static double PI_2_3 = 2.094395102393195492308428922186335256131446266250;
-	/** Triangolo di Pascal/Yanghui/(?)Tartaglia */
+	/** Triangolo di Pascal/Yanghui/(Tartaglia) */
 	public final static byte PASCAL[][]={
 		/* 0 */ {1},
 		/* 1 */ {1,  1},

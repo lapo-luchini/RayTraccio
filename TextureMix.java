@@ -20,7 +20,7 @@
 /**
  * Mix di due sottomateriali. <br>
  * Il colore viene calcolato moltiplicando il colore dei due sottomateriali
- * per il relativo coefficente.
+ * per il relativo coefficiente.
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class TextureMix extends Texture {

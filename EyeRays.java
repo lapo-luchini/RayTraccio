@@ -18,8 +18,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 /**
- * Genera i raggi visuali (ottimizzati) che scandiscono un area rettangolare. <br>
- * L'origine dei raggi è sempre la stessa (l'<i>occhio</i> dell'osservatore).
+ * Genera i raggi visuali (ottimizzati) che scandiscono un'area rettangolare. <br>
+ * L'origine dei raggi &egrave; sempre la stessa (l'<i>occhio</i> dell'osservatore).
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class EyeRays extends Ray {
@@ -43,8 +43,8 @@ class EyeRays extends Ray {
  * Imposta l'oggetto per generare i raggi richiesti.
  * @param o vettore posizione dell'origine dei raggi (l'<i>occhio</i>)
  * @param d vettore posizione del punto 'guardato'
- * @param h vettore 'orizzonte' (indica la direzione orizzontale ed è lungo quanto la larghezza voluta dell'immagine)
- * @param v vettore verticale (indica la direzione verticale ed è lungo quanto l'altezza voluta dell'immagine)
+ * @param h vettore 'orizzonte' (indica la direzione orizzontale ed &egrave; lungo quanto la larghezza voluta dell'immagine)
+ * @param v vettore verticale (indica la direzione verticale ed &egrave; lungo quanto l'altezza voluta dell'immagine)
  * @param x numero di punti in direzione orizzontale
  * @param y numero di punti in direzione verticale
  */

@@ -41,15 +41,9 @@ public void add(Vector a) {
 public Color color(Vector p) {
 	return(c.color(p));
 }
-/**
- * hit method comment.
- */
 public Hit hit(EyeRays a) {
 	return hit((Ray)a);
 }
-/**
- * hit method comment.
- */
 public Hit hit(Ray a) {
 	//(cx²)t²+(2*ox*cx-2cx*x0)t+(ox²-2ox*x0+x0²)+
 	//(cy²)t²+(2*oy*cy-2cy*y0)t+(oy²-2oy*y0+y0²)+
@@ -77,9 +71,6 @@ public Hit hit(Ray a) {
 	}
 	return(u);
 }
-/**
- * normal method comment.
- */
 public Vector normal(Vector p) {
 	//df/dx=2x-2a=2*2x-2*(a+b)
 	Vector u=Vector.ORIGIN;
@@ -88,33 +79,18 @@ public Vector normal(Vector p) {
 	}
 	return(u.versU());
 }
-/**
- * overturn method comment.
- */
 public void overturn() {
 }
-/**
- * reflect method comment.
- */
 public double reflect(Vector p) {
 	return(c.reflect(p));
 }
-/**
- * scale method comment.
- */
 public void scale(Vector i) {
 }
 public void texture(Texture t) {
 	c = t;
 }
-/**
- * translate method comment.
- */
 public void translate(Vector i) {
 }
-/**
- * Figura blob sperimentale (non funzionante).
- */
 public double value(Vector p) {
 	double u=0.0;
 	for(int i=0; i<n; i++) {

@@ -23,11 +23,12 @@ import java.awt.event.*;
 
 /**
  * Singola scena da visualizzare. <br>
- * Contiene tutti i parametri che definiscono il 'mondo virtuale' che si vuole rappresentare.
+ * Contiene tutti i parametri che definiscono il 'mondo virtuale' che si vuole rappresentare:
+ * una figura, un punto di vista, delle luci.
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class Scene {
-	/** Una singola figura (questo non è un limite in quanto esiste la figura {@link CSG_Union CSG_Union}) */
+	/** Una singola figura (questo non è un limite in quanto esiste la figura {@link CSG_Union}) */
 	private Shape3D s;
 	/** Array di luci */
 	private Light l[] = new Light[3];
@@ -37,7 +38,9 @@ class Scene {
 	protected Vector eye;
 	/** Vettore posizione del punto 'guardato' */
 	protected Vector c;
+	/** Vettore 'orizzontale' */
 	protected Vector h;
+	/** Vettore 'verticale' */
 	protected Vector v;
 /**
  * Crea una scena dati gli elementi.
@@ -79,8 +82,8 @@ public void addLight(Light a) {
 }
 /**
  * Calcola il colore intersecato dal raggio dato. <br>
- * Identico a {@link hit(Ray) hit(Ray)} ma richiama i metodi
- * {@link Shape3D.hit(EyeRays) hit(EyeRays)} delle figure, spesso ottimizzati.
+ * Identico a {@link #hit(Ray) hit(Ray)} ma richiama i metodi
+ * {@link Shape3D#hit(EyeRays) hit(EyeRays)} delle figure, spesso ottimizzati.
  * @param a raggio da intersecare
  * @return colore del punto colpito
  */

@@ -66,7 +66,7 @@ public Vector add(Vector a) {
 	return (new Vector(x + a.x, y + a.y, z + a.z));
 }
 /**
- * Somma di vettori.
+ * Somma di vettori (modifica l'oggetto origine).
  * @param a vettore da usare
  * @return questo stesso oggetto <code>Vector</code>
  */
@@ -120,7 +120,7 @@ public double mod() {
 }
 /**
  * Modulo quadro del vettore.<br>
- * Più veloce di {@link #mod() mod()} in quanto non ha bisogno di fare {@link Math.sqrt() Math.sqrt()}.
+ * Più veloce di {@link #mod() mod()} in quanto non ha bisogno di usare <code>Math.sqrt(double)</code>.
  * @return modulo^2
  */
 public double mod2() {
@@ -135,7 +135,7 @@ public Vector mul(double a) {
 	return (new Vector(x * a, y * a, z * a));
 }
 /**
- * Moltiplicazione per uno scalare.
+ * Moltiplicazione per uno scalare (modifica l'oggetto origine).
  * @param a scalare da usare
  * @return questo stesso oggetto <code>Vector</code>
  */
@@ -154,7 +154,7 @@ public Vector sub(Vector a) {
 	return (new Vector(x - a.x, y - a.y, z - a.z));
 }
 /**
- * Sottrazione di vettori.
+ * Sottrazione di vettori (modifica l'oggetto origine).
  * @param a vettore da usare
  * @return questo stesso oggetto <code>Vector</code>
  */
@@ -175,7 +175,7 @@ public Vector vers() {
 	return (this.mul(1.0 / this.mod()));
 }
 /**
- * Trasforma in versore questo vettore.
+ * Trasforma in versore questo vettore (modifica l'oggetto origine).
  * @return questo stesso oggetto <code>Vector</code> (di modulo ora unitario)
  */
 public Vector versU() {

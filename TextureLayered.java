@@ -21,9 +21,10 @@
  * Materiale formato da vari strati di altri materiali. <br>
  * I sotto-materiali vengono passati in ordine di "profondità": il primo passato
  * è il più esterno. <br>
- * Si suppone che tutti i materiali tranne il primo abbiano una trasparenza
- * da qualche parte (alpha &lt; 1.0). <br>
- * Il coefficente di riflessione viene dal primo materiale.
+ * Si suppone che tutti i materiali tranne l'ultimo abbiano una trasparenza
+ * da qualche parte (alpha &lt; 1.0), in caso contrario i materiali 'sottostanti'
+ * resterebbero inutilizzati (non produrrebbe comunque errori, solo uno 'spreco'). <br>
+ * Il coefficiente di riflessione viene dal primo materiale.
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class TextureLayered extends Texture {
@@ -59,6 +60,16 @@ public Color color(Vector p) {
 	}
 	u.a=1.0-frac;
 	return(u);
+}
+/**
+ * Ottimizza l'occupazione di memoria (da usare dopo aver aggiunto tutti i valori).
+ */
+public void optimize() {
+	if (t.length > n) {
+		Texture old[] = t;
+		t = new Texture[n];
+		System.arraycopy(old, 0, t, 0, n);
+	}
 }
 public double reflect(Vector p) {
 	if(n<1)

@@ -18,7 +18,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 /**
- * Figura geometrica definita da un generico polinomio.
+ * Figura geometrica definita da un generico polinomio. <br>
+ * Si appoggia alla classe {@link Poly} per trovarne le soluzioni.
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 public class ShapePoly extends ShapeTextured {

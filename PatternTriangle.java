@@ -18,7 +18,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 /**
- * Modifica un'alto pattern modificando il suo range <code>1.0-2.0*abs(x-0.5)</code>.
+ * Modifica un altro pattern modificando il suo range <code>1.0-2.0*abs(x-0.5)</code>.
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class PatternTriangle extends Pattern {
