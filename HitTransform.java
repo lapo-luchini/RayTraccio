@@ -11,6 +11,8 @@ class HitTransform extends Hit {
 	private double tmid;
 	/** {@link Texture Texture} da usare (se <code>null</code> viene usata quella dell'oggetto originale) */
 	private Texture tx;
+	/** indica se "capovolgere" o no l'oggetto, invertendone le normali */
+	private boolean ot;
 	/** Vettore posizione del punto dell'intersezione nello spazio trasformato (autocalcolato al primo richiamo di {@link pointTransform() pointTransform()}) */
 	protected Vector pt;
 /**
@@ -19,15 +21,21 @@ class HitTransform extends Hit {
  * @param r vero raggio da usare
  * @param tm matrice di trasformazione da applicare (se <code>null</code> non viene applicata trasformazione)
  * @param tx {@link Texture Texture} da usare (se <code>null</code> viene usata quella dell'oggetto originale)
+ * @param ot nidica se l'oggetto &egrave; stato o no capovolto (in caso, ribalta le normali)
  */
-HitTransform(Hit h, Ray r, TransformMatrix tm, Texture tx) {
-	super(h.g, r);
+HitTransform(Hit h, Ray r, TransformMatrix tm, Texture tx, boolean ot) {
+	super(h.g, (r == null ? h.r : r));
 	this.h = h.h;
 	this.t = h.t;
-	this.tm = tm;
-	if (tm != null)
+	if (tm == null) {
+		this.tm = TransformMatrix.IDENTITY;
+		this.tmid = 1.0;
+	} else {
+		this.tm = tm;
 		this.tmid = Math.pow(tm.det(), -1.0 / 3.0);
+	}
 	this.tx = tx;
+	this.ot = ot;
 }
 public Color color() {
 	if (c == null) {
@@ -40,12 +48,20 @@ public Color color() {
 }
 public Vector normal() {
 	if (n == null)
-		n = tm.transformNormal(g.normal(pointTransform())).mul(tmid);
+		if (tm == TransformMatrix.IDENTITY)
+			n = g.normal(pointTransform());
+		else
+			n = tm.transformNormal(g.normal(pointTransform())).mul(tmid);
+	if (ot)                     // se l'oggetto è capovolto
+		n = Vector.ORIGIN.sub(n); // ribalta la normale
 	return (n);
 }
 public Vector pointTransform() {
 	if (pt == null)
-		pt = tm.transformVector(point());
+		if (tm == TransformMatrix.IDENTITY)
+			pt = point();
+		else
+			pt = tm.transformVector(point());
 	return (pt);
 }
 public double reflect() {

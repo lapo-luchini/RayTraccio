@@ -1,5 +1,5 @@
 /**
- * Modifica un'alto pattern invertendo il suo range <code>(1.0-x)</code>.
+ * Modifica un'alto pattern modificando il suo range comprimendolo agli estremi <code>0.5+0.5*sin((PI/2)*(x-0.5))</code>.
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class PatternSine extends Pattern {

@@ -1,11 +1,11 @@
 /**
  * Colore RGB con precisione <code>double</code>. <br>
- * I tre valori variano da <code>0.0</code> a <code>1.0</code>. <br>
+ * I quattro valori (Red, Green, blue, alpha) variano da <code>0.0</code> a <code>1.0</code>. <br>
  * I valori negativi vengono annullati.
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class Color {
-	/** Componente Ahlpa */
+	/** Componente Alpha */
 	protected double a;
 	/** Componente Red */
 	protected double r;
@@ -30,7 +30,8 @@ class Color {
 	/** Colore (1, 1, 1) bianco */
 	public static Color WHITE = new Color(1.0, 1.0, 1.0);
 /**
- * Crea un colore date le componenti.
+ * Crea un colore date le componenti. <br>
+ * Alpha viene inizializzato a <code>1.0</code>.
  * @param r componente Red
  * @param g componente Green
  * @param b componente Blue

@@ -1,6 +1,6 @@
 /**
- * Insert the type's description here.
- * Creation date: (21/04/2001 17:09:21)
+ * Campo vettotriale di rumore di tipo marmo <code>0.5+0.5*cos(x+turbulence*noise.scalar(p))</code>. <br>
+ * Questo tipo di marmo in realt&agrave; non &egrave; molto realistico, ci sono modi migliori (vedi gli esempi).
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class PatternMarble extends Pattern {

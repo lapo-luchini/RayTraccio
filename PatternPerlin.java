@@ -1,6 +1,5 @@
 /**
- * Rumore tridimensionale. <br>
- * Asegna a ogni punto dello spazio un valore <code>double</code> in [0.0,1.0).
+ * Campo di rumore tridimensionale a spettro 1/f. <br>
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 public class PatternPerlin extends Pattern {

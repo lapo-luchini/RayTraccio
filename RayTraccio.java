@@ -1,6 +1,9 @@
 import java.awt.*;
 import java.awt.event.*;
-
+/**
+ * Applet dimostrativo del componente {@link RayTracer} (non contiene altro).
+ * @author: Lapo Luchini <lapo@lapo.it>
+ */
 public class RayTraccio extends java.applet.Applet implements WindowListener {
 	private RayTracer rt;
 	private Dimension size;
@@ -29,10 +32,8 @@ public void init() {
 			r=null;
 		}
 	}
-	if(r==null) {
-		System.err.println("Could not load default.sdl");
-		System.exit(1);
-	}
+	if(r==null)
+		throw new RuntimeException("Could not load default.sdl");
 	//System.out.println("Using following Reader: "+r);
 	try {
 		scn=(new SDL(r)).sdlScene();
@@ -75,6 +76,68 @@ public static void main(String as[]) {
 	f.show();
 	f.addWindowListener(RT);
 }
+public void reInit() {
+	Scene scn=null;
+	java.io.Reader r;
+	try { // tries online
+		java.net.URL u=new java.net.URL(getCodeBase(), "default.sdl");
+		System.out.println("Loading URL "+u);
+		r=new java.io.InputStreamReader(u.openStream());
+	} catch(Exception e) { // tries offline
+		r=null;
+		try {
+			System.out.println("Loading local file default.sdl");
+			r=new java.io.FileReader("default.sdl");
+		}	catch(Exception e2) {
+			r=null;
+		}
+	}
+	if(r==null)
+		throw new RuntimeException("Could not load default.sdl");
+	//System.out.println("Using following Reader: "+r);
+	try {
+		scn=(new SDL(r)).sdlScene();
+		//r.close();
+	} catch(Exception e) {
+		System.err.println(e);
+		System.exit(2);
+	}
+	//System.out.println("Using following Scene: "+scn);
+	//rt=new RayTracer();
+	//if(savefile.length()>0)
+	//  rt.setSaveFile(savefile);
+	if(size==null)
+	  size=getSize();
+	rt.setSize(size);
+	rt.init(scn, 1 /*threads*/, size, scala, true);
+	setLayout(new BorderLayout());
+	add("Center", rt);
+}  
+public void reInit(String scene) {
+	Scene scn=null;
+	java.io.Reader r=new java.io.StringReader(scene);
+	if(r==null) {
+		throw new RuntimeException("Could not load string data.");
+	}
+	//System.out.println("Using following Reader: "+r);
+	try {
+		scn=(new SDL(r)).sdlScene();
+		//r.close();
+	} catch(Exception e) {
+		System.err.println(e);
+		System.exit(2);
+	}
+	//System.out.println("Using following Scene: "+scn);
+	//rt=new RayTracer();
+	//if(savefile.length()>0)
+	//  rt.setSaveFile(savefile);
+	if(size==null)
+	  size=getSize();
+	rt.setSize(size);
+	rt.init(scn, 1 /*threads*/, size, scala, true);
+	setLayout(new BorderLayout());
+	add("Center", rt);
+}  
 public void setRenderSize(Dimension s, int sc) {
 	size = s;
 	scala = sc;

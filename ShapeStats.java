@@ -1,6 +1,5 @@
 /**
  * Classe statica utilizzata per calcolare le statistiche di uso.
- * Creation date: (28/02/2001 13:03:25)
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 public final class ShapeStats {

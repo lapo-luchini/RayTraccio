@@ -36,39 +36,39 @@ public ShapeTransform(Shape3D a, TransformMatrix b) {
  */
 public Hit hit(EyeRays a) {
 	Hit h;
-	if(t == TransformMatrix.IDENTITY)
-		h=s.hit(a);
+	if (t == TransformMatrix.IDENTITY)
+		h = s.hit(a);
 	else
-		h=new HitTransform(s.hit(a.transform(t)), a, t, c);
-	return(h);
+		h = new HitTransform(s.hit(a.transform(t)), a, t, c, (ot < 0));
+	return (h);
 }
 public Hit hit(Ray a) {
 	Hit h;
-	if(t == TransformMatrix.IDENTITY)
-		h=s.hit(a);
+	if (t == TransformMatrix.IDENTITY)
+		h = s.hit(a);
 	else
-		h=new HitTransform(s.hit(a.transform(t)), a, t, c);
-	return(h);
+		h = new HitTransform(s.hit(a.transform(t)), a, t, c, (ot < 0));
+	return (h);
 }
 public void overturn() {
 	ot = -ot;
 }
 public void rotate(Vector i) {
-	t=t.mul(TransformMatrix.RotateZYX(-i.x, -i.y, -i.z));
+	t = t.mul(TransformMatrix.RotateZYX(-i.x, -i.y, -i.z));
 }
 public void scale(Vector i) {
-	t=t.mul(TransformMatrix.Scale(1.0/i.x, 1.0/i.y, 1.0/i.z));
+	t = t.mul(TransformMatrix.Scale(1.0 / i.x, 1.0 / i.y, 1.0 / i.z));
 }
 public void texture(Texture t) {
 	c = t;
 }
 public void translate(Vector i) {
-	t=t.mul(TransformMatrix.Translate(-i.x, -i.y, -i.z));
+	t = t.mul(TransformMatrix.Translate(-i.x, -i.y, -i.z));
 }
 public double value(Vector p) {
-	if(t == TransformMatrix.IDENTITY)
-		return(ot*s.value(p));
+	if (t == TransformMatrix.IDENTITY)
+		return (ot * s.value(p));
 	else
-		return(ot*s.value(t.transformVector(p)));
+		return (ot * s.value(t.transformVector(p)));
 }
 }

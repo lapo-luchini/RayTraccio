@@ -41,12 +41,12 @@ Hit(Shape3D a, Ray b) {
  * @param a cordinata parametrica della possibile intersezione
  */
 public void addT(double a) {
-	if (a > 1E-10) {
-		if (h) {
-			if (a < t)
-				t = a;
-		} else
-			t = a;
+	if (a > 1E-10) { // se è un hit "davanti"
+		if (h) {        // se c'era già un hit
+			if (a < t)     // se questo è più vicino
+				t = a;        // questo è il nuovo hit
+		} else          // altrimenti
+			t = a;         // questo è il nuovo hit
 		h = true;
 	}
 }

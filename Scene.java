@@ -126,16 +126,20 @@ public Color hit(Ray a) {
  * @return colore dell'illuminazione nel punto voluto
  */
 public Color lighting(Vector p, Vector n) {
-	if (numl == 0) // flat shading
-		return (Color.WHITE);
+	if (numl == 0)         // se non ci sono luci
+		return (Color.WHITE); // flat shading
 	Ray rl;
 	Hit hl;
 	Color c = Color.BLACK;
+	double direz;
 	for (int i = 0; i < numl; i++) {
 		rl = new Ray(p, l[i].o);
-		hl = s.hit(rl);
-		if ((!hl.h) || (hl.t >= 1.0))
-			c = c.add(l[i].c.mul(n.dot(rl.c.vers())).mul(l[i].p / rl.c.mod2()));
+		direz = n.dot(rl.c.vers());
+		if (direz > 0.0) {
+			hl = s.hit(rl);
+			if ((!hl.h) || (hl.t >= 1.0))
+				c = c.add(l[i].c.mul(direz).mul(l[i].p / rl.c.mod2()));
+		}
 	}
 	return (c);
 }

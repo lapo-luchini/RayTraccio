@@ -1,5 +1,5 @@
 /**
- * Campo scalare che vale <code>0.0</code> e <code>1.0</code> alternativamente in strato unitario lungo l'asse Y.
+ * Campo scalare che aumenta con l'asse X da <code>0.0</code> a <code>1.0</code> e poi re-inizia da capo.
  * @author: Lapo Luchini
  */
 class PatternSawtooth extends Pattern {

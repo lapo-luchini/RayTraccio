@@ -1,5 +1,5 @@
 /**
- * Campo scalare che vale <code>0.0</code> e <code>1.0</code> alternativamente in strato unitario lungo l'asse Y.
+ * Campo scalare che vale <code>0.0</code> e <code>1.0</code> alternativamente in strato unitario lungo l'asse X.
  * @author: Lapo Luchini
  */
 class PatternStripes extends Pattern {

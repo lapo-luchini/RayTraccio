@@ -1,6 +1,5 @@
 /**
- * Rumore tridimensionale. <br>
- * Asegna a ogni punto dello spazio un valore <code>double</code> in [0.0,1.0).
+ * Campo di rumore tridimensionale a spettro |1/f|. <br>
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 public class PatternPerlinAbs extends Pattern {
@@ -167,14 +166,17 @@ public double[] vectorial(Vector p, byte dim) {
 			intr=0.5*(1.0-Math.cos(fz*Math.PI)); ints=1.0-intr;
 			noises[dims][0]=noises[dims][0]*ints+noises[dims][4]*intr;
 			// aggiunge l'ottava al rumore
-			noise[dims]+=noises[dims][0];
+			if(noises[dims][0]>0.0)
+				noise[dims]+=noises[dims][0];
+			else
+				noise[dims]-=noises[dims][0];
 		}
 		// prepara la prossima ottava
 		x*=2; y*=2; z*=2;
 		amp*=persistence;
 	}
 	for(dims=0; dims<dim; dims++)
-		noise[dims]=0.5+noise[dims]*amplitude;
+		noise[dims]*=amplitude;
 	return(noise);
 }
 }

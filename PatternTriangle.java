@@ -1,5 +1,5 @@
 /**
- * Modifica un'alto pattern invertendo il suo range <code>(1.0-x)</code>.
+ * Modifica un'alto pattern modificando il suo range <code>1.0-2.0*abs(x-0.5)</code>.
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class PatternTriangle extends Pattern {

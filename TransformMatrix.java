@@ -53,9 +53,9 @@ public double det() {
 	        a[ 2]*(a[ 4]*a[ 9]-a[ 5]*a[ 8]));
 }
 /**
- * Calcola la matrice di trasformazione inversa. <br>
- * L'uso delle tre variabili temporanea è reso necessario da un bug del Symantec JIT,
- * la VM ricompilante utilizzata anche da Netscape fino alla versione 4.x.
+ * Calcola la matrice di trasformazione inversa.
+ * Attualmente questa classe non funziona in Netscape a causa di un bug del Symantec JIT,
+ * la VM ricompilante utilizzata (anche) da Netscape fino alla versione 4.7x.
  * @return la matrice inversa voluta
  */
 public TransformMatrix inv() {

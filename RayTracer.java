@@ -1,8 +1,12 @@
 import java.awt.*;
 import java.awt.image.*;
 import java.awt.event.*;
+/**
+ * Componente che gestisce il ray-tracing della scena.
+ * @author: Lapo Luchini <lapo@lapo.it>
+ */
 class RayTracer extends Component {
-	public String VERSION = "RayTraccio 0.999b (c)2001 Lapo Luchini";
+	public String VERSION = "RayTraccio 1.50 (c)2001 Lapo Luchini";
 	/** Oggetto origine dell'immagine */
 	private MemoryImageSource src = null;
 	/** Array di thread di rendering */
@@ -61,11 +65,14 @@ public void init(Scene scene, int numCPU, Dimension size, int scale, boolean ant
 		t_aa = new RenderThreadAntiAlias(scene, renderSize, buff, this);
 	else
 		t_aa = null;
+	repaint(100); // forza la pulizia dello schermo entro 0.1 secondi
 }
 public void paint(Graphics g) {
 	if (img != null)
 		g.drawImage(img, 0, 0, renderSize.width * scale, renderSize.height * scale, this);
-	//g.drawString(VERSION, 10, getSize().height - 10);
+	else
+		super.paint(g);
+	g.drawString(VERSION, 10, getSize().height - 10);
 }
 public void start() {
 	timer=System.currentTimeMillis();
@@ -77,9 +84,13 @@ public void stop() {
 	System.out.println("Aborting [ETA="+(System.currentTimeMillis()-timer)+"ms]");
 	int i;
 	for (i = 0; i < t.length; i++)
-		t[i].requestToStop();
+		if (t[i] != null)
+			t[i].requestToStop();
+	if (t_aa != null)
+		t_aa.requestToStop();
 	for (i = 0; i < t.length; i++)
 		t[i] = null;
+	t_aa = null;
 }
 synchronized protected void threadFinished() {
 	for (int i = 0; i < t.length; i++)

@@ -79,7 +79,7 @@ private int doLine(int j, java.util.BitSet bs, EyeRays r) {
 			c.addU(scn.hit(r.specificRay(i+t, j  )));
 			c.addU(scn.hit(r.specificRay(i+t, j+t)));
 			c.mulU(1.0/9.0);
-			buff[tmp]=c.getARGB();
+			buff[tmp]=c.getRGB();
 			bs.clear(i); // così restano tutti a zero
 		}
 	rayt.doneLine(j);

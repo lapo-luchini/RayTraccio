@@ -56,7 +56,7 @@ public void run() {
 	for (j=(size.height*actCPU)/numCPU; (j<endY)&&(running); j++) { // CPU a blocchi
 	//for (j=actCPU; j<size.height; j+=numCPU) { // CPU interlacciate
 		for (i=0; (i<size.width)&&(running); i++, r.next())
-			buff[j*size.width+i]=scn.hit(r).getARGB();
+			buff[j*size.width+i]=scn.hit(r).getRGB();
 		rayt.doneLine(j); // aggiorna l'immagine riga per riga
 		status++;
 	}

@@ -9,16 +9,7 @@ class CSG_Union extends CSG_Collection {
  * @param a il raggio voluto
  */
 public Hit hit(EyeRays a) {
-	Hit l = s[0].hit(a), z;
-	int i;
-	for (i = 1; i < n; i++) {
-		z = s[i].hit(a);
-		if (z.h)
-			if (z.t > 1E-10)
-				if ((z.t < l.t) || (!l.h))
-					l = z;
-	}
-	return (l);
+	return (hit((Ray) a));
 }
 public Hit hit(Ray a) {
 	Hit l = s[0].hit(a), z;
@@ -38,10 +29,10 @@ public Hit hit(Ray a) {
  */
 public double value(Vector p) {
 	// non sono sicuro che vada
-	double a = 1.0; // di defualt è esterno
-	for (int i = 0; i < n; i++)
-		if (s[i].value(p) * ot < 0.0)
-			a = -1.0;
+	double a = 1.0;                 // di defualt è esterno
+	for (int i = 0; i < n; i++)     // per ogni sottofigura
+		if (s[i].value(p) * ot < 0.0) // se questa figura è interna
+			a = -1.0;                   // allora è interno
 	return (a);
 }
 }

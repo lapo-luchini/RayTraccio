@@ -225,6 +225,7 @@ CSG_Collection sdlCSG() :
 	(
 		"union" { u=new CSG_Union(); }
 	|	"intersection" { u=new CSG_Intersection(); }
+	|	"difference" { u=new CSG_Difference(); }
 	) "{"
 		( t=sdlShape() { u.add(t); } )+
 	{ return(u); }

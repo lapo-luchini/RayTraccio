@@ -1,5 +1,5 @@
 /**
- * Blob experimental type, does NOT work yet.
+ * Tipo blob sperimentale, non ancora sviluppato.
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class Blob extends Shape3D {

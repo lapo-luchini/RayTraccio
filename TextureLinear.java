@@ -1,5 +1,5 @@
 /**
- * Materiale che mixa due materiali secondo un pattern dato.
+ * Materiale che mixa due materiali secondo un pattern dato, sfumando dal primo al secondo in modo lineare.
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class TextureLinear extends Texture {
