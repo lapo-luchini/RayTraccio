@@ -154,9 +154,10 @@ public TransformMatrix mulU(double z) {
 static TransformMatrix RotateX(double r) {
 	//r=Math.toRadians(r); non va nei browser
 	r *= Math.PI / 180.0;
-	return (new TransformMatrix(1.0,          0.0,         0.0, 0.0,
-		                          0.0,  Math.cos(r), Math.sin(r), 0.0,
-		                          0.0, -Math.sin(r), Math.cos(r), 0.0));
+	double c = Math.cos(r), s = Math.sin(r);
+	return (new TransformMatrix(1.0 ,0.0, 0.0, 0.0,
+		                          0.0,   c,   s, 0.0,
+		                          0.0,  -s,   c, 0.0));
 }
 /**
  * Crea una matrice di rotazione intorno ai tre assi. <br>
@@ -177,9 +178,10 @@ static TransformMatrix RotateXYZ(double x, double y, double z) {
 static TransformMatrix RotateY(double r) {
 	//r=Math.toRadians(r);
 	r *= Math.PI / 180.0;
-	return (new TransformMatrix(Math.cos(r), 0.0, -Math.sin(r), 0.0,
-		                                  0.0, 1.0,          0.0, 0.0,
-		                          Math.sin(r), 0.0,  Math.cos(r), 0.0));
+	double c = Math.cos(r), s = Math.sin(r);
+	return (new TransformMatrix(  c, 0.0,  -s, 0.0,
+		                          0.0, 1.0, 0.0, 0.0,
+		                            s, 0.0,   c, 0.0));
 }
 /**
  * Crea una matrice di rotazione intorno all'asse Z.
@@ -189,9 +191,10 @@ static TransformMatrix RotateY(double r) {
 static TransformMatrix RotateZ(double r) {
 	//r=Math.toRadians(r);
 	r *= Math.PI / 180.0;
-	return (new TransformMatrix( Math.cos(r), Math.sin(r), 0.0, 0.0,
-		                          -Math.sin(r), Math.cos(r), 0.0, 0.0,
-		                                   0.0,         0.0, 1.0, 0.0));
+	double c = Math.cos(r), s = Math.sin(r);
+	return (new TransformMatrix(  c,   s, 0.0, 0.0,
+		                           -s,   c, 0.0, 0.0,
+		                          0.0, 0.0, 1.0, 0.0));
 }
 /**
  * Crea una matrice di rotazione intorno ai tre assi. <br>
