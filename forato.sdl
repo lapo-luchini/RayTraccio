@@ -1,0 +1,66 @@
+/*
+** Esempio di listato SDL autoesplicativo e commentato.
+** Questo documento usa tabulazioni da 2 caratteri.
+*/
+
+//// ZONA INIZIALE: definizione dei parametri generali ////
+
+scene {
+	camera <0.0, 1.0,-5.0>										// posizione della camera
+	target <0.0,-0.5, 0.0>										// posizione guardata dalla camera (sarà al centro dell'immagine)
+	horizon <4.0, 0.0, 0.0>										// vettore (relativo) che definisce l'orizzonte (in questo caso un orizzonte orizzontale e largo 4 unità)
+	ratio 1/1																	// ratio orizzontale/verticale, usare 4/3 per immagini a tutto schermo
+}
+
+//// ZONA CENTRALE: definizione di costanti utili in seguito ////
+
+union {
+	plane {
+		<0, 1, 0> 0
+	}
+	difference {
+		quadric {
+			sphere
+			texture plain { color red }
+			scale <1.5>
+		}
+		quadric {
+			sphere
+			texture plain { color green }
+			scale <1>
+			translate <.3, 0,-.8>
+		}
+		quadric {
+			sphere
+			texture plain { color blue }
+			scale <1.0>
+			translate <0, 0, 0.7>
+		}
+	}
+}
+
+//// ZONA FINALE: definizione delle luci, se non si mettono luci si ottiene una colorazione flat ////
+
+light {
+	< 1.0, 3.0,-5.0>													// posizione
+	<1, 1, 1>																	// colore
+	20																				// distanza alla quale ha potenza unitaria (decresce come r^-2)
+}
+
+light {
+	<-1.0, 2.0,-4.0>
+	<1, 0, 0>
+	5
+}
+
+light {
+	<0.3, 0,-.8>
+	<1, 1, 1>
+	0.5
+}
+
+light {
+	<0.3, 3, 3>
+	<1, 1, 1>
+	10
+}
