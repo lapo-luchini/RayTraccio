@@ -187,14 +187,14 @@ Shape3D sdlShape() :
 			u=(Shape3D)cons.get(t.image);
 			if(u==null)
 				throw new ParseException("Shape constant '"+t.image+"' was not assigned (line "+t.beginLine+", column "+t.beginColumn+").");
-			c=true; // set the shape as "to be referenced"
+			c=true;  // set the shape as "to be referenced"
 		}
 	)
 		(
-			"rotate" v=sdlVector() { if(!(u instanceof ShapeTransform)) { u=new ShapeTransform(u); c=false; } u.rotate(v); }
-		|	"scale" v=sdlVector() { if(c) { u=new ShapeTransform(u); c=false; } u.scale(v); }
+			"rotate" v=sdlVector()    { if(c || !(u instanceof ShapeTransform)) { u=new ShapeTransform(u); c=false; } u.rotate(v); }
+		|	"scale" v=sdlVector()     { if(c) { u=new ShapeTransform(u); c=false; } u.scale(v); }
 		|	"translate" v=sdlVector() { if(c) { u=new ShapeTransform(u); c=false; } u.translate(v); }
-		| "overturn" { if(c) { u=new ShapeTransform(u); c=false; } u.overturn(); }
+		| "overturn"                { if(c) { u=new ShapeTransform(u); c=false; } u.overturn(); }
 		|	"texture" tx=sdlTexture() { if(c) { u=new ShapeTransform(u); } u.texture(tx); c=true; }
 		)*
 	"}"
