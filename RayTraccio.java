@@ -89,14 +89,14 @@ class Color {
     this.g=g;
     this.b=b;
   }
-  public static Color BLACK=new Color(0, 0, 0),
-                      RED=new Color(255, 0, 0),
-                      GREEN=new Color(0, 255, 0),
-                      BLUE=new Color(0, 0, 255),
-                      YELLOW=new Color(255, 255, 0),
-                      CYAN=new Color(0, 255, 255),
-                      PURPLE=new Color(255, 0, 255),
-                      WHITE=new Color(255, 255, 255);
+  public static Color BLACK=new Color(0.0, 0.0, 0.0),
+                      RED=new Color(1.0, 0.0, 0.0),
+                      GREEN=new Color(0.0, 1.0, 0.0),
+                      BLUE=new Color(0.0, 0.0, 1.0),
+                      YELLOW=new Color(1.0, 1.0, 0.0),
+                      CYAN=new Color(0.0, 1.0, 1.0),
+                      PURPLE=new Color(1.0, 0.0, 1.0),
+                      WHITE=new Color(1.0, 1.0, 1.0);
   public Color add(Color a) {
     return(new Color(r+a.r, g+a.g, b+a.b));
   }
@@ -176,32 +176,32 @@ class TexturePlain extends Texture {
 }
 
 class TextureChecker extends Texture {
-  private Color c[];
-  TextureChecker(Color a, Color b) {
-    c=new Color[2];
+  private Texture c[];
+  TextureChecker(Texture a, Texture b) {
+    c=new Texture[2];
     c[0]=a;
     c[1]=b;
   }
   public Color color(Vector p) {
-    return(c[(((int)p.x)^((int)p.y)^((int)p.z))&0x01]);
+    return(c[(((int)p.x)^((int)p.y)^((int)p.z))&1].color(p));
   }
   public double reflect(Vector p) {
-    return(0);
+    return(c[(((int)p.x)^((int)p.y)^((int)p.z))&1].reflect(p));
   }
 }
 
 class TextureStrip extends Texture {
-  private Color c[];
-  TextureStrip(Color a, Color b) {
-    c=new Color[2];
+  private Texture c[];
+  TextureStrip(Texture a, Texture b) {
+    c=new Texture[2];
     c[0]=a;
     c[1]=b;
   }
   public Color color(Vector p) {
-    return(c[((int)p.y)&0x01]);
+    return(c[((int)p.y)&1].color(p));
   }
   public double reflect(Vector p) {
-    return(0);
+    return(c[((int)p.y)&1].reflect(p));
   }
 }
 
@@ -216,7 +216,7 @@ class TextureScale extends Texture {
     return(c.color(p.mul(z)));
   }
   public double reflect(Vector p) {
-    return(0);
+    return(c.reflect(p.mul(z)));
   }
 }
 
@@ -228,6 +228,16 @@ class Hit {
   private Vector p; // [autocalcolato] punto colpito
   private Vector n; // [autocalcolato] normale
   private Color c;  // [autocalcolato] colore
+  public void addT(double a) {
+    if(a>1E-10) {
+      if(h) {
+        if(a<t)
+          t=a;
+      } else
+        t=a;
+      h=true;
+    }
+  }
   public Vector point() {
     if(p==null)
       p=r.point(t);
@@ -283,7 +293,6 @@ class Quadrica extends Shape3D {
     return(u);
   }
   public Hit hit(Ray a) {
-    Hit u=new Hit();
     double tc=k[0]*(a.o.x*a.o.x)+
               k[1]*(a.o.x*a.o.y)+
               k[2]*(a.o.y*a.o.y)+
@@ -310,18 +319,26 @@ class Quadrica extends Shape3D {
               k[4]*(a.c.y*a.c.z)+
               k[5]*(a.c.z*a.c.z),
            delta=tb*tb-4.0*ta*tc;
+    Hit u=new Hit();
     if (delta>=0.0) {
       double rdelta=Math.sqrt(delta);
-      u.h=true;
       ta*=2.0;
+      //u.addT((-tb-rdelta)/ta);
+      //u.addT((-tb+rdelta)/ta);
+      //u.h=true;
       if (ta>0.0) // voglio ritorni l'hit più vicino
-        u.t=(-tb-rdelta)/ta;
+        u.addT((-tb-rdelta)/ta);
       else
-        u.t=(-tb+rdelta)/ta;
+        u.addT((-tb+rdelta)/ta);
+      //u.h=true;
+      //if(ta>0.0) // voglio ritorni l'hit più vicino
+      //  u.t=(-tb-rdelta)/ta;
+      //else
+      //  u.t=(-tb+rdelta)/ta;
       u.g=this;
       u.r=a;
     } else {
-      u.h=false;
+      u.h=false; //inUUUUUUUUtile
     }
     return(u);
   }
@@ -412,33 +429,34 @@ class Scene {
   public Color hit(Ray a) {
     Hit h=s.hit(a);
     Color c;
-    if(h.h) {
+    if(!h.h)
+      c=Color.BLACK;
+    else {
       Ray rl=new Ray(h.point(), l.o);
       Hit hl=s.hit(rl);
-      if(hl.h&&(hl.t>1E-10))
+      if(hl.h)
         c=Color.BLACK;
       else {
-        //c=h.color().mul(h.normal().dot(rl.c.vers())).mul(l.c).mul(l.p/rl.c.mod());
-        //c=h.color().mul(l.c).mul(h.normal().dot(rl.c.vers())).mul(l.p/rl.c.mod());
-        if(h.reflect()<0.999)
+        //if(h.reflect()<0.999)
           c=l.c.mul(h.normal().dot(rl.c.vers())).mul(l.p/rl.c.mod());
-        else
-          c=Color.BLACK;
+        //else
+        //  c=Color.BLACK;
         if(h.reflect()>0.001) {
+          Color nc=Color.BLACK;
           Ray rr=new Ray(h.point(), Vector.ORIGIN);
           rr.c=a.c.mirror(h.normal());
           Hit hs=s.hit(rr);
           if(hs.h&&(hs.t>1E-10)) {
             Ray rls=new Ray(hs.point(), l.o);
-            Color nc=l.c.mul(hs.normal().dot(rls.c.vers())).mul(l.p/rls.c.mod());
+            nc=l.c.mul(hs.normal().dot(rls.c.vers())).mul(l.p/rls.c.mod());
             nc=hs.color().mul(nc);
-            c=c.mul(1.0-h.reflect()).add(nc.mul(h.reflect()));
+            //c=c.mul(1.0-h.reflect()).add(nc.mul(h.reflect()));
           }
+          c=c.mul(1.0-h.reflect()).add(nc.mul(h.reflect()));
         }
         c=h.color().mul(c);
       }
-    } else
-      c=Color.BLACK;
+    }
     return(c);
   }
 }
@@ -526,10 +544,22 @@ public class RayTraccio extends Applet {
     size=s;
   }
   public void init() {
-    Quadrica q1=new Quadrica(Quadrica.SFERA, new TextureScale(new TextureStrip(Color.CYAN, Color.RED), 0.1)),
-             q2=new Quadrica(Quadrica.CIL_X, new TexturePlain(Color.RED, 0.0)),
-             q3=new Quadrica(Quadrica.IPE_RIG_Y, new TexturePlain(Color.WHITE, 0.5)), //q3=new Quadrica(Quadrica.IPE_RIG_Y, new TextureScale(new TextureChecker(Color.BLUE, Color.YELLOW), 0.2)),
-             q4=new Quadrica(Quadrica.SFERA, new TexturePlain(Color.PURPLE, 0.0));
+    Quadrica q1=new Quadrica(Quadrica.SFERA,
+                             new TextureScale(
+                               new TextureStrip(
+                                 new TexturePlain(Color.CYAN, 0.0),
+                                 new TexturePlain(Color.RED, 0.0)),
+                               0.1)),
+             q2=new Quadrica(Quadrica.CIL_X,
+                             new TexturePlain(Color.RED, 0.5)),
+             q3=new Quadrica(Quadrica.IPE_RIG_Y,
+                             new TextureScale(
+                               new TextureChecker(
+                                 new TexturePlain(Color.BLUE, 0.0),
+                                 new TexturePlain(Color.YELLOW, 0.0)),
+                             0.2)),
+             q4=new Quadrica(Quadrica.SFERA,
+                             new TexturePlain(Color.PURPLE, 0.0));
     q1.scale(new Vector(1.2, 1.0, 0.8));
     q1.translate(new Vector(1.0, 1.0, 0.0));
     q2.scale(new Vector(0.5, 0.5, 0.5));
@@ -593,7 +623,7 @@ public class RayTraccio extends Applet {
     f.addWindowListener(new MyAdapter());
   }
   public String getAppletInfo() {
-    return("RayTraccio 0.91\r\n"+
+    return("RayTraccio 0.95\r\n"+
            "(c)1999 Lapo Luchini");
   }
   //fare più luci!!
