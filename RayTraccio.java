@@ -32,6 +32,9 @@ class Vector {
   public Vector vers() {
     return(this.mul(1.0/this.mod()));
   }
+  public Vector mirror(Vector a) {
+    return(this.add(a.mul(-2.0*a.dot(this))));
+  }
   public String toString() { 
     return("Vector["+x+","+y+","+z+"]");
   }
@@ -75,8 +78,13 @@ class EyeRays extends Ray { // porta il rendering da 8 a 6 secondi
 }
 
 class Color {
-  protected int r, g, b;
+  protected double r, g, b;
   Color(int r, int g, int b) {
+    this.r=r/255.0;
+    this.g=g/255.0;
+    this.b=b/255.0;
+  }
+  Color(double r, double g, double b) {
     this.r=r;
     this.g=g;
     this.b=b;
@@ -99,13 +107,16 @@ class Color {
     return(new Color(r*a, g*a, b*a));
   }
   public Color mul(double a) {
-    return(new Color((int)(r*a), (int)(g*a), (int)(b*a)));
+    return(new Color(r*a, g*a, b*a));
   }
   public Color mul(Color a) {
-    return(new Color(r*a.r>>8, g*a.g>>8, b*a.b>>8));
+    return(new Color(r*a.r, g*a.g, b*a.b));
   }
   public int getRGB() {
-    int u=0;
+    int u=0,
+        r=(int)(this.r*255),
+        g=(int)(this.g*255),
+        b=(int)(this.b*255);
     if(r>0)
       if(r<255)
         u=r;
@@ -146,15 +157,21 @@ class Light {
 
 abstract class Texture {
   abstract public Color color(Vector p);
+  abstract public double reflect(Vector p);
 }
 
 class TexturePlain extends Texture {
   private Color c;
-  TexturePlain(Color a) {
+  private double r;
+  TexturePlain(Color a, double b) {
     c=a;
+    r=b;
   }
   public Color color(Vector p) {
     return(c);
+  }
+  public double reflect(Vector p) {
+    return(r);
   }
 }
 
@@ -168,6 +185,9 @@ class TextureChecker extends Texture {
   public Color color(Vector p) {
     return(c[(((int)p.x)^((int)p.y)^((int)p.z))&0x01]);
   }
+  public double reflect(Vector p) {
+    return(0);
+  }
 }
 
 class TextureStrip extends Texture {
@@ -180,6 +200,9 @@ class TextureStrip extends Texture {
   public Color color(Vector p) {
     return(c[((int)p.y)&0x01]);
   }
+  public double reflect(Vector p) {
+    return(0);
+  }
 }
 
 class TextureScale extends Texture {
@@ -191,6 +214,9 @@ class TextureScale extends Texture {
   }
   public Color color(Vector p) {
     return(c.color(p.mul(z)));
+  }
+  public double reflect(Vector p) {
+    return(0);
   }
 }
 
@@ -217,12 +243,16 @@ class Hit {
       c=g.color(point());
     return(c);
   }
+  public double reflect() {
+    return(g.reflect(point()));
+  }
 }
 
 abstract class Shape3D {
   abstract public Hit hit(Ray a);
   abstract public Vector normal(Vector p);
   abstract public Color color(Vector p);
+  abstract public double reflect(Vector p);
   abstract public void scale(Vector i);
   abstract public void translate(Vector i);
 }
@@ -304,6 +334,9 @@ class Quadrica extends Shape3D {
   public Color color(Vector p) {
     return(c.color(p));
   }
+  public double reflect(Vector p) {
+    return(c.reflect(p));
+  }
   public void scale(Vector i) {
     i.x=1.0/i.x;
     i.y=1.0/i.y;
@@ -355,6 +388,10 @@ class CSG_Union extends Shape3D {
     System.out.println("ILLEGAL COLOR");
     return(Color.BLACK);
   }
+  public double reflect(Vector p) {
+    System.out.println("ILLEGAL REFLECT");
+    return(0);
+  }
   public void scale(Vector i) {
     System.out.println("ILLEGAL SCALE");
   }
@@ -378,13 +415,28 @@ class Scene {
     if(h.h) {
       Ray rl=new Ray(h.point(), l.o);
       Hit hl=s.hit(rl);
-      if(hl.h) {
-        if(hl.t>1E-10)
-          c=Color.BLACK;
+      if(hl.h&&(hl.t>1E-10))
+        c=Color.BLACK;
+      else {
+        //c=h.color().mul(h.normal().dot(rl.c.vers())).mul(l.c).mul(l.p/rl.c.mod());
+        //c=h.color().mul(l.c).mul(h.normal().dot(rl.c.vers())).mul(l.p/rl.c.mod());
+        if(h.reflect()<0.999)
+          c=l.c.mul(h.normal().dot(rl.c.vers())).mul(l.p/rl.c.mod());
         else
-          c=h.color().mul(h.normal().dot(rl.c.vers())).mul(l.c).mul(l.p/rl.c.mod());
-      } else
-        c=h.color().mul(h.normal().dot(rl.c.vers())).mul(l.c).mul(l.p/rl.c.mod());
+          c=Color.BLACK;
+        if(h.reflect()>0.001) {
+          Ray rr=new Ray(h.point(), Vector.ORIGIN);
+          rr.c=a.c.mirror(h.normal());
+          Hit hs=s.hit(rr);
+          if(hs.h&&(hs.t>1E-10)) {
+            Ray rls=new Ray(hs.point(), l.o);
+            Color nc=l.c.mul(hs.normal().dot(rls.c.vers())).mul(l.p/rls.c.mod());
+            nc=hs.color().mul(nc);
+            c=c.mul(1.0-h.reflect()).add(nc.mul(h.reflect()));
+          }
+        }
+        c=h.color().mul(c);
+      }
     } else
       c=Color.BLACK;
     return(c);
@@ -408,20 +460,20 @@ class RenderThread extends Thread {
     actCPU=act;
   }
   public void run() {
-    int i, j;
+    int i, j, sizY=size.height/numCPU;
     EyeRays r=new EyeRays(scn.eye, new Vector(-2.0, 2.0-(4.0/numCPU*actCPU), 0.0),
                                    new Vector( 4.0, 0.0, 0.0),
                                    new Vector( 0.0,-4.0, 0.0),
                                    size.width, size.height);
     timer=System.currentTimeMillis();
-    for (j=actCPU*(size.height/numCPU); j<(actCPU+1)*(size.height/numCPU); j++) { // CPU a blocchi
+    for (j=actCPU*sizY; j<(actCPU+1)*sizY; j++) { // CPU a blocchi
     //for (j=actCPU; j<size.height; j+=numCPU) { // CPU interlacciate
       for (i=0; i<size.width; i++, r.next())
         buff[j*size.width+i]=scn.hit(r).getARGB();
       src.newPixels(0, j, size.width, 1);
     }
-    //src.newPixels(0, actCPU*(size.height/numCPU), size.width, size.height/numCPU);
-    System.out.println("CPU"+(actCPU+1)+"/"+numCPU+" Time:"+(System.currentTimeMillis()-timer));
+    //src.newPixels(0, actCPU*sizY, size.width, sizY);
+    System.out.println("CPU:"+(actCPU+1)+"/"+numCPU+" Time:"+(System.currentTimeMillis()-timer));
   }
 }
 
@@ -474,10 +526,10 @@ public class RayTraccio extends Applet {
     size=s;
   }
   public void init() {
-    Quadrica q1=new Quadrica(Quadrica.SFERA, new TextureScale(new TextureStrip(Color.CYAN, Color.WHITE), 0.1)),
-             q2=new Quadrica(Quadrica.CIL_X, new TexturePlain(Color.RED)),
-             q3=new Quadrica(Quadrica.IPE_RIG_Y, new TextureScale(new TextureChecker(Color.BLUE, Color.YELLOW), 0.2)),
-             q4=new Quadrica(Quadrica.SFERA, new TexturePlain(Color.PURPLE));
+    Quadrica q1=new Quadrica(Quadrica.SFERA, new TextureScale(new TextureStrip(Color.CYAN, Color.RED), 0.1)),
+             q2=new Quadrica(Quadrica.CIL_X, new TexturePlain(Color.RED, 0.0)),
+             q3=new Quadrica(Quadrica.IPE_RIG_Y, new TexturePlain(Color.WHITE, 0.5)), //q3=new Quadrica(Quadrica.IPE_RIG_Y, new TextureScale(new TextureChecker(Color.BLUE, Color.YELLOW), 0.2)),
+             q4=new Quadrica(Quadrica.SFERA, new TexturePlain(Color.PURPLE, 0.0));
     q1.scale(new Vector(1.2, 1.0, 0.8));
     q1.translate(new Vector(1.0, 1.0, 0.0));
     q2.scale(new Vector(0.5, 0.5, 0.5));
@@ -541,8 +593,8 @@ public class RayTraccio extends Applet {
     f.addWindowListener(new MyAdapter());
   }
   public String getAppletInfo() {
-    return("RayTraccio 0.9\r\n"+
+    return("RayTraccio 0.91\r\n"+
            "(c)1999 Lapo Luchini");
   }
-  fare più luci!!
+  //fare più luci!!
 }
