@@ -1,5 +1,5 @@
 // RayTraccio ray-tracing library Copyright (c) 2001-2004 Lapo Luchini <lapo@lapo.it>
-// $Header: /usr/local/cvsroot/RayTraccio/ShapePoly.java,v 1.7 2002/02/23 16:41:16 lapo Exp $
+// $Header: /usr/local/cvsroot/RayTraccio/it/lapo/raytraccio/shape/Blob.java,v 1.1 2004/12/16 23:09:56 lapo Exp $
 
 // This file is part of RayTraccio.
 //
@@ -30,15 +30,18 @@ import it.lapo.raytraccio.Shape3D;
 import it.lapo.raytraccio.Texture;
 import it.lapo.raytraccio.Vector3D;
 
+import java.util.Vector;
+
 /**
  * Tipo blob sperimentale, non ancora sviluppato.
  * 
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 public class Blob extends Shape3D {
-    
+
     private class Focus {
         public Vector3D center;
+
         public double strength;
     }
 
@@ -46,11 +49,14 @@ public class Blob extends Shape3D {
 
     private Texture c;
 
-    private double r;
+    private double thr;
 
-    public Blob(double d, Texture b) {
-        c = b;
-        r = d;
+    /** Entità per la statistica */
+    private static byte stat = ShapeStats.register("Blob");
+
+    public Blob(double threshold, Texture tex) {
+        c = tex;
+        thr = threshold;
         foci = new java.util.Vector<Focus>();
     }
 
@@ -59,6 +65,14 @@ public class Blob extends Shape3D {
         t.center = center;
         t.strength = strength;
         foci.add(t);
+    }
+
+    /**
+     * Ottimizza l'occupazione di memoria (da usare dopo aver aggiunto tutti i
+     * valori).
+     */
+    public void optimize() {
+        foci.trimToSize();
     }
 
     public Color color(Vector3D p) {
@@ -70,18 +84,64 @@ public class Blob extends Shape3D {
     }
 
     public Hit hit(Ray a) {
-        //TODO
-        //SUM(f:foci,f.s/(p-f.c))
-        //k=f1f/((px-f1x)²+(py-f1y)²+(pz-f1z)²)+f2f/((px-f2x)²+(py-f2y)²+(pz-f2z)²)
-        //k=f1f*f1l(p)+f2f*f2l(p) v p(t)
-        Vector3D p = new Vector3D(0.0, 0.0, 0.0);
-        p.x = a.o.x + t * a.c.x;
-        p.y = a.o.y + t * a.c.y;
-        p.z = a.o.z + t * a.c.z;
+        // TODO
+        // SUM(f:foci,f.s/(p-f.c))
+        // k=f1f/((px-f1x)²+(py-f1y)²+(pz-f1z)²)+f2f/((px-f2x)²+(py-f2y)²+(pz-f2z)²)
+        // k=f1f*f1l(p)+f2f*f2l(p) v p(t)
+        /*
+         * Vector3D p = new Vector3D(0.0, 0.0, 0.0); p.x = a.o.x + t * a.c.x;
+         * p.y = a.o.y + t * a.c.y; p.z = a.o.z + t * a.c.z;
+         */
+        ShapeStats.count(stat, ShapeStats.TYPE_RAY);
+        java.util.TreeMap<Double, Focus> max = new java.util.TreeMap<Double, Focus>();
+        double dist;
+        for (Focus f : foci) {
+            dist = a.dist(f.center);
+            if (dist >= 1E-10) // se è "davanti"
+                max.put(new Double(dist), f);
+            //System.out.println("Dist " + dist_current + '/' + dist_closest);
+        }
+        Hit u = new Hit(this, a);
+        double x, y, x1, x2, y1, y2;
+        x2 = 0.0; y2 = value(a.point(x2));
+        for(Double d : max.keySet()) { // abbiamo almeno un focus di fronte
+            // Regula Falsi
+            x1 = x2; y1 = y2;
+            x2 = d.doubleValue(); y2 = value(a.point(x2));
+            if (y1 * y2 < 0.0) { // x2 is already "inside", the first zero gotta be inside
+                //System.out.println("Isx=" + x1 + "," + y1 + " Idx=" + x2 + "," + y2);
+                int n;
+                for (n = 0; (n < 10000) && (Math.abs(y1) >= 1E-10)
+                        && (Math.abs(y2) >= 1E-10); ++n) {
+                    x = x1 - y1 * (x1 - x2) / (y1 - y2);
+                    y = value(a.point(x));
+                    if (y * y1 > 0) {
+                        x1 = x;
+                        y1 = y;
+                    } else {
+                        x2 = x;
+                        y2 = y;
+                    }
+                }
+                //System.out.println("N=" + n + " Tsx=" + x1 + "," + y1 + " Tdx=" + x2 + "," + y2);
+                //System.out.print("," + n);
+                if (Math.abs(y1) < 1E-10)
+                    u.addT(x1);
+                else if (Math.abs(y2) < 1E-10)
+                    u.addT(x2);
+            }
+        }
+        if (u.h)
+            ShapeStats.count(stat, ShapeStats.TYPE_HIT);
+        return u;
     }
 
     public Vector3D normal(Vector3D p) {
-        //TODO
+        // ma sarà "corretto", così, o semplicemente ci si accontenta? ^_^
+        Vector3D u = p.mul(foci.size());
+        for (Focus f : foci)
+            u.subU(f.center);
+        return u.versU();
     }
 
     public void overturn() {
@@ -102,9 +162,13 @@ public class Blob extends Shape3D {
     }
 
     public double value(Vector3D p) {
-        double u = 0.0;
-        for(Focus f : foci)
-            u += f.strength / p.sub(f.center).mod2(); //TOFIX gestire distanza 0
+        double u = -thr, d;
+        for (Focus f : foci) {
+            d = p.sub(f.center).mod2();
+            if ((d > -1E-10) && (d < +1E-10))
+                return 1E10;
+            u += f.strength / d;
+        }
         return u;
     }
 
