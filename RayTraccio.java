@@ -15,20 +15,43 @@ public String getAppletInfo() {
 }
 public void init() {
 	Scene scn=null;
-	try {
-		scn=(new SDL(new java.io.FileReader("default.sdl"))).sdlScene();
-	} catch(Exception e) {
-		System.err.println(e);
+	java.io.Reader r;
+	try { // tries online
+		java.net.URL u=new java.net.URL(getCodeBase(), "default.sdl");
+		System.out.println("Loading URL "+u);
+		r=new java.io.InputStreamReader(u.openStream());
+	} catch(Exception e) { // tries offline
+		r=null;
+		try {
+			System.out.println("Loading local file default.sdl");
+			r=new java.io.FileReader("default.sdl");
+		}	catch(Exception e2) {
+			r=null;
+		}
+	}
+	if(r==null) {
+		System.err.println("Could not load default.sdl");
 		System.exit(1);
 	}
-	rt=new RayTracer(scn, 1, scala);
-	rt.setSize(size);
+	//System.out.println("Using following Reader: "+r);
+	try {
+		scn=(new SDL(r)).sdlScene();
+		//r.close();
+	} catch(Exception e) {
+		System.err.println(e);
+		System.exit(2);
+	}
+	//System.out.println("Using following Scene: "+scn);
+	rt=new RayTracer();
 	//if(savefile.length()>0)
 	//  rt.setSaveFile(savefile);
-	rt.init();
+	if(size==null)
+	  size=getSize();
+	rt.setSize(size);
+	rt.init(scn, 1 /*threads*/, size, scala, true);
 	setLayout(new BorderLayout());
 	add("Center", rt);
-}
+}  
 public static void main(String as[]) {
 	int dimX = 100, dimY = 100, scala = 5;
 	if (as.length >= 2) {
@@ -47,7 +70,7 @@ public static void main(String as[]) {
 	RT.init();
 	RT.start();
 	f.add("Center", RT);
-	f.setSize(dimX * scala + 20, dimY * scala + 40);
+	f.setSize(dimX + 20, dimY + 40);
 	f.show();
 	f.addWindowListener(new WindowAdapter() {
 		public void windowClosing(WindowEvent e) {

@@ -86,13 +86,16 @@ public double reflect(Vector p) {
  */
 public void scale(Vector i) {
 }
+public void texture(Texture t) {
+	c = t;
+}
 /**
  * translate method comment.
  */
 public void translate(Vector i) {
 }
 /**
- * value method comment.
+ * Figura blob sperimentale (non funzionante).
  */
 public double value(Vector p) {
 	double u=0.0;

@@ -1,4 +1,9 @@
+/**
+ * Scacchiera 3D di due sottomateriali. <br>
+ * Lo spazio viene diviso un cubi unitari alternativamente di due sottomateriali diversi.
+ */
 class TextureChecker extends Texture {
+	/** Array contenente i due sottomateriali */
   private Texture c[];
 TextureChecker(Texture a, Texture b) {
 	c = new Texture[2];

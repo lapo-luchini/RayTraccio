@@ -1,0 +1,118 @@
+/**
+ * Thread specializzato per applicare l'anti-aliasing a un'immagine già creata. <br>
+ * Viene utilizzato un metodo adattivo per calcolare solo i raggi necessari: per quei raggi che differiscono
+ * da un loro vicino di almeno 30 livelli di colore (sommando le differenze assolute delle tre componenti)
+ * vengono tracciati altri 8 raggi, posti in modo da formare nel suo intorno un reticolo 3x3 volte più denso,
+ * e il colore finale viene posto alla media di tutti e nove. <br>
+ * Il metodo potrebbe essere reso parametrico o addirittura ricorsivo per fargli tracciare con sempre più
+ * precisione l'edge tra i due colori (in modo da avere sfumature sempre più continue sui bordi). <br>
+ * Nota: a differenza della classe genitrice questa classe non supporta la ripartizione del proprio lavoro in
+ * più thread, anche perché (per immagini particolarmente grandi dove potrebbe servire) questa classe esegue un compito
+ * notevolmente più veloce,dovendo tracciare solo le aree dove c'è un edge.
+ * @author: Lapo Luchini <lapo@lapo.it>
+ */
+class RenderThreadAntiAlias extends RenderThread {
+	/** {@link BitSet BitSet} che indica a quali raggi della riga precedente va applicato l'antialias */
+	private java.util.BitSet bs_p;
+	/** {@link BitSet BitSet} che indica a quali raggi della riga corrente va applicato l'antialias */
+	private java.util.BitSet bs_a;
+/**
+ * RenderThreadAntiAlias constructor comment.
+ * @param s Scene
+ * @param sz java.awt.Dimension
+ * @param b int[]
+ * @param sr java.awt.image.MemoryImageSource
+ * @param act int
+ * @param num int
+ * @param rt RayTracer
+ */
+RenderThreadAntiAlias(Scene s, java.awt.Dimension sz, int[] b, RayTracer rt) {
+	super(s, sz, b, 0, 1, rt);
+	bs_p = new java.util.BitSet(sz.width);
+	bs_a = new java.util.BitSet(sz.width);
+}
+/**
+ * Insert the method's description here.
+ * Creation date: (15/02/2001 13.56.48)
+ * @return double
+ * @param a int
+ * @param b int
+ */
+private static int colorDiff(int a, int b) {
+	int u;
+	u =Math.abs(((a>>16)&0xFF)-((b>>16)&0xFF));
+	u+=Math.abs(((a>> 8)&0xFF)-((b>> 8)&0xFF));
+	u+=Math.abs(( a     &0xFF)-( b     &0xFF));
+	return u;
+}
+private void doLine(int j, java.util.BitSet bs, EyeRays r) {
+	int tmp;
+	Color c;
+	double t=1.0/3.0;
+	for (int i=1; (i<size.width)&&(running); i++)
+		if(bs.get(i)) {
+			tmp=j*size.width+i;
+			c=new Color(
+				((buff[tmp]>>16)&0xFF)/255.0,
+				((buff[tmp]>> 8)&0xFF)/255.0,
+				( buff[tmp]     &0xFF)/255.0
+			);
+			/*
+			//SUPERSAMPLING A 5
+			c.addU(scn.hit(r.specificRay(i-0.25, j-0.25)));
+			c.addU(scn.hit(r.specificRay(i-0.25, j+0.25)));
+			c.addU(scn.hit(r.specificRay(i+0.25, j-0.25)));
+			c.addU(scn.hit(r.specificRay(i+0.25, j+0.25)));
+			c.mulU(0.2);
+			*/
+			//SUPERSAMPLING A 9
+			c.addU(scn.hit(r.specificRay(i-t, j-t)));
+			c.addU(scn.hit(r.specificRay(i-t, j  )));
+			c.addU(scn.hit(r.specificRay(i-t, j+t)));
+			c.addU(scn.hit(r.specificRay(i  , j-t)));
+			c.addU(scn.hit(r.specificRay(i  , j+t)));
+			c.addU(scn.hit(r.specificRay(i+t, j-t)));
+			c.addU(scn.hit(r.specificRay(i+t, j  )));
+			c.addU(scn.hit(r.specificRay(i+t, j+t)));
+			c.mulU(1.0/9.0);
+			buff[tmp]=c.getARGB();
+			bs.clear(i); // così restano tutti a zero
+		}
+	rayt.doneLine(j);
+}
+public void run() {
+	int i, j, sizY=size.height/numCPU;
+	EyeRays r=new EyeRays(scn.eye,
+	                      scn.c.sub(scn.v.mul((double)actCPU/numCPU)),
+	                      scn.h,
+	                      Vector.ORIGIN.sub(scn.v),
+	                      size.width, size.height);
+	Color c;
+	int tmp;
+	java.util.BitSet bs_t;
+	status=0;
+	for (j=1; (j<size.height)&&(running); j++) {
+		// calcola quali vanno antialiasati
+		for (i=1; (i<size.width)&&(running); i++) {
+			if(colorDiff(buff[j*size.width+i], buff[j*size.width+i-1])>30) {
+				bs_a.set(i);
+				bs_a.set(i-1);
+			}
+			if(colorDiff(buff[j*size.width+i], buff[(j-1)*size.width+i])>30) {
+				bs_a.set(i);
+				bs_p.set(i);
+			}
+			//buff[j*size.width+i]=scn.hit(r).getARGB();
+		}
+		// antialiasa la riga precedente
+		doLine(j-1, bs_p, r);
+		bs_t=bs_p;
+		bs_p=bs_a;
+		bs_a=bs_t;
+		status++;
+	}
+	doLine(j-1, bs_p, r);
+	status=FINISHED;
+	//rayt.threadFinished(); NON deve avvertire, ora come ora
+}
+}

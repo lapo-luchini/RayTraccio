@@ -1,82 +1,74 @@
 /**
- * Inefficent but general object Transorm wrapper.
- * Creation date: (10/02/2001 18.55.16)
+ * Figura 'finta' che in realtà deforma lo spazio intorno ad una figura data.
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class ShapeTransform extends Shape3D {
+	/** Figura originale */
 	private Shape3D s;
-	private TransformMatrix t, ti;
+	/** Trasformazione da applicare, oppure <code>null</code> per non applicarne */
+	private TransformMatrix t;
+	/** Materiale da usare, oppure <code>null</code> per usare quello della figura originale */
+	private Texture c;
+	/** Valore di overturn (<code>+1</code>=non capovolgere, <code>-1</code>=capovolgi) */
 	private int ot=1;
+/**
+ * Crea un wrapper per l'oggetto passato senza specificare trasformazioni.
+ * @param a l'oggetto originale da usare
+ */
 ShapeTransform(Shape3D a) {
 	s = a;
-	t = ti = TransformMatrix.IDENTITY;
+	t = TransformMatrix.IDENTITY;
+	c = null;
 }
+/**
+ * Crea un wrapper per l'oggetto passato applicando una trasformazione.
+ * @param a l'oggetto originale da usare
+ * @param b la trasformazioneda usare
+ */
 ShapeTransform(Shape3D a, TransformMatrix b) {
 	s = a;
 	t = b.inv();
-	ti = b;
+	c = null;
 }
 /**
- * color method comment.
- */
-public Color color(Vector p) {
-	return(s.color(p.transform(t)));
-	//return(s.color(p));
-}
-/**
- * hit method comment.
+ * Calcola l'intersezione tra un dato raggio e la figura (questa versione non è ottimizzata).
+ * @param a il raggio voluto
  */
 public Hit hit(EyeRays a) {
-	//return(s.hit(a.transform(t)));
-	return(hit((Ray)a));
-}
-/**
- * hit method comment.
- */
-public Hit hit(Ray a) {
-	//return();
-	Hit h=s.hit(a.transform(t));
-	h.g=this;
-	h.r=a;
+	Hit h;
+	if(t == TransformMatrix.IDENTITY)
+		h=s.hit(a);
+	else
+		h=new HitTransform(s.hit(a.transform(t)), a, t, c);
 	return(h);
 }
-/**
- * normal method comment.
- */
-public Vector normal(Vector p) {
-	return(s.normal(p.transform(t)));
-	//return(s.normal(p));
+public Hit hit(Ray a) {
+	Hit h;
+	if(t == TransformMatrix.IDENTITY)
+		h=s.hit(a);
+	else
+		h=new HitTransform(s.hit(a.transform(t)), a, t, c);
+	return(h);
 }
-/**
- * overturn method comment.
- */
 public void overturn() {
 	ot = -ot;
 }
-/**
- * reflect method comment.
- */
-public double reflect(Vector p) {
-	return(s.reflect(p.transform(t)));
+public void rotate(Vector i) {
+	t=t.mul(TransformMatrix.Rotate(-i.x, -i.y, -i.z));
 }
-/**
- * scale method comment.
- */
 public void scale(Vector i) {
 	t=t.mul(TransformMatrix.Scale(1.0/i.x, 1.0/i.y, 1.0/i.z));
-	ti=t.inv();
 }
-/**
- * translate method comment.
- */
+public void texture(Texture t) {
+	c = t;
+}
 public void translate(Vector i) {
 	t=t.mul(TransformMatrix.Translate(-i.x, -i.y, -i.z));
-	ti=t.inv();
 }
-/**
- * value method comment.
- */
 public double value(Vector p) {
-	return(ot*s.value(p.transform(t)));
+	if(t == TransformMatrix.IDENTITY)
+		return(ot*s.value(p));
+	else
+		return(ot*s.value(t.transformVector(p)));
 }
 }

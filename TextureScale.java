@@ -1,5 +1,10 @@
+/**
+ * Materiale ottenuto ridimensionandone un'altro.
+ */
 class TextureScale extends Texture {
+	/** Materiale da ridimensionare */
   private Texture c;
+  /** Valore di ridimensionamento */
   private double z;
 TextureScale(Texture a, double b) {
 	c = a;

@@ -1,5 +1,10 @@
+/**
+ * Materiale sperimentale che macchietta un materiale dato (è brutto!).
+ */
 class TextureSpotted extends Texture {
+	/** Colore da macchiettare */
   private Texture c;
+	/** Prbabilità di macchiettamento */
   private double z;
   TextureSpotted(Texture a, double b) {
 	c=a;

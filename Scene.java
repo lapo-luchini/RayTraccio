@@ -2,21 +2,31 @@ import java.awt.*;
 import java.awt.image.*;
 import java.awt.event.*;
 
-/** Singola scena da visualizzare.
-  * La scena contiene un solo oggetto (questo non è un limite in quanto esiste l'oggetto CSG_Union)
-  */
+/**
+ * Singola scena da visualizzare. <br>
+ * Contiene tutti i parametri che definiscono il 'mondo virtuale' che si vuole rappresentare.
+ */
 class Scene {
+	/** Una singola figura (questo non è un limite in quanto esiste la figura {@link CSG_Union CSG_Union}) */
 	private Shape3D s;
+	/** Array di luci */
 	private Light l[] = new Light[3];
+	/** Numero di luci contenute nell'array */
 	private int numl = 0;
-	protected Vector eye, c, h, v;
-/** Crea una scena dati gli elementi.
-  * @params a oggetto contenuto nella scena
-  * @params ex posizione dell'occhio
-  * @params ox (???)
-  * @params hx (???)
-  * @params ratio (???)
-  */
+	/** Vettore posizione dell'<i>occhio</i> dell'osservatore */
+	protected Vector eye;
+	/** Vettore posizione del punto 'guardato' */
+	protected Vector c;
+	protected Vector h;
+	protected Vector v;
+/**
+ * Crea una scena dati gli elementi.
+ * @params a oggetto contenuto nella scena
+ * @params ex posizione dell'<i>occhio</i>
+ * @params ox punto 'guardato'
+ * @params hx vettore 'orizzonte'
+ * @params ratio proporzione orizzontale/vertiale
+ */
 Scene(Shape3D a, Vector ex, Vector ox, Vector hx, double ratio) {
 	s = a;
 	eye = ex;
@@ -25,13 +35,20 @@ Scene(Shape3D a, Vector ex, Vector ox, Vector hx, double ratio) {
 		h = hx.sub(ox.sub(ex).mul(1.0 / (hx.dot(ox.sub(ex)))));
 	else
 		h = hx;
-	v = ox.sub(ex).versU().cross(h).mulU(1.0 / ratio);
+	v = ox.sub(ex).vers().cross(h).mul(1.0 / ratio);
 	//System.out.println("SCENE INIT");
 	//System.out.println("E: "+eye);
 	//System.out.println("C: "+c);
 	//System.out.println("H: "+hx+" DOT:"+(1.0/hx.dot(ox.sub(ex)))+" -> "+h);
 	//System.out.println("V: "+v);
 }
+/**
+ * Aggiunge una luce alla scena. <br>
+ * Le luci sono contenute in un array la cui lunghezza è aumentata in modo dinamico
+ * per ottimizzare spazio occupato e velocità di aggiunta (in caso manchi spazio
+ * l'array viene aumentato del 50%+1).
+ * @param a la luce da aggiungere
+ */
 public void addLight(Light a) {
 	if (numl == l.length) {
 		Light old[] = l;
@@ -40,15 +57,21 @@ public void addLight(Light a) {
 	}
 	l[numl++] = a;
 }
-// non ottimizzato, ma conserva il tipo
+/**
+ * Calcola il colore intersecato dal raggio dato. <br>
+ * Identico a {@link hit(Ray) hit(Ray)} ma richiama i metodi
+ * {@link Shape3D.hit(EyeRays) hit(EyeRays)} delle figure, spesso ottimizzati.
+ * @param a raggio da intersecare
+ * @return colore del punto colpito
+ */
 public Color hit(EyeRays a) {
 	Hit h = s.hit(a);
 	Color c;
 	if (!h.h)
-		c = new Color(Color.BLACK); // mettere qua il cielo
+		c = Color.BLACK; // mettere qua il cielo
 	else {
 		if (h.reflect() > 0.999)
-			c = new Color(Color.BLACK);
+			c = Color.BLACK;
 		else
 			c = lighting(h.point(), h.normal());
 		if (h.reflect() > 0.001) {
@@ -58,20 +81,27 @@ public Color hit(EyeRays a) {
 			Hit hs = s.hit(rr);
 			if (hs.h && (hs.t > 1E-10))
 				nc = hs.color().mul(lighting(hs.point(), hs.normal()));
-			c.mulU(1.0 - h.reflect()).addU(nc.mul(h.reflect()));
+			c = c.mul(1.0 - h.reflect()).add(nc.mul(h.reflect()));
 		}
-		c.mulU(h.color()); // messo dopo per filtrare anche lo specchio
+		c = h.color().mul(c); // messo dopo per filtrare anche lo specchio
 	}
 	return (c);
 }
+/**
+ * Calcola il colore intersecato dal raggio dato. <br>
+ * Sono gestite le prime riflessioni e il 'cielo' (quando nessun oggetto viene colpito
+ * dal raggio) viene considerato nero.
+ * @param a raggio da intersecare
+ * @return colore del punto colpito
+ */
 public Color hit(Ray a) {
 	Hit h = s.hit(a);
 	Color c;
 	if (!h.h)
-		c = new Color(Color.BLACK); // mettere qua il cielo
+		c = Color.BLACK; // mettere qua il cielo
 	else {
 		if (h.reflect() > 0.999)
-			c = new Color(Color.BLACK);
+			c = Color.BLACK;
 		else
 			c = lighting(h.point(), h.normal());
 		if (h.reflect() > 0.001) {
@@ -81,27 +111,30 @@ public Color hit(Ray a) {
 			Hit hs = s.hit(rr);
 			if (hs.h && (hs.t > 1E-10))
 				nc = hs.color().mul(lighting(hs.point(), hs.normal()));
-			c.mulU(1.0 - h.reflect()).addU(nc.mul(h.reflect()));
+			c = c.mul(1.0 - h.reflect()).add(nc.mul(h.reflect()));
 		}
-		c.mulU(h.color()); // messo dopo per filtrare anche lo specchio
+		c = h.color().mul(c); // messo dopo per filtrare anche lo specchio
 	}
 	return (c);
 }
+/**
+ * Calcola l'illuminazione generata da tutte le luci. <br>
+ * Quando la scena non contiene luci viene calcolata un'illuminazione massima uniforme.
+ * @param p vettore posizione del punto voluto
+ * @param n vettore normale nel punto voluto
+ * @return colore dell'illuminazione nel punto voluto
+ */
 public Color lighting(Vector p, Vector n) {
 	if (numl == 0) // flat shading
 		return (Color.WHITE);
+	Ray rl;
 	Hit hl;
-	Vector t;
-	double dist;
-	Color c = new Color(Color.BLACK);
-	for (int i = 0; i < numl; i++) { // scorre le luci
-		hl = s.hit(new Ray(p, l[i].o)); // traccia raggi verso tutte le luci
-		if ((!hl.h) || (hl.t >= 1.0)) { // non c'è niente prima della luce o il primo hit è dopo la luce
-			t = hl.r.c;
-			dist = t.mod2();
-			t.mulU(1.0 / Math.sqrt(dist)); // lo rendo versore io, per non ricalcolare mod2()
-			c.addU(l[i].c.mul(n.dot(t)).mulU(l[i].p / dist));
-		}
+	Color c = Color.BLACK;
+	for (int i = 0; i < numl; i++) {
+		rl = new Ray(p, l[i].o);
+		hl = s.hit(rl);
+		if ((!hl.h) || (hl.t >= 1.0))
+			c = c.add(l[i].c.mul(n.dot(rl.c.vers())).mul(l[i].p / rl.c.mod2()));
 	}
 	return (c);
 }

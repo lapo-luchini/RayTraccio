@@ -1,7 +1,20 @@
+/**
+ * Figura astratta formata da un insieme di altre figure.
+ */
 abstract class CSG_Collection extends Shape3D {
+	/** Array di figure */
 	protected Shape3D[] s = new Shape3D[10];
+	/** Numero di figure contenute nell'array */
 	protected int n = 0;
-	protected int ot=1;
+	/** Valore di overturn (<code>+1</code>=non capovolgere, <code>-1</code>=capovolgi) */
+	protected int ot = 1;
+/**
+ * Aggiunge una figura alla collezione. <br>
+ * Le figure sono contenute in un array la cui lunghezza è aumentata in modo dinamico
+ * per ottimizzare spazio occupato e velocità di aggiunta (in caso manchi spazio
+ * l'array viene aumentato del 50%+1).
+ * @param a la luce da aggiungere
+ */
 public void add(Shape3D a) {
 	if (n == s.length) {
 		Shape3D old[] = s;
@@ -10,28 +23,10 @@ public void add(Shape3D a) {
 	}
 	s[n++] = a;
 }
-public Color color(Vector p) {
-	System.out.println("ILLEGAL COLOR");
-	return (Color.BLACK);
-}
-public Vector normal(Vector p) {
-	System.out.println("ILLEGAL NORMAL");
-	return (Vector.ORIGIN);
-}
 public void overturn() {
 	ot = -ot;
 }
-public double reflect(Vector p) {
-	System.out.println("ILLEGAL REFLECT");
-	return (0);
-}
-public void scale(Vector i) {
-	System.out.println("ILLEGAL SCALE");
-}
 public String toString() {
 	return ("CSG_Collection[" + n + " shapes]");
-}
-public void translate(Vector i) {
-	System.out.println("ILLEGAL TRANSLATE");
 }
 }

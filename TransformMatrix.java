@@ -1,8 +1,15 @@
-/** Matrice di trasformazione 3x3.
-  * Non sono possibili traslazioni.
+/** Matrice di trasformazione 4x4.
+  * Gestisce in realtà una matrice a dodici componenti di questo tipo:
+  * |a00 a01 a02 a03|
+  * |a04 a05 a06 a07|
+  * |a08 a09 a10 a11|
+  * | 0   0   0   1 |
+  * che può quindi essere utilizzato per rotazioni, traslazioni e altre trasformazioni.
   */
 class TransformMatrix {
+	/** Vettore con i valori della matrice (ordinati per righe) */
   protected double a[];
+	/** Matrice identità */
 	public static final TransformMatrix IDENTITY=new TransformMatrix();
 TransformMatrix() {
 	a=new double[12];
@@ -86,23 +93,23 @@ static TransformMatrix Rotate(double x, double y, double z) {
 static TransformMatrix RotateX(double r) {
 	//r=Math.toRadians(r); non va nei browser
 	r *= Math.PI / 180.0;
-	return (new TransformMatrix(1.0, 0.0, 0.0, 0.0,
-		                          0.0, Math.cos(r), Math.sin(r), 0.0,
+	return (new TransformMatrix(1.0,          0.0,         0.0, 0.0,
+		                          0.0,  Math.cos(r), Math.sin(r), 0.0,
 		                          0.0, -Math.sin(r), Math.cos(r), 0.0));
 }
 static TransformMatrix RotateY(double r) {
 	//r=Math.toRadians(r);
 	r *= Math.PI / 180.0;
 	return (new TransformMatrix(Math.cos(r), 0.0, -Math.sin(r), 0.0,
-		                          0.0, 1.0, 0.0, 0.0,
-		                          Math.sin(r), 0.0, Math.cos(r), 0.0));
+		                                  0.0, 1.0,          0.0, 0.0,
+		                          Math.sin(r), 0.0,  Math.cos(r), 0.0));
 }
 static TransformMatrix RotateZ(double r) {
 	//r=Math.toRadians(r);
 	r *= Math.PI / 180.0;
-	return (new TransformMatrix(Math.cos(r), Math.sin(r), 0.0, 0.0,
+	return (new TransformMatrix( Math.cos(r), Math.sin(r), 0.0, 0.0,
 		                          -Math.sin(r), Math.cos(r), 0.0, 0.0,
-		                          0.0, 0.0, 1.0, 0.0));
+		                                   0.0,         0.0, 1.0, 0.0));
 }
 static TransformMatrix Scale(double x, double y, double z) {
 	return (new TransformMatrix(x, 0.0, 0.0, 0.0,
@@ -116,6 +123,32 @@ public String toString() {
 		a[ 8]+","+a[ 9]+","+a[10]+","+a[11]+"|"+
 		"0,0,0,1"+
 	"]");
+}
+/**
+ * Trasforma la normale data.
+ * @param v normale da usare
+ * @return un nuovo oggetto <code>Vector</code> dal valore Trasposto(A).v
+ */
+public Vector transformNormal(Vector v) {
+	return (new Vector(
+		a[ 0]*v.x+a[ 4]*v.y+a[ 8]*v.z,
+		a[ 1]*v.x+a[ 5]*v.y+a[ 9]*v.z,
+		a[ 2]*v.x+a[ 6]*v.y+a[10]*v.z
+		/* 1 */
+	));
+}
+/**
+ * Trasforma il vettore dato.
+ * @param v vettore da usare
+ * @return un nuovo oggetto <code>Vector</code> dal valore A.v
+ */
+public Vector transformVector(Vector v) {
+	return (new Vector(
+		a[ 0]*v.x+a[ 1]*v.y+a[ 2]*v.z+a[ 3],
+		a[ 4]*v.x+a[ 5]*v.y+a[ 6]*v.z+a[ 7],
+		a[ 8]*v.x+a[ 9]*v.y+a[10]*v.z+a[11]
+		/* 1 */
+	));
 }
 static TransformMatrix Translate(double x, double y, double z) {
 	return (new TransformMatrix(1, 0.0, 0.0, x,

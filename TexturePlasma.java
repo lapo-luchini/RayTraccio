@@ -1,5 +1,10 @@
+/**
+ * Materiale sperimentale che mixa due materiali secondo un frattale del tipo 'Plasma'.
+ */
 class TexturePlasma extends Texture {
+	/** Array contenente i due sottomateriali */
   private Texture c[];
+	/** Matrice contenente il plasma precalcolato (non mi piace che abbia una risoluzione fissata) */
   private short v[][];
 TexturePlasma(Texture a, Texture d) {
 	c = new Texture[2];

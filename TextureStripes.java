@@ -1,4 +1,9 @@
+/**
+ * Strati alternati di due sottomateriali. <br>
+ * Lo spazio viene diviso in strati di spessore unitario lungo l'asse Y alternativamente di due sottomateriali diversi.
+ */
 class TextureStripes extends Texture {
+	/** Array contenente i due sottomateriali */
   private Texture c[];
 TextureStripes(Texture a, Texture b) {
 	c = new Texture[2];

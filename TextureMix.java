@@ -1,5 +1,10 @@
+/**
+ * Mix di due sottomateriali.
+ */
 class TextureMix extends Texture {
+	/** Array contenente i due sottomateriali */
   private Texture c[];
+	/** Array contenente i valori di frazione del sottomateriale rispettivo */
   private double v[];
 TextureMix(Texture a, double b, Texture d, double e) {
 	c = new Texture[2];

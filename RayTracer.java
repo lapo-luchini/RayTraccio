@@ -1,50 +1,75 @@
 import java.awt.*;
 import java.awt.image.*;
 import java.awt.event.*;
-
 class RayTracer extends Component {
-  public String VERSION="RayTraccio 0.999b (c)1999 Lapo Luchini";
-  private Dimension size;
-  private Image img;
-  private int buff[];
-  private MemoryImageSource src;
-  private Scene scn;
-  private int numCPU, scale;
-  private RenderThread t[];
-RayTracer(Scene s, int n, int sc) {
-	scn = s;
-	numCPU = n;
-	scale = sc;
+	public String VERSION = "RayTraccio 0.999b (c)2001 Lapo Luchini";
+	/** Oggetto immagine */
+	private MemoryImageSource src = null;
+	private RenderThread t[] = null;
+	private Image img = null;
+	private int scale;
+	private java.awt.Dimension renderSize = new Dimension(100, 100);
+	private RenderThreadAntiAlias t_aa;
+RayTracer() {
 }
-public void init() {
-	int i, j;
-	size = getSize();
-	buff = new int[size.width * size.height];
-	src = new MemoryImageSource(size.width, size.height, buff, 0, size.width);
+void doneLine(int l) { // non lo sincronizzo tanto non è grave se fa casino, e rallenta troppo se no
+	//if (l > line)
+	//	line = l;
+	src.newPixels(0, l, renderSize.width, 1); // aggiorna l'immagine riga per riga
+}
+public Dimension getMinimumSize() {
+	return(renderSize);
+}
+public Dimension getPreferredSize() {
+	return(renderSize);
+}
+public void init(Scene scene, int numCPU, Dimension size, int scale, boolean antialias) {
+	renderSize = size;
+	setSize(size);
+	renderSize.width /= scale;
+	renderSize.height /= scale;
+	this.scale = scale;
+	int buff[] = new int[renderSize.width * renderSize.height];
+	src = new MemoryImageSource(renderSize.width, renderSize.height, buff, 0, renderSize.width);
 	src.setAnimated(true);
 	img = createImage(src);
-	for (j = 0; j < size.height; j++)
-		for (i = 0; i < size.width; i++)
-			buff[j * size.width + i] = 0xFF7F7F7F;
+	for (int j = 0; j < renderSize.height; j++)
+		for (int i = 0; i < renderSize.width; i++)
+			buff[j * renderSize.width + i] = 0xFF7F7F7F;
+	if (t != null)
+		this.stop();
 	t = new RenderThread[numCPU];
-	for (i = 0; i < numCPU; i++)
-		t[i] = new RenderThread(scn, size, buff, src, i, numCPU);
+	for (int i = 0; i < numCPU; i++)
+		t[i] = new RenderThread(scene, renderSize, buff, i, numCPU, this);
+	if (antialias)
+		t_aa = new RenderThreadAntiAlias(scene, renderSize, buff, this);
+	else
+		t_aa = null;
 }
 public void paint(Graphics g) {
-	if (scale == 1)
-		g.drawImage(img, 0, 0, this);
-	else
-		g.drawImage(img, 0, 0, size.width * scale, size.height * scale, this);
-	g.drawString(VERSION, 10, size.height * scale - 10);
+	if (img != null)
+		g.drawImage(img, 0, 0, renderSize.width * scale, renderSize.height * scale, this);
+	//g.drawString(VERSION, 10, getSize().height - 10);
 }
 public void start() {
-	int i;
-	for (i = 0; i < numCPU; i++)
+	for (int i = 0; i < t.length; i++)
 		t[i].start();
 }
 public void stop() {
 	int i;
-	for (i = 0; i < numCPU; i++)
+	for (i = 0; i < t.length; i++)
+		t[i].requestToStop();
+	for (i = 0; i < t.length; i++)
 		t[i] = null;
+}
+synchronized protected void threadFinished() {
+	if (t_aa==null)
+		return;
+	for (int i = 0; i < t.length; i++)
+		if (t[i].getStatus() != RenderThread.FINISHED)
+			return;
+	// tutti hanno finito, è ora di fare l'antialiasing
+	this.stop();
+	t_aa.start();
 }
 }

@@ -1,26 +1,49 @@
+/**
+ * Quadrica generica. <br>
+ * Equazione: <code>k0*x²+k1*xy+k2*y²+k3*xz+k4*yz+k5*z²+k6*x+k7*y+k8*z+k9=0</code>
+ */
 class Quadric extends Shape3D {
   // ax²+bxy+cy²+dxz+eyz+fz²+gx+hy+iz+l=0
   // | a ½b ½d|
   // |½b  c ½e|
   // |½d ½e  f|
-  public static double SFERA[]={ 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,-1.0},
-	                     CIL_X[]={ 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,-1.0},
-	                     CIL_Y[]={ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,-1.0},
-	                     CIL_Z[]={ 1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,-1.0},
-	                    CONO_X[]={-1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0},
-	                    CONO_Y[]={ 1.0, 0.0,-1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0},
-	                    CONO_Z[]={ 1.0, 0.0, 1.0, 0.0, 0.0,-1.0, 0.0, 0.0, 0.0, 0.0},
-	                    PARA_X[]={ 0.0, 0.0, 1.0, 0.0, 0.0, 1.0,-1.0, 0.0, 0.0, 0.0},
-	                    PARA_Y[]={ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0,-1.0, 0.0, 0.0},
-	                    PARA_Z[]={ 1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0,-1.0, 0.0},
-	                     IPE_Y[]={ 1.0, 0.0,-1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,-1.0};
-  private double k[]; // i 10 coefficenti della quadrica k[0-9]={a, b, c, d, e, f, g, h, i, l}
-  private Texture c; // texure della quadrica
+  /** Parametri standard di una sfera unitaria centrata nell'origne. */
+	public static double SFERA[]= { 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,-1.0};
+  /** Parametri standard di un cilindro unitario centrato sull'asse X. */
+	public static double CIL_X[]= { 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,-1.0};
+  /** Parametri standard di un cilindro unitario centrato sull'asse Y. */
+	public static double CIL_Y[]= { 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,-1.0};
+  /** Parametri standard di un cilindro unitario centrato sull'asse Z. */
+	public static double CIL_Z[]= { 1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,-1.0};
+  /** Parametri standard di un cono unitario centrato sull'asse X. */
+	public static double CONO_X[]={-1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0};
+  /** Parametri standard di un cono unitario centrato sull'asse Y. */
+	public static double CONO_Y[]={ 1.0, 0.0,-1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0};
+  /** Parametri standard di un cono unitario centrato sull'asse Z. */
+	public static double CONO_Z[]={ 1.0, 0.0, 1.0, 0.0, 0.0,-1.0, 0.0, 0.0, 0.0, 0.0};
+  /** Parametri standard di un paraboloide non rigato unitario centrato sull'asse X. */
+	public static double PARA_X[]={ 0.0, 0.0, 1.0, 0.0, 0.0, 1.0,-1.0, 0.0, 0.0, 0.0};
+  /** Parametri standard di un paraboloide non rigato unitario centrato sull'asse Y. */
+	public static double PARA_Y[]={ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0,-1.0, 0.0, 0.0};
+  /** Parametri standard di un paraboloide non rigato unitario centrato sull'asse Z. */
+	public static double PARA_Z[]={ 1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0,-1.0, 0.0};
+  /** Parametri standard di un iperboloide rigato unitario centrato sull'asse Y. */
+	public static double IPE_Y[]= { 1.0, 0.0,-1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,-1.0};
+	/** I 10 parametri della quadrica */
+	private double k[];
+	/** Materiale della quarica */
+  private Texture c;
+	/** OTTIMIZAZIONE: origine dei dati cachati */
 	private Vector b_o=new Vector(1E30, 1E30, 1E30);
+	/** OTTIMIZAZIONE: parametro cachato */
 	private double b_tc, b_tbA, b_tbB, b_tbC, b_tbINC;
+	/** STATISTICA: numero di raggi intersecati */
 	protected static transient int stat_numrays;
+	/** STATISTICA: numero di raggi intersecati */
 	protected static transient int stat_numeyerays;
+	/** STATISTICA: numero di raggi cachati */
 	protected static transient int stat_numcachedrays;
+	/** STATISTICA: numero di effettive intersezioni */
 	protected static transient int stat_numhits;
 Quadric(double a[], Texture b) {
 	if (a.length != 10)
@@ -42,7 +65,7 @@ public Hit hit(EyeRays a) {
 	double tc, ta;
 	byte i;
 	stat_numeyerays++;
-	if(b_o==a.o) {
+	if((b_o==a.o)&&(a.cnt!=0)) {
 		stat_numcachedrays++;
 	  tc=b_tc;
 	  //tb=b_tbx*a.c.x+b_tby*a.c.y+b_tbz*a.c.z;
@@ -153,19 +176,24 @@ public void scale(Vector i) {
 	// X=zx*x     x=X/zx
 	// Y=zy*y ==> y=Y/zy
 	// Z=zz*z     z=Z/zz
-	i.x = 1.0 / i.x;
-	i.y = 1.0 / i.y;
-	i.z = 1.0 / i.z;
-	k[0] *= i.x * i.x;
-	k[1] *= i.x * i.y;
-	k[2] *= i.y * i.y;
-	k[3] *= i.x * i.z;
-	k[4] *= i.y * i.z;
-	k[5] *= i.z * i.z;
-	k[6] *= i.x;
-	k[7] *= i.y;
-	k[8] *= i.z;
+	double ix, iy, iz;
+	ix = 1.0 / i.x;
+	iy = 1.0 / i.y;
+	iz = 1.0 / i.z;
+	k[0] *= ix * ix;
+	k[1] *= ix * iy;
+	k[2] *= iy * iy;
+	k[3] *= ix * iz;
+	k[4] *= iy * iz;
+	k[5] *= iz * iz;
+	k[6] *= ix;
+	k[7] *= iy;
+	k[8] *= iz;
 }
+/**
+ * Crea una stringa contenente le statistiche di uso degli oggetti di questa classe
+ * @return stringa di statistiche
+ */
 public static String stats() {
 	return("QUADRIC\n"+
 	       "Number of rays:        "+stat_numrays+"\n"+
@@ -173,11 +201,18 @@ public static String stats() {
 	       "Number of cached rays: "+stat_numcachedrays+" ("+((stat_numcachedrays*100.0)/(stat_numrays+stat_numeyerays))+"%)\n"+
 	       "Number of hits:        "+stat_numhits+" ("+((stat_numhits*100.0)/(stat_numrays+stat_numeyerays))+"%)");
 }
+public void texture(Texture t) {
+	c = t;
+}
+/**
+ * Rappresentazione testuale dell'oggetto. <br>
+ * Esempio: <code>Quadric[[0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,TexturePlain[Color[1.0,0.0,0.0],0.0]]]</code> <br>
+ */
 public String toString() {
 	String u = "Quadric[";
 	for (int i = 0; i < 10; i++)
 		u += k[i] + ",";
-	u += "tx:" + c + "]";
+	u += c + "]";
 	return (u);
 }
 public void translate(Vector i) {
