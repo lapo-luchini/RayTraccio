@@ -181,7 +181,7 @@ class TextureChecker extends Texture {
     c[1]=b;
   }
   public Color color(Vector p) {
-    return(c[(((int)p.x)^((int)p.y)^((int)p.z))&1].color(p));
+    return(c[(((int)(p.x))^((int)p.y)^((int)p.z))&1].color(p));
   }
   public double reflect(Vector p) {
     return(c[(((int)p.x)^((int)p.y)^((int)p.z))&1].reflect(p));
@@ -259,25 +259,33 @@ class Hit {
 abstract class Shape3D {
   abstract public Hit hit(Ray a);
   abstract public Vector normal(Vector p);
+  abstract public double value(Vector p);
   abstract public Color color(Vector p);
   abstract public double reflect(Vector p);
   abstract public void scale(Vector i);
   abstract public void translate(Vector i);
 }
 
-class Quadrica extends Shape3D {
+class Quadric extends Shape3D {
   // ax²+bxy+cy²+dxz+eyz+fz²+gx+hy+iz+l=0
   // | a ½b ½d|
   // |½b  c ½e|
   // |½d ½e  f|
-  public static double SFERA[]={1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,-1.0},
-                       CIL_X[]={0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,-1.0},
-                       CIL_Y[]={1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,-1.0},
-                       CIL_Z[]={1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,-1.0},
-                   IPE_RIG_Y[]={1.0, 0.0,-1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,-1.0};
+  public static double SFERA[]={ 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,-1.0},
+                       CIL_X[]={ 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,-1.0},
+                       CIL_Y[]={ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,-1.0},
+                       CIL_Z[]={ 1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,-1.0},
+                      CONO_X[]={-1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0},
+                      CONO_Y[]={ 1.0, 0.0,-1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0},
+                      CONO_Z[]={ 1.0, 0.0, 1.0, 0.0, 0.0,-1.0, 0.0, 0.0, 0.0, 0.0},
+                      PARA_X[]={ 0.0, 0.0, 1.0, 0.0, 0.0, 1.0,-1.0, 0.0, 0.0, 0.0},
+                      PARA_Y[]={ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0,-1.0, 0.0, 0.0},
+                      PARA_Z[]={ 1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0,-1.0, 0.0},
+                   IPE_Y[]={ 1.0, 0.0,-1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,-1.0},
+                       PIPPO[]={ 1.0, 0.0,-1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,-1.0};
   private double k[];
   private Texture c;
-  Quadrica(double a[], Texture b) {
+  Quadric(double a[], Texture b) {
     if(a.length!=10)
       throw(new NumberFormatException("Requires a 10 elements array"));      
     c=b;
@@ -287,7 +295,7 @@ class Quadrica extends Shape3D {
     System.arraycopy(a, 0, k, 0, 10);
   }
   public String toString() {
-    String u="Quadrica[";
+    String u="Quadric[";
     for(int i=0; i<10; i++)
       u+=k[i]+",";
     u+="texture:"+c+"]";
@@ -329,18 +337,8 @@ class Quadrica extends Shape3D {
     if (delta>=0.0) {
       double rdelta=Math.sqrt(delta);
       ta*=2.0;
-      //u.addT((-tb-rdelta)/ta);
-      //u.addT((-tb+rdelta)/ta);
-      //u.h=true;
-      if (ta>0.0) // voglio ritorni l'hit più vicino
-        u.addT((-tb-rdelta)/ta);
-      else
-        u.addT((-tb+rdelta)/ta);
-      //u.h=true;
-      //if(ta>0.0) // voglio ritorni l'hit più vicino
-      //  u.t=(-tb-rdelta)/ta;
-      //else
-      //  u.t=(-tb+rdelta)/ta;
+      u.addT((-tb-rdelta)/ta);
+      u.addT((-tb+rdelta)/ta);
       u.g=this;
       u.r=a;
     }
@@ -355,6 +353,10 @@ class Quadrica extends Shape3D {
       2.0*k[0]*p.x+k[1]*p.y+k[3]*p.z+k[6],
       k[1]*p.x+2.0*k[2]*p.y+k[4]*p.z+k[7],
       k[3]*p.x+k[4]*p.y+2.0*k[5]*p.z+k[8]).vers());
+  }
+  public double value(Vector p) {
+    // ax²+bxy+cy²+dxz+eyz+fz²+gx+hy+iz+l
+    return(k[0]*p.x*p.x+k[1]*p.x*p.y+k[2]*p.y*p.y+k[3]*p.x*p.z+k[4]*p.y*p.z+k[5]*p.x+k[6]*p.y+k[7]*p.z+k[8]);
   }
   public Color color(Vector p) {
     return(c.color(p));
@@ -392,13 +394,12 @@ class Quadrica extends Shape3D {
     // Y =bx+2cy+ez+h
     // Z =dx+ey+2fz+i
     //   =ax²+bxy+cy²+dzx+ezy+fz²+gx+hy+iz+l
-    i=i.mul(-1.0);
     k[9]+=(k[0]*i.x*i.x)+(k[2]*i.y*i.y)+(k[5]*i.z*i.z)+ // prima perché‚ usa 678
-          (k[1]*i.x*i.y)+(k[3]*i.x*i.z)+(k[4]*i.y*i.z)+
+          (k[1]*i.x*i.y)+(k[3]*i.x*i.z)+(k[4]*i.y*i.z)-
           (k[6]*i.x)+(k[7]*i.y)+(k[8]*i.z);
-    k[6]+=(2*k[0]*i.x)+(k[1]*i.y)+(k[3]*i.z);
-    k[7]+=(k[1]*i.x)+(2*k[2]*i.y)+(k[4]*i.z);
-    k[8]+=(k[3]*i.x)+(k[4]*i.y)+(2*k[5]*i.z);
+    k[6]-=(2*k[0]*i.x)+(k[1]*i.y)+(k[3]*i.z);
+    k[7]-=(k[1]*i.x)+(2*k[2]*i.y)+(k[4]*i.z);
+    k[8]-=(k[3]*i.x)+(k[4]*i.y)+(2*k[5]*i.z);
   }
 }
 
@@ -417,7 +418,6 @@ class Plane extends Shape3D {
     n=new Vector(a[0], a[1], a[2]);
     d=a[3]/n.mod(); // scala la costante perché non cambi nulla se n è versore
     n=n.vers();
-    //System.out.println(n+" "+d);
   }
   public Hit hit(Ray a) {
     // ax+by+cz+d=0
@@ -428,7 +428,6 @@ class Plane extends Shape3D {
     Hit u=new Hit();
     double t=n.dot(a.c);
     if(t!=0.0) {
-      //System.out.println((-(d+n.dot(a.o))/t)+"="+n+"*\n"+a.o+" "+n.dot(a.o)+"\n"+a.c+" "+n.dot(a.c));
       u.addT(-(d+n.dot(a.o))/t);
       u.g=this;
       u.r=a;
@@ -437,6 +436,10 @@ class Plane extends Shape3D {
   }
   public Vector normal(Vector p) {
     return(n);
+  }
+  public double value(Vector p) {
+    // ax+by+cz+d
+    return(n.dot(p)+d);
   }
   public Color color(Vector p) {
     return(c.color(p));
@@ -451,8 +454,11 @@ class Plane extends Shape3D {
 }
 
 class CSG_Union extends Shape3D {
-  private Shape3D[] s=new Shape3D[10];
+  private Shape3D[] s;
   private int n=0;
+  CSG_Union(int maxs) {
+    s=new Shape3D[maxs];
+  }
   public void add(Shape3D a) {
     s[n++]=a;
   }
@@ -472,6 +478,10 @@ class CSG_Union extends Shape3D {
     System.out.println("ILLEGAL NORMAL");
     return(Vector.ORIGIN);
   }
+  public double value(Vector p) {
+    System.out.println("ILLEGAL VALUE");
+    return(0); // FARE!!
+  }
   public Color color(Vector p) {
     System.out.println("ILLEGAL COLOR");
     return(Color.BLACK);
@@ -488,6 +498,51 @@ class CSG_Union extends Shape3D {
   }
 }
 
+/*class CSG_Intersection extends Shape3D {
+  private Shape3D[] s;
+  private int n=0;
+  CSG_Union(int maxs) {
+    s=new Shape3D[maxs];
+  }
+  public void add(Shape3D a) {
+    s[n++]=a;
+  }
+  public Hit hit(Ray a) {
+    Hit l=s[0].hit(a), z;
+    int i;
+    for(i=1; i<n; i++) {
+      z=s[i].hit(a);
+      if(z.h)
+        if(z.t>1E-10)
+          if((z.t<l.t)||(!l.h))
+            l=z;
+    }
+    return(l);
+  }
+  public Vector normal(Vector p) {
+    System.out.println("ILLEGAL NORMAL");
+    return(Vector.ORIGIN);
+  }
+  public double value(Vector p) {
+    System.out.println("ILLEGAL VALUE");
+    return(0); // FARE!!
+  }
+  public Color color(Vector p) {
+    System.out.println("ILLEGAL COLOR");
+    return(Color.BLACK);
+  }
+  public double reflect(Vector p) {
+    System.out.println("ILLEGAL REFLECT");
+    return(0);
+  }
+  public void scale(Vector i) {
+    System.out.println("ILLEGAL SCALE");
+  }
+  public void translate(Vector i) {
+    System.out.println("ILLEGAL TRANSLATE");
+  }
+}*/
+
 class Scene {
   private Shape3D s;
   private Light l;
@@ -501,34 +556,30 @@ class Scene {
     Hit h=s.hit(a);
     Color c;
     if(!h.h)
-      c=Color.BLACK;
+      c=Color.BLACK; // mettere qua il cielo
     else {
       Ray rl=new Ray(h.point(), l.o);
       Hit hl=s.hit(rl);
-      if(hl.h)
+      if((hl.h)&&(hl.t<1.0)) // se c'è qualcosa PRIMA della luce
         c=Color.BLACK;
-      else {
-        //System.out.println(h.normal());
-        if(h.reflect()<0.999)
-          c=l.c.mul(h.normal().dot(rl.c.vers())).mul(l.p/rl.c.mod());
-        else
-          c=Color.BLACK;
-        if(h.reflect()>0.001) {
-          Color nc=Color.BLACK;
-          Ray rr=new Ray(h.point(), Vector.ORIGIN);
-          rr.c=a.c.mirror(h.normal());
-          Hit hs=s.hit(rr);
-          if(hs.h&&(hs.t>1E-10)) {
-            Ray rls=new Ray(hs.point(), l.o);
-            nc=l.c.mul(hs.normal().dot(rls.c.vers())).mul(l.p/rls.c.mod());
-            nc=hs.color().mul(nc);
-            //c=c.mul(1.0-h.reflect()).add(nc.mul(h.reflect()));
-          }
-          c=c.mul(1.0-h.reflect()).add(nc.mul(h.reflect()));
+      else if(h.reflect()>0.999)
+        c=Color.BLACK;
+      else
+        c=l.c.mul(h.normal().dot(rl.c.vers())).mul(l.p/rl.c.mod2());
+      if(h.reflect()>0.001) {
+        Color nc=Color.BLACK; // anche qua il cielo
+        Ray rr=new Ray(h.point(), Vector.ORIGIN);
+        rr.c=a.c.mirror(h.normal());
+        Hit hs=s.hit(rr);
+        if(hs.h&&(hs.t>1E-10)) {
+          Ray rls=new Ray(hs.point(), l.o);
+          nc=l.c.mul(hs.normal().dot(rls.c.vers())).mul(l.p/rls.c.mod2());
+          nc=hs.color().mul(nc);
         }
-        c=h.color().mul(c); // messo dopo per filtrare anche lo specchio
-        // c=h.color(); // FLAT SHADED
+        c=c.mul(1.0-h.reflect()).add(nc.mul(h.reflect()));
       }
+      c=h.color().mul(c); // messo dopo per filtrare anche lo specchio
+      //c=h.color(); // FLAT SHADED
     }
     return(c);
   }
@@ -606,6 +657,7 @@ class RayTracer extends Component {
       t[i]=null;
   }
   public void paint(Graphics g) {
+    //g.drawImage(img, 0, 0, this);
     g.drawImage(img, 0, 0, size.width*scale, size.height*scale, this);
   }
 }
@@ -620,41 +672,50 @@ public class RayTraccio extends Applet {
     scala=sc;
   }
   public void init() {
-    Quadrica q1=new Quadrica(Quadrica.SFERA,
-                             new TextureScale(
-                               new TextureStrip(
-                                 new TexturePlain(Color.CYAN, 0.0),
-                                 new TexturePlain(Color.RED, 0.0)),
-                               0.1)),
-             q2=new Quadrica(Quadrica.CIL_Y,
-                             new TexturePlain(Color.RED, 0.3)),
-             q3=new Quadrica(Quadrica.IPE_RIG_Y,
-                             new TextureScale(
-                               new TextureChecker(
-                                 new TexturePlain(Color.BLUE, 0.0),
-                                 new TexturePlain(Color.YELLOW, 0.0)),
-                             0.2)),
-             q4=new Quadrica(Quadrica.SFERA,
-                             new TexturePlain(Color.PURPLE, 0.0));
-    Plane p=new Plane(Plane.PIPPO, new TexturePlain(Color.WHITE, 0.5));
-    q1.scale(new Vector(1.2, 1.0, 0.8));
-    q1.translate(new Vector(1.0, 1.0, 0.0));
-    q2.scale(new Vector(0.5, 0.5, 0.5));
-    q2.translate(new Vector(-1.0, 0.0, -0.5));
-    q3.scale(new Vector(0.25, 0.25, 0.25));
-    q4.scale(new Vector(0.2, 0.2, 0.2));
-    q4.translate(new Vector(0.5, 0.0, -2.0));
-    CSG_Union q=new CSG_Union();
-    q.add(p);
-    q.add(q1);
-    q.add(q2);
-    q.add(q3);
-    q.add(q4);
-    //Quadrica q=new Quadrica(Quadrica.PIPPO, new TexturePlain(Color.RED));
-    Light l=new Light(new Vector(1.0, 3.0, -5.0), Color.WHITE, 5.0),
+    CSG_Union u=new CSG_Union(10);
+    Shape3D t;
+    u.add(new Plane(Plane.PIPPO, new TexturePlain(Color.WHITE, 0.5)));
+    t=new Quadric(Quadric.SFERA,
+                  new TextureScale(
+                    new TextureStrip(
+                      new TexturePlain(Color.CYAN, 0.0),
+                      new TexturePlain(Color.RED, 0.0)),
+                  0.1));
+    t.scale(new Vector(1.2, 1.0, 0.8));
+    t.translate(new Vector(1.0, 1.0, 0.0));
+    u.add(t);
+    t=new Quadric(Quadric.CIL_Y,
+                  new TexturePlain(Color.RED, 0.3));
+    t.scale(new Vector(0.25, 0.25, 0.25));
+    t.translate(new Vector(-1.0, 0.0, -1.0));
+    u.add(t);
+    t=new Quadric(Quadric.IPE_Y,
+                  new TextureScale(
+                    new TextureChecker(
+                      new TexturePlain(Color.BLUE, 0.0),
+                      new TexturePlain(Color.YELLOW, 0.0)),
+                  0.2));
+    t.scale(new Vector(0.25, 0.25, 0.25));
+    u.add(t);
+    t=new Quadric(Quadric.SFERA,
+                  new TexturePlain(Color.PURPLE, 0.0));
+    t.scale(new Vector(0.2, 0.2, 0.2));
+    t.translate(new Vector(0.5, 0.0, -2.0));
+    u.add(t);
+    t=new Quadric(Quadric.PARA_Y,
+                  new TexturePlain(Color.GREEN, 0.0));
+    t.scale(new Vector(0.5,-1.0, 0.5));
+    t.translate(new Vector(-0.4, 0.0,-2.5));
+    u.add(t);
+    //t=new Quadric(Quadric.SFERA,
+    //              new TexturePlain(Color.GREEN, 0.0));
+    //t.scale(new Vector(10.0, 10.0, 10.0));
+    //t.translate(new Vector(0.0, 0.0, -5.0));
+    //u.add(t);
+    Light l=new Light(new Vector(1.0, 3.0, -5.0), Color.WHITE, 20.0),
           l2=new Light(new Vector(-1.0, 2.0, -4.0), Color.YELLOW, 3.0);
     Vector eye=new Vector(0.0, 0.0, -5.0);
-    scn=new Scene(q, l, eye);
+    scn=new Scene(u, l, eye);
     if(size==null)
       size=getSize();
     rt=new RayTracer(scn, 1, scala);
@@ -703,7 +764,7 @@ public class RayTraccio extends Applet {
     f.addWindowListener(new MyAdapter());
   }
   public String getAppletInfo() {
-    return("RayTraccio 0.96\r\n"+
+    return("RayTraccio 0.97\r\n"+
            "(c)1999 Lapo Luchini");
   }
   //fare più luci!!
