@@ -299,6 +299,27 @@ class TextureStripes extends Texture {
   }
 }
 
+class TextureSpotted extends Texture {
+  private Texture c;
+  private double z;
+  TextureSpotted(Texture a, double b) {
+    c=a;
+    z=b;
+  }
+  public Color color(Vector p) {
+    if(Math.random()<z)
+      return(Color.BLACK);
+    else
+      return(c.color(p));
+  }
+  public double reflect(Vector p) {
+    return(c.reflect(p));
+  }
+  public String toString() { 
+    return("TextureSpotted["+c+","+z+"]");
+  }
+}
+
 class TextureScale extends Texture {
   private Texture c;
   private double z;
@@ -720,11 +741,11 @@ class CSG_Intersection extends CSG_Collection {
 
 class Scene {
   private Shape3D s;
-  private Light l;
+  private Light l[]=new Light[3];
+  private int numl=0;
   protected Vector eye, c, h, v;
-  Scene(Shape3D a, Light b, Vector ex, Vector ox, Vector hx, double ratio) {
+  Scene(Shape3D a, Vector ex, Vector ox, Vector hx, double ratio) {
     s=a;
-    l=b;
     eye=ex;
     c=ox;
     if(hx.dot(ox.sub(ex))!=0.0)
@@ -738,34 +759,48 @@ class Scene {
     //System.out.println("H: "+hx+" DOT:"+(1.0/hx.dot(ox.sub(ex)))+" -> "+h);
     //System.out.println("V: "+v);
   }
+  public void addLight(Light a) {
+    if(numl==l.length) {
+      Light old[]=l;
+      l=new Light[(l.length*3)/2+1]; // dimensione ispirata da ArrayList.java
+      System.arraycopy(old, 0, l, 0, numl);
+    }
+    l[numl++]=a;
+  }
+  public Color lighting(Vector p, Vector n) {
+    if(numl==0) // flat shading
+      return(Color.WHITE);
+    Ray rl;
+    Hit hl;
+    Color c=Color.BLACK;
+    for(int i=0; i<numl; i++) {
+      rl=new Ray(p, l[i].o);
+      hl=s.hit(rl);
+      if((!hl.h)||(hl.t>=1.0))
+        c=c.add(l[i].c.mul(n.dot(rl.c.vers())).mul(l[i].p/rl.c.mod2()));
+    }
+    return(c);
+  }
   public Color hit(Ray a) {
     Hit h=s.hit(a);
     Color c;
     if(!h.h)
       c=Color.BLACK; // mettere qua il cielo
     else {
-      Ray rl=new Ray(h.point(), l.o);
-      Hit hl=s.hit(rl);
-      if((hl.h)&&(hl.t<1.0)) // se c'è qualcosa PRIMA della luce
-        c=Color.BLACK;
-      else if(h.reflect()>0.999)
+      if(h.reflect()>0.999)
         c=Color.BLACK;
       else
-        c=l.c.mul(h.normal().dot(rl.c.vers())).mul(l.p/rl.c.mod2());
+        c=lighting(h.point(), h.normal());
       if(h.reflect()>0.001) {
         Color nc=Color.BLACK; // anche qua il cielo
-        Ray rr=new Ray(h.point(), Vector.ORIGIN);
-        rr.c=a.c.mirror(h.normal());
+        Ray rr=new Ray(h.point(), Vector.ORIGIN /*una cosa a caso*/);
+        rr.c=a.c.mirror(h.normal()); // ok, ok, è un po' sporco!!
         Hit hs=s.hit(rr);
-        if(hs.h&&(hs.t>1E-10)) {
-          Ray rls=new Ray(hs.point(), l.o);
-          nc=l.c.mul(hs.normal().dot(rls.c.vers())).mul(l.p/rls.c.mod2());
-          nc=hs.color().mul(nc);
-        }
+        if(hs.h&&(hs.t>1E-10))
+          nc=hs.color().mul(lighting(hs.point(), hs.normal()));
         c=c.mul(1.0-h.reflect()).add(nc.mul(h.reflect()));
       }
       c=h.color().mul(c); // messo dopo per filtrare anche lo specchio
-      //c=h.color(); // FLAT SHADED
     }
     return(c);
   }
@@ -809,7 +844,7 @@ class RenderThread extends Thread {
 }
 
 class RayTracer extends Component {
-  public String VERSION="RayTraccio 0.9993 (c)1999 Lapo Luchini";
+  public String VERSION="RayTraccio 0.9997 (c)1999 Lapo Luchini";
   private Dimension size;
   private Image img;
   private int buff[];
@@ -871,19 +906,21 @@ public class RayTraccio extends Applet {
     t=new Quadric(Quadric.SFERA,
                   new TextureScale(
                     new TextureMix(
-                      new TextureStripes(
-                        new TexturePlain(Color.CYAN, 0.0),
-                        new TexturePlain(Color.RED, 0.0)),
+                      new TextureTransform(
+                        new TextureStripes(
+                          new TexturePlain(Color.CYAN, 0.0),
+                          new TexturePlain(Color.RED, 0.0)),
+                        TransformMatrix.RotateZ(5.0).mul(TransformMatrix.Scale(0.5, 0.5, 0.5))),
                       0.6,
                       new TextureTransform(
                         new TextureStripes(
                           new TexturePlain(Color.WHITE, 0.0),
-                          new TexturePlain(Color.WHITE.mul(0.9), 0.0)),
+                          new TexturePlain(Color.WHITE.mul(0.8), 0.0)),
                         TransformMatrix.RotateZ(-30.0)),
                       0.4),
                   0.1));
-    t.scale(new Vector(0.8, 0.6, 0.5));
-    t.translate(new Vector(1.0, 1.0, -0.6));
+    t.scale(new Vector(0.6, 0.4, 0.35));
+    t.translate(new Vector(0.8, 1.0, -0.8));
     u.add(t);
     t=new Quadric(Quadric.IPE_Y,
                   new TextureScale(
@@ -894,7 +931,9 @@ public class RayTraccio extends Applet {
     t.scale(new Vector(0.25, 0.25, 0.25));
     u.add(t);
     t=new Quadric(Quadric.SFERA,
-                  new TexturePlain(Color.PURPLE, 0.0));
+                  new TextureSpotted(
+                    new TexturePlain(Color.PURPLE, 0.0),
+                    0.01));
     t.scale(new Vector(0.2, 0.2, 0.2));
     t.translate(new Vector(0.5, 0.0, -2.0));
     u.add(t);
@@ -906,11 +945,11 @@ public class RayTraccio extends Applet {
                         new TexturePlain(Color.GREEN.mul(0.9), 0.0)),
                       0.05),
                     TransformMatrix.RotateZ(30.0));
-    t=new Plane(Vector.VERS_Z.mul(-1.0),-3.25, t2);
+    t=new Plane(Vector.VERS_Z.mul(-1.0),-2.9, t2);
     u2.add(t);
     t=new Quadric(Quadric.PARA_Y, t2);
     t.scale(new Vector(0.5,-1.0, 0.5));
-    t.translate(new Vector(-0.2, 0.0,-3.0));
+    t.translate(new Vector(-0.2, 0.0,-2.7));
     u2.add(t);
     u.add(u2);
     u2=new CSG_Intersection();
@@ -923,10 +962,12 @@ public class RayTraccio extends Applet {
     u2.add(t);
     u.add(u2);
     Light l=new Light(new Vector(1.0, 3.0, -5.0), Color.WHITE, 20.0),
-          l2=new Light(new Vector(-1.0, 2.0, -4.0), Color.YELLOW, 3.0);
+          l2=new Light(new Vector(-1.0, 2.0, -4.0), Color.RED, 5.0);
     if(size==null)
       size=getSize();
-    scn=new Scene(u, l, new Vector(0.0, 0.0, -5.0), Vector.ORIGIN, new Vector(4.0, 0.0, 0.0), ((double)size.width)/size.height);
+    scn=new Scene(u, new Vector(0.0, 1.0, -5.0), new Vector(0.0, -0.5, 0.0), new Vector(4.0, 0.0, 0.0), ((double)size.width)/size.height);
+    scn.addLight(l);
+    scn.addLight(l2);
     rt=new RayTracer(scn, 1, scala);
     rt.setSize(size);
     rt.init();
