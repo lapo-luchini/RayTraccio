@@ -1,5 +1,5 @@
 // RayTraccio ray-tracing library Copyright (c) 2001-2002 Lapo Luchini <lapo@lapo.it>
-// $Header: /usr/local/cvsroot/RayTraccio/RayTracer.java,v 1.10 2002/02/23 16:41:16 lapo Exp $
+// $Header: /usr/local/cvsroot/RayTraccio/it/lapo/raytraccio/RayTracer.java,v 1.1 2004/12/16 23:09:56 lapo Exp $
 
 // This file is part of RayTraccio.
 //
@@ -33,7 +33,7 @@ import java.awt.image.MemoryImageSource;
  */
 class RayTracer extends Component {
 
-  public String VERSION = "RayTraccio 1.66 (c)2001 Lapo Luchini";
+  public String VERSION = "RayTraccio 1.80 (c)2001-2004 Lapo Luchini";
 
   /** Oggetto origine dell'immagine */
   private MemoryImageSource src = null;
