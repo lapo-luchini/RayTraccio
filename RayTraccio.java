@@ -28,6 +28,7 @@ public class RayTraccio extends java.applet.Applet implements WindowListener {
 	private Dimension size;
 	private int scala = 1;
 	private Scene scn;
+	private TextArea error;
 public void destroy() {
 	remove(rt);
 }
@@ -36,41 +37,16 @@ public String getAppletInfo() {
 		      "(c)2001 Lapo Luchini");
 }
 public void init() {
-	Scene scn=null;
-	java.io.Reader r;
-	try { // tries online
-		java.net.URL u=new java.net.URL(getCodeBase(), "default.sdl");
-		System.out.println("Loading URL "+u);
-		r=new java.io.InputStreamReader(u.openStream());
-	} catch(Exception e) { // tries offline
-		r=null;
-		try {
-			System.out.println("Loading local file default.sdl");
-			r=new java.io.FileReader("default.sdl");
-		}	catch(Exception e2) {
-			r=null;
-		}
-	}
-	if(r==null)
-		throw new RuntimeException("Could not load default.sdl");
-	//System.out.println("Using following Reader: "+r);
-	try {
-		scn=(new SDL(r)).sdlScene();
-		//r.close();
-	} catch(Exception e) {
-		System.err.println(e);
-		System.exit(2);
-	}
-	//System.out.println("Using following Scene: "+scn);
 	rt=new RayTracer();
-	//if(savefile.length()>0)
-	//  rt.setSaveFile(savefile);
+	error=new TextArea();
+	error.setEditable(false);
 	if(size==null)
 	  size=getSize();
 	rt.setSize(size);
-	rt.init(scn, 1 /*threads*/, size, scala, true);
-	setLayout(new BorderLayout());
-	add("Center", rt);
+	setLayout(new CardLayout());
+	add(rt, "rt");
+	add(error, "er");
+	reInit("default.sdl");
 }  
 public static void main(String as[]) {
 	int dimX = 300, dimY = 300, scala = 3;
@@ -96,73 +72,56 @@ public static void main(String as[]) {
 	f.addWindowListener(RT);
 }
 public void reInit() {
+	reInit("default.sdl");
+}  
+public void reInit(String str) {
 	Scene scn=null;
-	java.io.Reader r;
-	try { // tries online
-		java.net.URL u=new java.net.URL(getCodeBase(), "default.sdl");
-		System.out.println("Loading URL "+u);
-		r=new java.io.InputStreamReader(u.openStream());
-	} catch(Exception e) { // tries offline
-		r=null;
+	java.io.Reader r=null;
+	if(str.substring(str.length()-4, str.length()).equalsIgnoreCase(".sdl")) { // is a filename
 		try {
-			System.out.println("Loading local file default.sdl");
-			r=new java.io.FileReader("default.sdl");
-		}	catch(Exception e2) {
-			r=null;
+			// tries online
+			java.net.URL u=new java.net.URL(getCodeBase(), str);
+			System.out.println("Loading URL "+u);
+			r=new java.io.InputStreamReader(u.openStream());
+		} catch(Exception e) {
+			// tries offline
+			try {
+				System.out.println("Loading local file default.sdl");
+				r=new java.io.FileReader(str);
+			}	catch(Exception e2) {
+				r=null;
+			}
 		}
-	}
-	if(r==null)
-		throw new RuntimeException("Could not load default.sdl");
-	//System.out.println("Using following Reader: "+r);
-	try {
-		scn=(new SDL(r)).sdlScene();
-		//r.close();
-	} catch(Exception e) {
-		System.err.println(e);
-		System.exit(2);
-	}
-	//System.out.println("Using following Scene: "+scn);
-	//rt=new RayTracer();
-	//if(savefile.length()>0)
-	//  rt.setSaveFile(savefile);
-	if(size==null)
-	  size=getSize();
-	rt.setSize(size);
-	rt.init(scn, 1 /*threads*/, size, scala, true);
-	setLayout(new BorderLayout());
-	add("Center", rt);
-}  
-public void reInit(String scene) {
-	Scene scn=null;
-	java.io.Reader r=new java.io.StringReader(scene);
-	if(r==null) {
-		throw new RuntimeException("Could not load string data.");
+		if(r==null)
+			throw new RuntimeException("Could not load file: "+str);
+	} else {
+		r=new java.io.StringReader(str);
+		if(r==null)
+			throw new RuntimeException("Could not load string data.");
 	}
 	//System.out.println("Using following Reader: "+r);
+	rt.setVisible(true);
+	error.setVisible(false);
 	try {
+		long t=System.currentTimeMillis();
 		scn=(new SDL(r)).sdlScene();
-		//r.close();
+		System.out.println("Parsed in "+(System.currentTimeMillis()-t)+"ms");
+		rt.init(scn, 1 /*threads*/, size, scala, true);
+		((CardLayout)getLayout()).show(this, "rt");
 	} catch(Exception e) {
+		scn=null;
+		error.setText(e.toString());
+		((CardLayout)getLayout()).show(this, "er");
 		System.err.println(e);
-		System.exit(2);
 	}
-	//System.out.println("Using following Scene: "+scn);
-	//rt=new RayTracer();
-	//if(savefile.length()>0)
-	//  rt.setSaveFile(savefile);
-	if(size==null)
-	  size=getSize();
-	rt.setSize(size);
-	rt.init(scn, 1 /*threads*/, size, scala, true);
-	setLayout(new BorderLayout());
-	add("Center", rt);
-}  
+}
 public void setRenderSize(Dimension s, int sc) {
 	size = s;
 	scala = sc;
 }
 public void start() {
-	rt.start();
+	if (scn == null)
+		rt.start();
 }
 public void stop() {
 	rt.stop();
