@@ -1,5 +1,5 @@
 // RayTraccio ray-tracing library Copyright (c) 2001 Lapo Luchini <lapo@lapo.it>
-// $Header$
+// $Header: /usr/local/cvsroot/raytraccio/PatternHalfSine.java,v 1.7 2001/04/27 08:50:16 lapo Exp $
 
 // This file is part of RayTraccio.
 //
@@ -18,23 +18,29 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 /**
- * Modifica un altro pattern modificando il suo range comprimendolo sulla parte alta <code>sin((PI/2)*x)</code>.
+ * Modifica un altro pattern modificando il suo range comprimendolo
+ * sulla parte alta <code>sin((PI/2)*x)</code>.
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class PatternHalfSine extends Pattern {
-	// pattern da modificare
-	Pattern pat;
-	public final static double PI2 = 1.5707963267948966192313216916397514420985847;
-public PatternHalfSine(Pattern p) {
-	pat=p;
-}
-public double scalar(Vector p) {
-	return(Math.sin(PI2*pat.scalar(p)));
-}
-public double[] vectorial(Vector p, byte dim) {
-	double u[]=pat.vectorial(p, dim);
-	while(dim-->0)
-		u[dim]=Math.sin(PI2*u[dim]);
-	return(u);
-}
+
+  // pattern da modificare
+  Pattern pat;
+  public final static double PI2 = 1.5707963267948966192313216916397514420985847;
+
+  public PatternHalfSine(Pattern p) {
+    pat=p;
+  }
+
+  public double scalar(Vector p) {
+    return(Math.sin(PI2*pat.scalar(p)));
+  }
+
+  public double[] vectorial(Vector p, byte dim) {
+    double u[]=pat.vectorial(p, dim);
+    while(dim-->0)
+      u[dim]=Math.sin(PI2*u[dim]);
+    return(u);
+  }
+
 }

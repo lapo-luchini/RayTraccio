@@ -1,5 +1,5 @@
 // RayTraccio ray-tracing library Copyright (c) 2001 Lapo Luchini <lapo@lapo.it>
-// $Header$
+// $Header: /usr/local/cvsroot/raytraccio/PatternSine.java,v 1.7 2001/04/27 08:50:16 lapo Exp $
 
 // This file is part of RayTraccio.
 //
@@ -22,18 +22,23 @@
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class PatternSine extends Pattern {
-	// pattern da modificare
-	Pattern pat;
-public PatternSine(Pattern p) {
-	pat=p;
-}
-public double scalar(Vector p) {
-	return(0.5+0.5*Math.sin(Math.PI*(pat.scalar(p)-0.5)));
-}
-public double[] vectorial(Vector p, byte dim) {
-	double u[]=pat.vectorial(p, dim);
-	while(dim-->0)
-		u[dim]=Math.sin(Math.PI*u[dim]);
-	return(u);
-}
+
+  /** pattern da modificare */
+  Pattern pat;
+
+  public PatternSine(Pattern p) {
+    pat=p;
+  }
+
+  public double scalar(Vector p) {
+    return(0.5+0.5*Math.sin(Math.PI*(pat.scalar(p)-0.5)));
+  }
+
+  public double[] vectorial(Vector p, byte dim) {
+    double u[]=pat.vectorial(p, dim);
+    while(dim-->0)
+      u[dim]=Math.sin(Math.PI*u[dim]);
+    return(u);
+  }
+
 }

@@ -1,5 +1,5 @@
 // RayTraccio ray-tracing library Copyright (c) 2001 Lapo Luchini <lapo@lapo.it>
-// $Header$
+// $Header: /usr/local/cvsroot/raytraccio/PatternChecker.java,v 1.6 2001/04/27 08:50:16 lapo Exp $
 
 // This file is part of RayTraccio.
 //
@@ -18,18 +18,22 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 /**
- * Campo scalare che vale <code>0.0</code> e <code>1.0</code> alternativamente in ogni cubo unitario.
+ * Campo scalare che vale <code>0.0</code> e <code>1.0</code>
+ * alternativamente in ogni cubo unitario.
  * @author: Lapo Luchini
  */
 class PatternChecker extends Pattern {
-public double scalar(Vector p) {
-	return((((int)Math.floor(p.x))^((int)Math.floor(p.y))^((int)Math.floor(p.z)))&1);
-}
-public double[] vectorial(Vector p, byte dim) {
-	double[] v=new double[dim];
-	double nv=(((int)Math.floor(p.x))^((int)Math.floor(p.y))^((int)Math.floor(p.z)))&1;
-	while(dim-->0)
-		v[dim]=nv;
-	return(v);
-}
+
+  public double scalar(Vector p) {
+    return((((int)Math.floor(p.x))^((int)Math.floor(p.y))^((int)Math.floor(p.z)))&1);
+  }
+
+  public double[] vectorial(Vector p, byte dim) {
+    double[] v=new double[dim];
+    double nv=(((int)Math.floor(p.x))^((int)Math.floor(p.y))^((int)Math.floor(p.z)))&1;
+    while(dim-->0)
+      v[dim]=nv;
+    return(v);
+  }
+
 }

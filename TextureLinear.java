@@ -1,5 +1,5 @@
 // RayTraccio ray-tracing library Copyright (c) 2001 Lapo Luchini <lapo@lapo.it>
-// $Header$
+// $Header: /usr/local/cvsroot/raytraccio/TextureLinear.java,v 1.7 2001/04/27 08:50:16 lapo Exp $
 
 // This file is part of RayTraccio.
 //
@@ -22,29 +22,35 @@
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class TextureLinear extends Texture {
-	/** Array contenente i due sottomateriali */
+
+  /** Array contenente i due sottomateriali */
   private Texture c[];
-	/** Pattern usato per mixare i due sottomateriali */
+  /** Pattern usato per mixare i due sottomateriali */
   private Pattern pat;
-TextureLinear(Texture a, Texture d, Pattern p) {
-	c = new Texture[2];
-	c[0] = a;
-	c[1] = d;
-	pat = p;
-}
-public Color color(Vector p) {
-	double r = pat.scalar(p);
-	return (c[0].color(p).mul(r).addU(c[1].color(p).mul(1.0 - r)));
-}
-public double reflect(Vector p) {
-	double r = pat.scalar(p);
-	return (c[0].reflect(p) * r + c[1].reflect(p) * (1.0 - r));
-}
-/**
- * Rappresentazione testuale dell'oggetto. <br>
- * Esempio: <code>TextureLinear[Pattern[...],Texture[...],Texture[...]]</code> <br>
- */
-public String toString() {
-	return ("TextureLinear[" + pat + "," + c[0] + "," + c[1] + "]");
-}
+
+  TextureLinear(Texture a, Texture d, Pattern p) {
+    c = new Texture[2];
+    c[0] = a;
+    c[1] = d;
+    pat = p;
+  }
+
+  public Color color(Vector p) {
+    double r = pat.scalar(p);
+    return (c[0].color(p).mul(r).addU(c[1].color(p).mul(1.0 - r)));
+  }
+
+  public double reflect(Vector p) {
+    double r = pat.scalar(p);
+    return (c[0].reflect(p) * r + c[1].reflect(p) * (1.0 - r));
+  }
+
+  /**
+   * Rappresentazione testuale dell'oggetto. <br>
+   * Esempio: <code>TextureLinear[Pattern[...],Texture[...],Texture[...]]</code> <br>
+   */
+  public String toString() {
+    return ("TextureLinear[" + pat + "," + c[0] + "," + c[1] + "]");
+  }
+
 }

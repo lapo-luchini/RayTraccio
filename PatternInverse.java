@@ -1,5 +1,5 @@
 // RayTraccio ray-tracing library Copyright (c) 2001 Lapo Luchini <lapo@lapo.it>
-// $Header$
+// $Header: /usr/local/cvsroot/raytraccio/PatternInverse.java,v 1.6 2001/04/27 08:50:16 lapo Exp $
 
 // This file is part of RayTraccio.
 //
@@ -22,24 +22,23 @@
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class PatternInverse extends Pattern {
-	// pattern da modificare
-	Pattern pat;
-public PatternInverse(Pattern p) {
-	pat=p;
-}
-/**
- * scalar method comment.
- */
-public double scalar(Vector p) {
-	return(1.0-pat.scalar(p));
-}
-/**
- * vectorial method comment.
- */
-public double[] vectorial(Vector p, byte dim) {
-	double u[]=pat.vectorial(p, dim);
-	while(dim-->0)
-		u[dim]=1.0-u[dim];
-	return(u);
-}
+
+  /** pattern da modificare */
+  Pattern pat;
+
+  public PatternInverse(Pattern p) {
+    pat=p;
+  }
+
+  public double scalar(Vector p) {
+    return(1.0-pat.scalar(p));
+  }
+
+  public double[] vectorial(Vector p, byte dim) {
+    double u[]=pat.vectorial(p, dim);
+    while(dim-->0)
+      u[dim]=1.0-u[dim];
+    return(u);
+  }
+
 }

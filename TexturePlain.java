@@ -1,5 +1,5 @@
 // RayTraccio ray-tracing library Copyright (c) 2001 Lapo Luchini <lapo@lapo.it>
-// $Header$
+// $Header: /usr/local/cvsroot/raytraccio/TexturePlain.java,v 1.8 2001/04/27 08:50:16 lapo Exp $
 
 // This file is part of RayTraccio.
 //
@@ -22,27 +22,33 @@
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class TexturePlain extends Texture {
-	/** Colore */
+
+  /** Colore */
   private Color c;
-	/** Coefficiente di riflessione */
+  /** Coefficiente di riflessione */
   private double r;
-	/** Texture standard bianca non riflettente */
+  /** Texture standard bianca non riflettente */
   public static TexturePlain WHITE = new TexturePlain(Color.WHITE, 0.0);
-TexturePlain(Color a, double b) {
-	c = a;
-	r = b;
-}
-public Color color(Vector p) {
-	return (c);
-}
-public double reflect(Vector p) {
-	return (r);
-}
-/**
- * Rappresentazione testuale dell'oggetto. <br>
- * Esempio: <code>TextureChecker[Color[1.0,0.0,0.0],0.7]</code> <br>
- */
-public String toString() {
-	return ("TexturePlain[" + c + "," + r + "]");
-}
+
+  TexturePlain(Color a, double b) {
+    c = a;
+    r = b;
+  }
+
+  public Color color(Vector p) {
+    return (c);
+  }
+
+  public double reflect(Vector p) {
+    return (r);
+  }
+
+  /**
+   * Rappresentazione testuale dell'oggetto. <br>
+   * Esempio: <code>TextureChecker[Color[1.0,0.0,0.0],0.7]</code> <br>
+   */
+  public String toString() {
+    return ("TexturePlain[" + c + "," + r + "]");
+  }
+
 }

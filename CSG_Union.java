@@ -1,5 +1,5 @@
 // RayTraccio ray-tracing library Copyright (c) 2001 Lapo Luchini <lapo@lapo.it>
-// $Header$
+// $Header: /usr/local/cvsroot/raytraccio/CSG_Union.java,v 1.9 2001/04/27 08:50:16 lapo Exp $
 
 // This file is part of RayTraccio.
 //
@@ -23,44 +23,48 @@
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class CSG_Union extends CSG_Collection {
-/**
- * Calcola l'intersezione tra un dato raggio e la figura (questa versione non è ottimizzata).
- * @param a il raggio voluto
- */
-public Hit hit(EyeRays a) {
-	Hit l = s[0].hit(a), z;
-	int i;
-	for (i = 1; i < n; i++) {
-		z = s[i].hit(a);
-		if (z.h)
-			if (z.t > 1E-10)
-				if ((z.t < l.t) || (!l.h))
-					l = z;
-	}
-	return (l);
-}
-public Hit hit(Ray a) {
-	Hit l = s[0].hit(a), z;
-	int i;
-	for (i = 1; i < n; i++) {
-		z = s[i].hit(a);
-		if (z.h)
-			if (z.t > 1E-10)
-				if ((z.t < l.t) || (!l.h))
-					l = z;
-	}
-	return (l);
-}
-/**
- * Valore della funzione generatrice della figura. <br>
- * @return <code>-1.0</code> all'interno, <code>+1.0</code> altrimenti.
- */
-public double value(Vector p) {
-	// non sono sicuro che vada
-	double a = 1.0;                 // di defualt è esterno
-	for (int i = 0; i < n; i++)     // per ogni sottofigura
-		if (s[i].value(p) * ot < 0.0) // se questa figura è interna
-			a = -1.0;                   // allora è interno
-	return (a);
-}
+
+  /**
+   * Calcola l'intersezione tra un dato raggio e la figura (questa versione non è ottimizzata).
+   * @param a il raggio voluto
+   */
+  public Hit hit(EyeRays a) {
+    Hit l = s[0].hit(a), z;
+    int i;
+    for (i = 1; i < n; i++) {
+      z = s[i].hit(a);
+      if (z.h)
+	if (z.t > 1E-10)
+	  if ((z.t < l.t) || (!l.h))
+	    l = z;
+    }
+    return (l);
+  }
+
+  public Hit hit(Ray a) {
+    Hit l = s[0].hit(a), z;
+    int i;
+    for (i = 1; i < n; i++) {
+      z = s[i].hit(a);
+      if (z.h)
+	if (z.t > 1E-10)
+	  if ((z.t < l.t) || (!l.h))
+	    l = z;
+    }
+    return (l);
+  }
+
+  /**
+   * Valore della funzione generatrice della figura. <br>
+   * @return <code>-1.0</code> all'interno, <code>+1.0</code> altrimenti.
+   */
+  public double value(Vector p) {
+    // non sono sicuro che vada
+    double a = 1.0;                 // di defualt è esterno
+    for (int i = 0; i < n; i++)     // per ogni sottofigura
+      if (s[i].value(p) * ot < 0.0) // se questa figura è interna
+	a = -1.0;                   // allora è interno
+    return (a);
+  }
+
 }

@@ -1,5 +1,5 @@
 // RayTraccio ray-tracing library Copyright (c) 2001 Lapo Luchini <lapo@lapo.it>
-// $Header$
+// $Header: /usr/local/cvsroot/raytraccio/Texture.java,v 1.8 2001/04/27 08:50:16 lapo Exp $
 
 // This file is part of RayTraccio.
 //
@@ -23,16 +23,19 @@
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 abstract class Texture {
-/**
- * Colore del materiale calcolato nel punto richiesto.
- * @param p vettore posizione del punto voluto
- * @return colore voluto
- */
-abstract public Color color(Vector p);
-/**
- * Coefficiente di riflessione del materiale calcolato nel punto richiesto.
- * @param p vettore posizione del punto voluto
- * @return coefficiente di riflessione voluto
- */
-abstract public double reflect(Vector p);
+
+  /**
+   * Colore del materiale calcolato nel punto richiesto.
+   * @param p vettore posizione del punto voluto
+   * @return colore voluto
+   */
+  abstract public Color color(Vector p);
+
+  /**
+   * Coefficiente di riflessione del materiale calcolato nel punto richiesto.
+   * @param p vettore posizione del punto voluto
+   * @return coefficiente di riflessione voluto
+   */
+  abstract public double reflect(Vector p);
+
 }

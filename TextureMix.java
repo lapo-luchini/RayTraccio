@@ -1,5 +1,5 @@
 // RayTraccio ray-tracing library Copyright (c) 2001 Lapo Luchini <lapo@lapo.it>
-// $Header$
+// $Header: /usr/local/cvsroot/raytraccio/TextureMix.java,v 1.8 2001/04/27 08:50:16 lapo Exp $
 
 // This file is part of RayTraccio.
 //
@@ -24,29 +24,35 @@
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class TextureMix extends Texture {
-	/** Array contenente i due sottomateriali */
+
+  /** Array contenente i due sottomateriali */
   private Texture c[];
-	/** Array contenente i valori di frazione del sottomateriale rispettivo */
+  /** Array contenente i valori di frazione del sottomateriale rispettivo */
   private double v[];
-TextureMix(Texture a, double b, Texture d, double e) {
-	c = new Texture[2];
-	c[0] = a;
-	c[1] = d;
-	v = new double[2];
-	v[0] = b / (b + e);
-	v[1] = e / (b + e);
-}
-public Color color(Vector p) {
-	return (c[0].color(p).mul(v[0]).addU(c[1].color(p).mul(v[1])));
-}
-public double reflect(Vector p) {
-	return (c[0].reflect(p) * v[0] + c[1].reflect(p) * v[1]);
-}
-/**
- * Rappresentazione testuale dell'oggetto. <br>
- * Esempio: <code>TextureChecker[0.3,Texture[...],0.7,Texture[...]]</code> <br>
- */
-public String toString() {
-	return ("TextureMix[" + c[0] + "," + v[0] + "," + c[1] + "," + v[1] + "]");
-}
+
+  TextureMix(Texture a, double b, Texture d, double e) {
+    c = new Texture[2];
+    c[0] = a;
+    c[1] = d;
+    v = new double[2];
+    v[0] = b / (b + e);
+    v[1] = e / (b + e);
+  }
+
+  public Color color(Vector p) {
+    return (c[0].color(p).mul(v[0]).addU(c[1].color(p).mul(v[1])));
+  }
+
+  public double reflect(Vector p) {
+    return (c[0].reflect(p) * v[0] + c[1].reflect(p) * v[1]);
+  }
+
+  /**
+   * Rappresentazione testuale dell'oggetto. <br>
+   * Esempio: <code>TextureChecker[0.3,Texture[...],0.7,Texture[...]]</code> <br>
+   */
+  public String toString() {
+    return ("TextureMix[" + c[0] + "," + v[0] + "," + c[1] + "," + v[1] + "]");
+  }
+
 }

@@ -1,5 +1,5 @@
 // RayTraccio ray-tracing library Copyright (c) 2001 Lapo Luchini <lapo@lapo.it>
-// $Header$
+// $Header: /usr/local/cvsroot/raytraccio/PatternTriangle.java,v 1.7 2001/04/27 08:50:16 lapo Exp $
 
 // This file is part of RayTraccio.
 //
@@ -22,25 +22,30 @@
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class PatternTriangle extends Pattern {
-	// pattern da modificare
-	Pattern pat;
-public PatternTriangle(Pattern p) {
-	pat=p;
-}
-public double scalar(Vector p) {
-	double u=pat.scalar(p);
-	if(u>0.5)
-		u=1.0-u;
-	u*=2;
-	return(u);
-}
-public double[] vectorial(Vector p, byte dim) {
-	double u[]=pat.vectorial(p, dim);
-	while(dim-->0) {
-		if(u[dim]>0.5)
-			u[dim]=1.0-u[dim];
-		u[dim]*=2;
-	}
-	return(u);
-}
+
+  /** pattern da modificare */
+  Pattern pat;
+
+  public PatternTriangle(Pattern p) {
+    pat=p;
+  }
+
+  public double scalar(Vector p) {
+    double u=pat.scalar(p);
+    if(u>0.5)
+      u=1.0-u;
+    u*=2;
+    return(u);
+  }
+
+  public double[] vectorial(Vector p, byte dim) {
+    double u[]=pat.vectorial(p, dim);
+    while(dim-->0) {
+      if(u[dim]>0.5)
+	u[dim]=1.0-u[dim];
+      u[dim]*=2;
+    }
+    return(u);
+  }
+
 }

@@ -1,5 +1,5 @@
 // RayTraccio ray-tracing library Copyright (c) 2001 Lapo Luchini <lapo@lapo.it>
-// $Header$
+// $Header: /usr/local/cvsroot/raytraccio/TextureLayered.java,v 1.6 2001/04/27 08:50:16 lapo Exp $
 
 // This file is part of RayTraccio.
 //
@@ -28,52 +28,58 @@
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class TextureLayered extends Texture {
-	/** Array di sotto-texture */
-	protected Texture[] t = new Texture[2];
-	/** Numero di texture contenute nell'array */
-	protected int n = 0;
-/**
- * Aggiunge una sotto-texture. <br>
- * Le figure sono contenute in un array la cui lunghezza è aumentata in modo dinamico
- * per ottimizzare spazio occupato e velocità di aggiunta (in caso manchi spazio
- * l'array viene aumentato del 50%+1).
- * @param a {@link Texture} da aggiungere
- */
-public void add(Texture a) {
-	if (n == t.length) {
-		Texture old[] = t;
-		t = new Texture[ (t.length * 3) / 2 + 1 ]; // dimensione ispirata da ArrayList.java
-		System.arraycopy(old, 0, t, 0, n);
-	}
-	t[n++] = a;
-}
-public Color color(Vector p) {
-	if(n<1)
-		throw new RuntimeException("no layers defined");
-	Color u=t[0].color(p), tmp;
-	double frac=1.0-u.a;
-	u=u.mul(u.a);
-	for(int i=1; (i<n)&&(frac>1E-4); i++) {
-		tmp=t[i].color(p);
-		u=u.addU(tmp.mul(frac*tmp.a));
-		frac*=1.0-tmp.a;
-	}
-	u.a=1.0-frac;
-	return(u);
-}
-/**
- * Ottimizza l'occupazione di memoria (da usare dopo aver aggiunto tutti i valori).
- */
-public void optimize() {
-	if (t.length > n) {
-		Texture old[] = t;
-		t = new Texture[n];
-		System.arraycopy(old, 0, t, 0, n);
-	}
-}
-public double reflect(Vector p) {
-	if(n<1)
-		throw new RuntimeException("no layers defined");
-	return(t[0].reflect(p));
-}
+
+  /** Array di sotto-texture */
+  protected Texture[] t = new Texture[2];
+  /** Numero di texture contenute nell'array */
+  protected int n = 0;
+
+  /**
+   * Aggiunge una sotto-texture. <br>
+   * Le figure sono contenute in un array la cui lunghezza è aumentata in modo dinamico
+   * per ottimizzare spazio occupato e velocità di aggiunta (in caso manchi spazio
+   * l'array viene aumentato del 50%+1).
+   * @param a {@link Texture} da aggiungere
+   */
+  public void add(Texture a) {
+    if (n == t.length) {
+      Texture old[] = t;
+      t = new Texture[ (t.length * 3) / 2 + 1 ]; // dimensione ispirata da ArrayList.java
+      System.arraycopy(old, 0, t, 0, n);
+    }
+    t[n++] = a;
+  }
+
+  public Color color(Vector p) {
+    if(n<1)
+      throw new RuntimeException("no layers defined");
+    Color u=t[0].color(p), tmp;
+    double frac=1.0-u.a;
+    u=u.mul(u.a);
+    for(int i=1; (i<n)&&(frac>1E-4); i++) {
+      tmp=t[i].color(p);
+      u=u.addU(tmp.mul(frac*tmp.a));
+      frac*=1.0-tmp.a;
+    }
+    u.a=1.0-frac;
+    return(u);
+  }
+
+  /**
+   * Ottimizza l'occupazione di memoria (da usare dopo aver aggiunto tutti i valori).
+   */
+  public void optimize() {
+    if (t.length > n) {
+      Texture old[] = t;
+      t = new Texture[n];
+      System.arraycopy(old, 0, t, 0, n);
+    }
+  }
+
+  public double reflect(Vector p) {
+    if(n<1)
+      throw new RuntimeException("no layers defined");
+    return(t[0].reflect(p));
+  }
+
 }

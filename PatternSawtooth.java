@@ -1,5 +1,5 @@
 // RayTraccio ray-tracing library Copyright (c) 2001 Lapo Luchini <lapo@lapo.it>
-// $Header$
+// $Header: /usr/local/cvsroot/raytraccio/PatternSawtooth.java,v 1.7 2001/04/27 08:50:16 lapo Exp $
 
 // This file is part of RayTraccio.
 //
@@ -22,14 +22,17 @@
  * @author: Lapo Luchini
  */
 class PatternSawtooth extends Pattern {
-public double scalar(Vector p) {
-	return(p.x-Math.floor(p.x));
-}
-public double[] vectorial(Vector p, byte dim) {
-	double[] v=new double[dim];
-	double nv=p.x-Math.floor(p.x);
-	while(dim-->0)
-		v[dim]=nv;
-	return(v);
-}
+
+  public double scalar(Vector p) {
+    return(p.x-Math.floor(p.x));
+  }
+
+  public double[] vectorial(Vector p, byte dim) {
+    double[] v=new double[dim];
+    double nv=p.x-Math.floor(p.x);
+    while(dim-->0)
+      v[dim]=nv;
+    return(v);
+  }
+
 }

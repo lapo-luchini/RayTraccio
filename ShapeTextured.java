@@ -1,5 +1,5 @@
 // RayTraccio ray-tracing library Copyright (c) 2001 Lapo Luchini <lapo@lapo.it>
-// $Header$
+// $Header: /usr/local/cvsroot/raytraccio/ShapeTextured.java,v 1.6 2001/04/27 08:50:16 lapo Exp $
 
 // This file is part of RayTraccio.
 //
@@ -22,22 +22,27 @@
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 abstract class ShapeTextured extends Shape3D {
-	/** Materiale della figura */
-	protected Texture c;
-/**
- * Crea una figura che usa il dato materiale.
- * @param c materiale
- */
-public ShapeTextured(Texture c) {
-	this.c = c;
-}
-public Color color(Vector p) {
-	return (c.color(p));
-}
-public double reflect(Vector p) {
-	return(c.reflect(p));
-}
-public void texture(Texture c) {
-	this.c = c;
-}
+  /** Materiale della figura */
+  protected Texture c;
+
+  /**
+   * Crea una figura che usa il dato materiale.
+   * @param c materiale
+   */
+  public ShapeTextured(Texture c) {
+    this.c = c;
+  }
+
+  public Color color(Vector p) {
+    return (c.color(p));
+  }
+
+  public double reflect(Vector p) {
+    return(c.reflect(p));
+  }
+
+  public void texture(Texture c) {
+    this.c = c;
+  }
+
 }

@@ -1,5 +1,5 @@
 // RayTraccio ray-tracing library Copyright (c) 2001 Lapo Luchini <lapo@lapo.it>
-// $Header$
+// $Header: /usr/local/cvsroot/raytraccio/TextureTransform.java,v 1.8 2001/04/27 08:50:16 lapo Exp $
 
 // This file is part of RayTraccio.
 //
@@ -22,25 +22,31 @@
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class TextureTransform extends Texture {
-	/** Materiale da ridimensionare */
+
+  /** Materiale da ridimensionare */
   private Texture c;
-	/** Matrice di trasformazione */
+  /** Matrice di trasformazione */
   private TransformMatrix t;
-TextureTransform(Texture a, TransformMatrix b) {
-	c = a;
-	t = b.inv();
-}
-public Color color(Vector p) {
-	return (c.color(t.transformVector(p)));
-}
-public double reflect(Vector p) {
-	return (c.reflect(t.transformVector(p)));
-}
-/**
- * Rappresentazione testuale dell'oggetto. <br>
- * Esempio: <code>TextureChecker[Texture[...],TransformMatrix[...]]</code> <br>
- */
-public String toString() {
-	return ("TextureTransform[" + c + "," + t + "]");
-}
+
+  public TextureTransform(Texture a, TransformMatrix b) {
+    c = a;
+    t = b.inv();
+  }
+
+  public Color color(Vector p) {
+    return (c.color(t.transformVector(p)));
+  }
+
+  public double reflect(Vector p) {
+    return (c.reflect(t.transformVector(p)));
+  }
+
+  /**
+   * Rappresentazione testuale dell'oggetto. <br>
+   * Esempio: <code>TextureChecker[Texture[...],TransformMatrix[...]]</code> <br>
+   */
+  public String toString() {
+    return ("TextureTransform[" + c + "," + t + "]");
+  }
+
 }

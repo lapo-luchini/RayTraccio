@@ -1,5 +1,5 @@
 // RayTraccio ray-tracing library Copyright (c) 2001 Lapo Luchini <lapo@lapo.it>
-// $Header$
+// $Header: /usr/local/cvsroot/raytraccio/TextureScale.java,v 1.8 2001/04/27 08:50:16 lapo Exp $
 
 // This file is part of RayTraccio.
 //
@@ -22,25 +22,31 @@
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class TextureScale extends Texture {
-	/** Materiale da ridimensionare */
+
+  /** Materiale da ridimensionare */
   private Texture c;
   /** Valore di ridimensionamento */
   private double z;
-TextureScale(Texture a, double b) {
-	c = a;
-	z = 1.0 / b;
-}
-public Color color(Vector p) {
-	return (c.color(p.mul(z)));
-}
-public double reflect(Vector p) {
-	return (c.reflect(p.mul(z)));
-}
-/**
- * Rappresentazione testuale dell'oggetto. <br>
- * Esempio: <code>TextureChecker[Texture[...],3.0]</code> <br>
- */
-public String toString() {
-	return ("TextureScale[" + c + "," + 1.0 / z + "]");
-}
+
+  TextureScale(Texture a, double b) {
+    c = a;
+    z = 1.0 / b;
+  }
+
+  public Color color(Vector p) {
+    return (c.color(p.mul(z)));
+  }
+
+  public double reflect(Vector p) {
+    return (c.reflect(p.mul(z)));
+  }
+
+  /**
+   * Rappresentazione testuale dell'oggetto. <br>
+   * Esempio: <code>TextureChecker[Texture[...],3.0]</code> <br>
+   */
+  public String toString() {
+    return ("TextureScale[" + c + "," + 1.0 / z + "]");
+  }
+
 }

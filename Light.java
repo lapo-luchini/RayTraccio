@@ -1,5 +1,5 @@
 // RayTraccio ray-tracing library Copyright (c) 2001 Lapo Luchini <lapo@lapo.it>
-// $Header$
+// $Header: /usr/local/cvsroot/raytraccio/Light.java,v 1.8 2001/04/27 08:50:16 lapo Exp $
 
 // This file is part of RayTraccio.
 //
@@ -26,28 +26,32 @@ import java.awt.event.*;
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class Light {
-	/** Vettore posizione */
+
+  /** Vettore posizione */
   protected Vector o;
   /** Colore della luce (alla distanza <code>p</code>) */
   protected Color c;
   /** Potenza della luce (distanza alla quale usare il colore <code>c</code> invariato) */
   protected double p;
-/**
- * Crea una luce puntiforme cno parametri dati. <br>
- * @param o Vettore posizione
- * @param c Colore
- * @param p Potenza
- */
-Light(Vector o, Color c, double p) {
-	this.o = o;
-	this.c = c;
-	this.p = p;
-}
-/**
- * Rappresentazione testuale dell'oggetto. <br>
- * Esempio: <code>Light[Vector[1.0,2.0,3.0],Color[1.0,0.0,0.0],5.0]</code> <br>
- */
-public String toString() {
-	return ("Light[" + o + "," + c + "," + p + "]");
-}
+
+  /**
+   * Crea una luce puntiforme cno parametri dati. <br>
+   * @param o Vettore posizione
+   * @param c Colore
+   * @param p Potenza
+   */
+  Light(Vector o, Color c, double p) {
+    this.o = o;
+    this.c = c;
+    this.p = p;
+  }
+
+  /**
+   * Rappresentazione testuale dell'oggetto. <br>
+   * Esempio: <code>Light[Vector[1.0,2.0,3.0],Color[1.0,0.0,0.0],5.0]</code> <br>
+   */
+  public String toString() {
+    return ("Light[" + o + "," + c + "," + p + "]");
+  }
+
 }

@@ -1,5 +1,5 @@
 // RayTraccio ray-tracing library Copyright (c) 2001 Lapo Luchini <lapo@lapo.it>
-// $Header$
+// $Header: /usr/local/cvsroot/raytraccio/Bound.java,v 1.6 2001/04/27 08:50:16 lapo Exp $
 
 // This file is part of RayTraccio.
 //
@@ -29,56 +29,66 @@
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 class Bound extends Shape3D {
-	/** Oggetto di bound (approssimazione per eccesso) */
-	private Shape3D a;
-	/** Oggetto reale */
-	private Shape3D b;
-	/** Entità per la statistica */
-	private static byte stat=ShapeStats.register("Bound");
-/**
- * Crea un oggetto {@link Bound} con parametri dati.
- * @param a oggetto"virtuale" usato come prima approssimazione
- * @param b oggetto "vero"
- */
-public Bound(Shape3D a, Shape3D b) {
-	this.a=a;
-	this.b=b;
-}
-public Color color(Vector p) {
-	return(a.color(p));
-}
-public Hit hit(EyeRays r) {
-	Hit u=b.hit(r);
-	ShapeStats.count(stat, ShapeStats.TYPE_EYERAY);
-	if(u.h) {
-		u=a.hit(r);
-		if(u.h)
-			ShapeStats.count(stat, ShapeStats.TYPE_HIT);
-	} else
-		ShapeStats.count(stat, ShapeStats.TYPE_CACHEDRAY);
-	return(u);
-}
-public Hit hit(Ray r) {
-	Hit u=b.hit(r);
-	ShapeStats.count(stat, ShapeStats.TYPE_RAY);
-	if(u.h) {
-		u=a.hit(r);
-		if(u.h)
-			ShapeStats.count(stat, ShapeStats.TYPE_HIT);
-	} else
-		ShapeStats.count(stat, ShapeStats.TYPE_CACHEDRAY);
-	return(u);
-}
-public Vector normal(Vector p) {
-	return(a.normal(p));
-}
-public void overturn() {
-	System.err.println("ILLEGAL OVERTURN");
-}
-public double reflect(Vector p) {
-	return(a.reflect(p));
-}
-public double value(Vector p) {
-	return(a.value(p));
-}
+
+  /** Oggetto di bound (approssimazione per eccesso) */
+  private Shape3D a;
+  /** Oggetto reale */
+  private Shape3D b;
+  /** Entità per la statistica */
+  private static byte stat=ShapeStats.register("Bound");
+
+  /**
+   * Crea un oggetto {@link Bound} con parametri dati.
+   * @param a oggetto"virtuale" usato come prima approssimazione
+   * @param b oggetto "vero"
+   */
+  public Bound(Shape3D a, Shape3D b) {
+    this.a=a;
+    this.b=b;
+  }
+
+  public Color color(Vector p) {
+    return(a.color(p));
+  }
+
+  public Hit hit(EyeRays r) {
+    Hit u=b.hit(r);
+    ShapeStats.count(stat, ShapeStats.TYPE_EYERAY);
+    if(u.h) {
+      u=a.hit(r);
+      if(u.h)
+	ShapeStats.count(stat, ShapeStats.TYPE_HIT);
+    } else
+      ShapeStats.count(stat, ShapeStats.TYPE_CACHEDRAY);
+    return(u);
+  }
+
+  public Hit hit(Ray r) {
+    Hit u=b.hit(r);
+    ShapeStats.count(stat, ShapeStats.TYPE_RAY);
+    if(u.h) {
+      u=a.hit(r);
+      if(u.h)
+	ShapeStats.count(stat, ShapeStats.TYPE_HIT);
+    } else
+      ShapeStats.count(stat, ShapeStats.TYPE_CACHEDRAY);
+    return(u);
+  }
+
+  public Vector normal(Vector p) {
+    return(a.normal(p));
+  }
+
+  public void overturn() {
+    System.err.println("ILLEGAL OVERTURN");
+  }
+
+  public double reflect(Vector p) {
+    return(a.reflect(p));
+  }
+
+  public double value(Vector p) {
+    return(a.value(p));
+  }
+
 }

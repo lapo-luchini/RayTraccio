@@ -1,7 +1,9 @@
 all: SDL.class RayTraccio.class
 
+JAVAC = jikes
+
 %.class: %.java
-	javac -sourcepath . -classpath . $^
+	$(JAVAC) $^
 
 SDL.java: SDL.jj
 	javacc.cmd $^

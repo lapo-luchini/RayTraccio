@@ -1,5 +1,5 @@
 // RayTraccio ray-tracing library Copyright (c) 2001 Lapo Luchini <lapo@lapo.it>
-// $Header$
+// $Header: /usr/local/cvsroot/raytraccio/Pattern.java,v 1.6 2001/04/27 08:50:16 lapo Exp $
 
 // This file is part of RayTraccio.
 //
@@ -23,17 +23,19 @@
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 abstract public class Pattern {
-/**
- * Genera un campo scalare.
- * @return double valore nel punto richiesto [0.0,+1.0]
- * @param p vettore posizione nel campo
- */
-abstract public double scalar(Vector p);
-/**
- * Genera un campo vettoriale.
- * @return double[dim] valore nel punto richiesto [0.0,+1.0] per ogni dimensione
- * @param p vettore posizione nel campo
- * @param dim numero di dimensioni (massimo 5)
- */
-abstract public double[] vectorial(Vector p, byte dim);
+
+  /**
+   * Genera un campo scalare.
+   * @return double valore nel punto richiesto [0.0,+1.0]
+   * @param p vettore posizione nel campo
+   */
+  abstract public double scalar(Vector p);
+  /**
+   * Genera un campo vettoriale.
+   * @return double[dim] valore nel punto richiesto [0.0,+1.0] per ogni dimensione
+   * @param p vettore posizione nel campo
+   * @param dim numero di dimensioni (massimo 5)
+   */
+  abstract public double[] vectorial(Vector p, byte dim);
+
 }
