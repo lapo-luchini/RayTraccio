@@ -1,276 +1,288 @@
 /*
 ** Esempio di listato SDL autoesplicativo e commentato.
-** Questo documento usa tabulazioni da 2 caratteri.
 */
 
 //// ZONA INIZIALE: definizione dei parametri generali ////
 
 scene {
-	//camera <0.0, 1.0,-3.0>										// posizione della camera
-	//target <0.0,-0.5, 0.0>										// posizione guardata dalla camera (sarà al centro dell'immagine)
-	horizon <4.0, 0.0, 0.0>										// vettore (relativo) che definisce l'orizzonte (in questo caso un orizzonte orizzontale e largo 4 unità)
-	ratio 1/1																	// ratio orizzontale/verticale, usare 4/3 per immagini a tutto schermo
-
-	//camera <0.3, 0.25, -1>   target <0.3, 0.25, 0>
-	camera <0, 0.5, -2>      target <0, 0.5, 0> // base colonna
-	//camera <0, 4.5, -2>      target <0, 4.5, 0>
-	//camera <0, 0.15, -0.8>   target <0, 0.05, -0.5>
-	//camera <0.2, 0.06, -0.8> target <0.2, 0.06, -0.5>
-
+  camera <0.0, 1.0,-5.0>                    // posizione della camera
+  target <0.0,-0.5, 0.0>                    // posizione guardata dalla camera (sarà al centro dell'immagine)
+  horizon <4.0, 0.0, 0.0>                   // vettore (relativo) che definisce l'orizzonte (in questo caso un orizzonte orizzontale e largo 4 unità)
+  ratio 1/1                                 // ratio orizzontale/verticale, usare 4/3 per immagini a tutto schermo
 }
 
 //// ZONA CENTRALE: definizione di costanti utili in seguito ////
 
-/*Tmarmo = map {
-	marble {
-		Pnoise
-		turbulence 2*pi
-	}
-	0.30 plain { color white }
-	0.95 plain { color black }
-	scale <10%>
-}*/
+// pietre ispirate a POV
 
-// POV-inspired stones
-
-T_Crack4 = map {
-	turbulence {
-		triangle { sawtooth { } }
-		noise_abs { octaves 5 persistence 0.5 seed 1234567003 }
-		turbulence <1.3>
-	}
-	0.00 plain { color <1.0, 1.0, 1.0, 0.7> }
-	0.03 plain { color <1.0, 1.0, 1.0, 0.0> }
-	0.03 plain { color <0.0, 0.0, 0.0, 0.3> }
-	0.97 plain { color <0.329412, 0.329412, 0.329412, 0.1> }
-	0.97 plain { color <1.0, 1.0, 1.0, 0.1> }
-	1.00 plain { color <1.0, 1.0, 1.0, 0.0> }
+T_Crack4 = map {                            // definizione di una costante di tipo Texture: inizia per T
+  turbulence {                              // pattern usato nella mappa colori: turbulence perturba un altro pattern
+    triangle { sawtooth { } }               // un onda triangolare lungo l'asse X
+    noise_abs { octaves 5 persistence 0.5 seed 1234567003 } // pattern di perturbazione: un rumore frattale
+    turbulence <1.3>                        // valore vettoriale che indica quando la turbolenza è forte
+  }
+  0.00 plain { color <1.0, 1.0, 1.0, 0.7> } // definizione della mappa di colori, l'ultimo valore è l'alpha
+  0.03 plain { color <1.0, 1.0, 1.0, 0.0> } // che indica la 'presenza' del colore, alpha=0.0 indica trasparenza
+  0.03 plain { color <0.0, 0.0, 0.0, 0.3> }
+  0.97 plain { color <0.329412, 0.329412, 0.329412, 0.1> }
+  0.97 plain { color <1.0, 1.0, 1.0, 0.1> }
+  1.00 plain { color <1.0, 1.0, 1.0, 0.0> }
 }
 
 T_Grnt22 = map {
-	noise_abs { octaves 5 persistence 0.5 seed 1234567002 }
-	0.07 plain { color <1, 1, 1> }
-	0.20 plain { color <0.329412, 0.329412, 0.329412> }
-	0.30 plain { color <1, 1, 1, 0> }
-	0.70 plain { color <1, 1, 1, 0> }
-	1.00 plain { color <0.329412, 0.329412, 0.329412> }
-	scale <20%>
+  noise_abs { octaves 5 persistence 0.5 seed 1234567002 }
+  0.07 plain { color <1, 1, 1> }
+  0.20 plain { color <0.329412, 0.329412, 0.329412> }
+  0.30 plain { color <1, 1, 1, 0> }
+  0.70 plain { color <1, 1, 1, 0> }
+  1.00 plain { color <0.329412, 0.329412, 0.329412> }
+  scale <20%>
 }
 
 T_Grnt28 = map {
-	turbulence {
-		triangle { sawtooth { } }
-		noise { octaves 5 persistence 0.4 seed 1234567001 }
-		<2>
-	}
-	0.155 plain { color <0.686, 0.235, 0.282> }
-	0.328 plain { color <0.494, 0.243, 0.294> }
-	0.474 plain { color <0.769, 0.329, 0.373> }
-	0.647 plain { color <0.769, 0.329, 0.373> }
-	0.810 plain { color <0.686, 0.235, 0.282> }
-	0.922 plain { color <0.792, 0.388, 0.427> }
-	1.000 plain { color <0.686, 0.235, 0.282> }
+  turbulence {
+    triangle { sawtooth { } }
+    noise { octaves 5 persistence 0.4 seed 1234567001 }
+    <2>
+  }
+  0.155 plain { color <0.686, 0.235, 0.282> }
+  0.328 plain { color <0.494, 0.243, 0.294> }
+  0.474 plain { color <0.769, 0.329, 0.373> }
+  0.647 plain { color <0.769, 0.329, 0.373> }
+  0.810 plain { color <0.686, 0.235, 0.282> }
+  0.922 plain { color <0.792, 0.388, 0.427> }
+  1.000 plain { color <0.686, 0.235, 0.282> }
 }
 
 T_Grnt8a = map {
-	turbulence {
-		triangle { sawtooth { } }
-		noise { octaves 5 persistence 0.4 seed 1234567004 }
-		<1.8>
-	}
-	0.000 plain { color <0.310, 0.384, 0.420, 1.0-0.631> }
-	0.119 plain { color <0.322, 0.369, 0.416, 1.0-0.847> }
-	0.322 plain { color <0.424, 0.369, 0.420, 1.0-0.549> }
-	0.449 plain { color <0.373, 0.424, 0.518, 1.0-0.965> }
-	0.729 plain { color <0.482, 0.573, 0.533, 1.0-0.741> }
-	1.000 plain { color <0.310, 0.384, 0.420, 1.0-0.631> }
+  turbulence {
+    triangle { sawtooth { } }
+    noise { octaves 5 persistence 0.4 seed 1234567004 }
+    <1.8>
+  }
+  0.000 plain { color <0.310, 0.384, 0.420, 1.0-0.631> }
+  0.119 plain { color <0.322, 0.369, 0.416, 1.0-0.847> }
+  0.322 plain { color <0.424, 0.369, 0.420, 1.0-0.549> }
+  0.449 plain { color <0.373, 0.424, 0.518, 1.0-0.965> }
+  0.729 plain { color <0.482, 0.573, 0.533, 1.0-0.741> }
+  1.000 plain { color <0.310, 0.384, 0.420, 1.0-0.631> }
 }
 
-T_Stone21 = layered {
-	T_Crack4 { scale <1.0, 0.6, 1.0> rotate <10, 0, 20> }
-	T_Grnt22 { scale <1.0, 2.0, 2.0> rotate < 0, 0,-40> }
-	T_Grnt28 { scale <1.3, 2.5, 1.7> rotate < 0, 0,-40> }
+T_Stone21 = layered {                       // layered indica che più texture sono applicate in sequenza, ovviamente ha senso solo se gli strati esterni hanno trasparenze
+  T_Crack4 { scale <1.0, 0.6, 1.0> rotate <10, 0, 20> }
+  T_Grnt22 { scale <1.0, 2.0, 2.0> rotate < 0, 0,-40> }
+  T_Grnt28 { scale <1.3, 2.5, 1.7> rotate < 0, 0,-40> }
 }
 
 T_Stone22 = layered {
-	T_Crack4 { scale <1.0, 1.0, 1.0> rotate <10, 0, 40> }
-	T_Grnt22 { scale <2.0, 4.0, 1.5> rotate < 0, 0,-50> }
-	T_Grnt8a { scale <1.0, 2.0, 2.0> rotate < 0, 0,-40> }
-	plain { color <0.82, 0.57, 0.46> } // Feldspar
+  T_Crack4 { scale <1.0, 1.0, 1.0> rotate <10, 0, 40> }
+  T_Grnt22 { scale <2.0, 4.0, 1.5> rotate < 0, 0,-50> }
+  T_Grnt8a { scale <1.0, 2.0, 2.0> rotate < 0, 0,-40> }
+  plain { color <0.82, 0.57, 0.46> } // Feldspar
+}
+
+// end of POV-inspired stones
+
+Spavimento=plane {                          // definizione di una costante di tipo Shape: inizia per S maiuscola
+  <0.0, 1.0, 0.0> 0.5                       // un piano ha come parametri il vettore normale e la distanza dall'origine
+  texture linear {                          // texture che sfuma tra due sotto-texture
+    checker { }                             // pattern a scacchiera tridimensionale
+    plain {                                 // prima texture per la scacchiera: una texture piatta
+      color <1, 1, 1>                       // colore bianco (componenti <R,G,B>)
+      reflect 50%                           // riflettente al 50% (50% viene visto come 0.5)
+    }
+    plain {                                 // seconda texture per la scacchiera: una texture piatta
+      color <1, 1, 0>                       // colore giallo
+      reflect 50%                           // coeffincente di riflessione 0.5
+    }
+  }
+}
+
+Sluna=quadric {                             // definizione di una quadrica
+  sphere                                    // utilizzo di uno dei tipi predefiniti (si può invece usare un array di 10 costanti)
+  scale <60%, 40%, 35%>                     // scala per un determinato vettore <X,Y,Z>
+  translate <0.8, 1.0,-0.8>                 // trasla
+  texture mix {                             // mix di due texture: media pesata dei loro colori
+    0.6 linear {
+      stripes { }
+      plain { color cyan }
+      plain { color red }
+      rotate <0, 0, 85>
+      scale <50%>
+    }
+    0.4 linear {
+      stripes { }
+      plain { color white }
+      plain { color <80%> } // <80%> => <0.8, 0.8, 0.8> => grigio 80%
+      rotate <0, 0,-60>
+    }
+    scale <10%>
+  }
+}
+
+Trossorifl=plain {                          // definizione di una costante di tipo Texture: inizia per T maiuscola
+  color red
+  reflect 0.3
+}
+
+Scubo=intersection {                        // primo esempio di CSG: creazione di un cubo di lato 2 centrato nell'origine
+  plane { < 1, 0, 0> -1 }
+  plane { <-1, 0, 0> -1 }
+  plane { < 0, 1, 0> -1 }
+  plane { < 0,-1, 0> -1 }
+  plane { < 0, 0, 1> -1 }
+  plane { < 0, 0,-1> -1 }
+}
+
+// elenco di altri polinomi carini che ho trovato in giro
+
+// cubettiode +x4+y4+z4-1
+// ------
+// cushion +x2z2-z4-2x2z1+2z3+x2-z2-(x2-z2)^2-y4-2x2y2-y2z2+2y2z1+y2
+// pillow +x4+y4+z4-x2-y2-z2
+// tear-drom +x4-x3+y2+z2
+// chair (x^2+y^2+z^2-a*k^2)^2-b*((z-k)^2-2*x^2)*((z+k)^2-2*y^2)=0 with k=5, a=0.95 and b=0.8
+// lemniscate of geromo x^4 - x^2 + y^2 + z^2
+// kummer surface x^4+y^4+z^4-x^2-y^2-z^2-x^2*y^2-x^2*z^2-y^2*z^2+1
+// nodal cubic y^3 + z^3 - 6*y*z
+// tangle +x4+y4+z4-5x2-5y2-5z2+11.8
+// umbrella x^2 - y*z^2
+// witch of angesi a * (y - 1) + (x^2 + z^2) * y  =0  Example a=0.04
+// Steiner's roman surface x^2*y^2+y^2*z^2+x^2*z^2+x*y*z
+// ------
+// glob 0.5*x^5 + 0.5*x^4 - (y^2 + z^2)
+// hearth (2*x^2+y^2+z^2-1)^3-(1/10)*x^2*z^3-y^2*z^3
+// klein bottle (x^2+y^2+z^2+2*y-1)*((x^2+y^2+z^2-2*y-1)^2-8*z^2)+16*x*z*(x^2+y^2+z^2-2*y-1)
+
+VR=1.0                                      // definizione di una costante di tipo Value: inizia per V maiuscola
+Vr=0.15
+
+Storo=bound {                               // l'oggetto bound serve per rendere più veloce il tracciamento dell'immagine
+  poly {                                    // polinomio che genera un toro (la vera figura da disegnare)
+    +x4+y4+z4+2x2y2+2x2z2+2y2z2             // i termini di un polinomio sono del tipo <costante>x<grado_di_x>y<grado_di_y>z<grado_di_z>
+    -2*(VR*VR+Vr*Vr)x2+2*(VR*VR-Vr*Vr)y2-2*(VR*VR+Vr*Vr)z2 // come si nota quando serve una costante si può utilizzare una espressione che la generi
+    +(VR*VR-Vr*Vr)*(VR*VR-Vr*Vr)
+  }
+  quadric {                                 // una sfera utilizzata come prima approssimazione, per evitare i lunghi calcoli del toro
+    sphere
+    scale <VR+Vr>                           // di raggio adeguato (somma del raggio interno ed esterno del toro)
+  }
+  /*intersection {                          // usare un parallelepipedo poteva essere più veloce se il toro era visto più "di lato", ma è un oggetto complicato di per sé
+    plane { < 1, 0, 0> -(VR+Vr) }
+    plane { <-1, 0, 0> -(VR+Vr) }
+    plane { < 0, 1, 0> -(Vr) }
+    plane { < 0,-1, 0> -(Vr) }
+    plane { < 0, 0, 1> -(VR+Vr) }
+    plane { < 0, 0,-1> -(VR+Vr) }
+  }*/
+  rotate <10,0,0>                           // le trasformazioni non fatte subito dopo l'elenco dei parametri sono leggermente più lente, ma inquesto caso sono l'unico modo
+  texture T_Stone21 { scale <50%> }         // come si nota andare a capo e indentare è solo una scelta grafica
+}
+
+Scubettoide=bound {
+  poly {                                    // una buffa quartica di cui non so il nome, una specie di cubo smussato
+    +x4+y4+z4-1
+    scale <20%>
+    translate <.45,-.3,-2.85>
+    texture plain { color <0.6,0,0> }
+  }
+  quadric {
+    sphere
+    scale <1.316074012952492461*20%>        // la massima distanza dall'origine del cubettoide [sulla diagonale x=y=z => 3*x^4=1 => x^4=1/3]
+    translate <.45,-.3,-2.85>
+  }
+  /*intersection {                          // spazialmente sarebbe un bound più efficente, ma è meno efficende da calcolare di per sé
+    plane { < 1, 0, 0> -1 }
+    plane { <-1, 0, 0> -1 }
+    plane { < 0, 1, 0> -1 }
+    plane { < 0,-1, 0> -1 }
+    plane { < 0, 0, 1> -1 }
+    plane { < 0, 0,-1> -1 }
+  }*/
 }
 
 //// ZONA FINALE: definizione del singolo oggetto disegnato ////
 
-/*
-// PROVA MARMI
-union {
-	plane {
-		< 0, 0,-1> 0
-		texture T_Stone22 { }
-	}
-	quadric {
-		sphere
-		texture T_Stone22 { }
-	}
-	plane {
-		< 0, 1, 0> 0
-		texture T_Stone22 { }
-	}
+union {                                     // spessissimo è utile usare questo tipo di CSG per disegnare scene con più oggetti
+  Spavimento { }                            // ongi variabile di tipo Shape oTexture ha bisogno di una lista dimodifiche sulla stessa
+  Sluna { }
+  quadric {
+    hyperboloid                             // altro tipo di quadrica prefabbricata: l'iperboloide rigato
+    scale <25%>
+    texture linear {
+      checker { }
+      plain { color blue }
+      plain { color yellow }
+      scale <20%>
+    }
+  }
+  intersection {
+    plane {
+      <0, 0,-1> -2.9
+      texture Tplasmaverde=linear {         // le variabili posso essere dichiarate anche on-the-fly
+        noise { octaves 5 persistence 0.6 seed 1234567 }
+        plain { color green }
+        plain { color <0, 0.5, 0> }
+        rotate <0, 0, 30>
+        scale <10%>
+      } { }                                 // notare la coppia di graffe per modifice da fare sulla versione locale e non sulla variabile generale
+    }
+    quadric {
+      paraboloid
+      scale <0.5,-1.0, 0.5>
+      translate <-0.5, 0.0,-2.7>
+      texture Tplasmaverde { }              // riutilizzo della variabile, senza far emodifiche locali
+    }
+  }
+  intersection {
+    plane {
+      <1.0, 1.0,-0.8> -0.5
+      texture Trossorifl { }
+    }
+    quadric {
+      cylinder
+      scale <25%>
+      translate <-1.0, 0.0,-1.0>
+      texture Trossorifl { }
+    }
+    rotate <0, 0, 10>
+  }
+  bound {
+    Scubo {                                 // utilizzo della costante con modifiche locali
+      translate <0, 1, 0>
+      scale <25%> // 0.5 di lato
+      rotate <0, 45, 0>
+      translate <0.5,-0.5,-2.0>
+      texture plain { color blue }
+    }
+    quadric {
+      sphere
+      scale <1.73205081>
+      translate <0, 1, 0>
+      scale <25%>
+      translate <0.5,-0.5,-2.0>
+    }
+  }
+  Storo { }
+  Scubettoide { }
+  quadric {
+    sphere
+    scale <20%>
+    translate <0.5, 0.2,-2.0>
+    texture plain { color purple }
+  }
 }
-*/
-
-Vs = 0
-
-SscanaC2 = quadric {
-	cylinder
-	//rotate <0, 0, 90> // da X a Y
-	scale <0.06>
-	//texture plain { color red } // nero
-	translate <0, 0,-0.545>
-	texture plain { color red } // giusto
-	rotate <0, -Vs, 0>
-	//texture plain { color red } // bianco
-}
-
-SscanaC = quadric {
-	cylinder
-	//rotate <0, 0, 90> // da X a Y
-	scale <0.06>
-	translate <0.545, 0, 0>
-	texture plain { color green }
-}
-
-/*SscanaC36 = intersection {
-	plane {
-		<0,-1, 0> 0.55
-	}
-	plane {
-		<0, 1, 0> -4.74
-	}
-	union {
-		SscanaC { }
-		SscanaC { rotate <0,  10, 0> }
-		SscanaC { rotate <0,  20, 0> }
-		SscanaC { rotate <0,  30, 0> }
-		SscanaC { rotate <0,  40, 0> }
-		SscanaC { rotate <0,  50, 0> }
-		SscanaC { rotate <0,  60, 0> }
-		SscanaC { rotate <0,  70, 0> }
-		SscanaC { rotate <0,  80, 0> }
-		SscanaC { rotate <0,  90, 0> }
-		SscanaC { rotate <0, 100, 0> }
-		SscanaC { rotate <0, 110, 0> }
-		SscanaC { rotate <0, 120, 0> }
-		SscanaC { rotate <0, 130, 0> }
-		SscanaC { rotate <0, 140, 0> }
-		SscanaC { rotate <0, 150, 0> }
-		SscanaC { rotate <0, 160, 0> }
-		SscanaC { rotate <0, 170, 0> }
-		SscanaC { rotate <0, 180, 0> }
-		SscanaC { rotate <0, 190, 0> }
-		SscanaC { rotate <0, 200, 0> }
-		SscanaC { rotate <0, 210, 0> }
-		SscanaC { rotate <0, 220, 0> }
-		SscanaC { rotate <0, 230, 0> }
-		SscanaC { rotate <0, 240, 0> }
-		SscanaC { rotate <0, 250, 0> }
-		SscanaC { rotate <0, 260, 0> }
-		SscanaC { rotate <0, 270, 0> }
-		SscanaC { rotate <0, 280, 0> }
-		SscanaC { rotate <0, 290, 0> }
-		SscanaC { rotate <0, 300, 0> }
-		SscanaC { rotate <0, 310, 0> }
-		SscanaC { rotate <0, 320, 0> }
-		SscanaC { rotate <0, 330, 0> }
-		SscanaC { rotate <0, 340, 0> }
-		SscanaC { rotate <0, 350, 0> }
-	}
-}
-
-SscanaS = union {
-	quadric {
-		sphere
-		scale <0.06>
-		translate <0.545, 0.55, 0>
-	}
-	quadric {
-		sphere
-		scale <0.06>
-		translate <0.545, 4.74, 0>
-	}
-}
-
-SscanaS36 = union {
-	SscanaS { }
-	SscanaS { rotate <0,  10, 0> }
-	SscanaS { rotate <0,  20, 0> }
-	SscanaS { rotate <0,  30, 0> }
-	SscanaS { rotate <0,  40, 0> }
-	SscanaS { rotate <0,  50, 0> }
-	SscanaS { rotate <0,  60, 0> }
-	SscanaS { rotate <0,  70, 0> }
-	SscanaS { rotate <0,  80, 0> }
-	SscanaS { rotate <0,  90, 0> }
-	SscanaS { rotate <0, 100, 0> }
-	SscanaS { rotate <0, 110, 0> }
-	SscanaS { rotate <0, 120, 0> }
-	SscanaS { rotate <0, 130, 0> }
-	SscanaS { rotate <0, 140, 0> }
-	SscanaS { rotate <0, 150, 0> }
-	SscanaS { rotate <0, 160, 0> }
-	SscanaS { rotate <0, 170, 0> }
-	SscanaS { rotate <0, 180, 0> }
-	SscanaS { rotate <0, 190, 0> }
-	SscanaS { rotate <0, 200, 0> }
-	SscanaS { rotate <0, 210, 0> }
-	SscanaS { rotate <0, 220, 0> }
-	SscanaS { rotate <0, 230, 0> }
-	SscanaS { rotate <0, 240, 0> }
-	SscanaS { rotate <0, 250, 0> }
-	SscanaS { rotate <0, 260, 0> }
-	SscanaS { rotate <0, 270, 0> }
-	SscanaS { rotate <0, 280, 0> }
-	SscanaS { rotate <0, 290, 0> }
-	SscanaS { rotate <0, 300, 0> }
-	SscanaS { rotate <0, 310, 0> }
-	SscanaS { rotate <0, 320, 0> }
-	SscanaS { rotate <0, 330, 0> }
-	SscanaS { rotate <0, 340, 0> }
-	SscanaS { rotate <0, 350, 0> }
-}
-
-Sscanalature = union {
-	SscanaC { rotate <0, 270, 0> }
-	SscanaS { rotate <0, 270, 0> }
-}*/
-
-difference {
-	// Corpo
-	quadric {
-		cylinder
-		scale <0.5>
-		rotate <0, 0, 0>
-	}
-	// Corpo.Scanalature
-	//Sscanalature { }
-	SscanaC2 { rotate <0, Vs+10, 0> }
-	SscanaC { rotate <0, -90, 0> }
-	SscanaC2 { rotate <0, Vs-10, 0> }
-	SscanaC2 { rotate <0, Vs-20, 0> }
-	SscanaC2 { rotate <0, Vs+20, 0> }
-}
-
 
 //// ZONA FINALE: definizione delle luci, se non si mettono luci si ottiene una colorazione flat ////
 
 light {
-	< 1.0, 3.0,-5.0>													// posizione
-	<1, 1, 1>																	// colore
-	20																				// distanza alla quale ha potenza unitaria (decresce come r^-2)
+  position < 1.0, 3.0,-5.0>                 // posizione
+  color <1, 1, 1>                           // colore
+  distance 20                               // distanza alla quale ha potenza unitaria (decresce come r^-2)
 }
 
-light { // dietro agli occhi
-	<0, 0.5, -3>
-	<1, 1, 1>
-	3
+light {                                     // alcuni parametri non ambigui (con ordine fisso) sono opzionali
+  <-1.0, 2.0,-4.0>
+  <1, 0, 0>
+  5
 }
