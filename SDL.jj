@@ -1,0 +1,401 @@
+/*
+javacc SDL.jj & javac *.java & jjdoc SDL.jj
+java RayTraccio
+*/
+
+options {
+  STATIC = false;
+	OPTIMIZE_TOKEN_MANAGER = true;
+}
+
+PARSER_BEGIN(SDL)
+
+import java.util.Hashtable;
+
+public class SDL {
+
+	private Hashtable cons=new Hashtable();
+
+  public static void main(String args[]) throws ParseException {
+    SDL parser = new SDL(System.in);
+    parser.sdlScene();
+		System.out.println("Succesfully parsed.");
+  }
+
+}
+
+PARSER_END(SDL)
+
+SKIP :
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+|  <"//" (~["\n","\r"])* ("\n" | "\r" | "\r\n")>
+|  <"/*" (~["*"])* "*" ("*" | ~["*","/"] (~["*"])* "*")* "/">
+}
+
+// <INTEGER_LITERAL: <DECIMAL_LITERAL> (["l","L"])? | <HEX_LITERAL> (["l","L"])? | <OCTAL_LITERAL> (["l","L"])?>
+//|  <#DECIMAL_LITERAL: ["1"-"9"] (["0"-"9"])*>
+//|  <#HEX_LITERAL: "0" ["x","X"] (["0"-"9","a"-"f","A"-"F"])+>
+
+TOKEN : // numeric constants
+{
+	< PERCENT_CONSTANT: <NUMERIC_CONSTANT> "%" >
+|	< NUMERIC_CONSTANT: <FLOAT> ( ["e","E"] (["-","+"])? <INTEGER> )? >
+|	< #FLOAT: <INTEGER> ( "." <INTEGER> )? | "." <INTEGER> >
+|	< #INTEGER: ( <DIGIT> )+ >
+|	< #DIGIT: ["0"-"9"] >
+}
+
+TOKEN : // user-creable constants
+{
+	< CONSTANT: ["$"] <ALPHA> ( <ALPHANUMERIC> )* >
+| < #ALPHANUMERIC: <ALPHA> | <DIGIT> >
+|	< #ALPHA: ["a"-"z","A"-"Z"] >
+}
+
+Scene sdlScene() :
+{
+	Shape3D a;
+	Vector ex=new Vector(0.0, 1.0,-5.0);
+	Vector ox=new Vector(0.0,-0.5, 0.0);
+	Vector hx=new Vector(4.0, 0.0, 0.0);
+	double ratio=1.0;
+	Light l;
+	Scene u;
+}
+{
+	[
+		"scene" "{"
+			[ "camera" ex=sdlVector() ]
+			[ "target" ox=sdlVector() ]
+			[ "horizon" hx=sdlVector() ]
+			[ "ratio" ratio=sdlNumber() ]
+		"}"
+	]
+	(
+		LOOKAHEAD(2)
+		sdlAssignement()
+	)*
+  a=sdlShape() // yeah, only one shape!
+	{ u=new Scene(a, ex, ox, hx, ratio); }
+  ( l=sdlLight() { u.addLight(l); } )* // yeah, many lights!
+  <EOF>
+	{ return(u); }
+}
+
+void sdlAssignement() :
+{
+	Token t;
+	Object a;
+}
+{
+	t=<CONSTANT> "=" (
+		a=sdlShape()
+	//|	a=sdlTexture()
+	)
+	{
+		if(cons.containsKey(t.image))
+			throw new ParseException("Constant '"+t.image+"' is already assigned (line "+t.beginLine+", column "+t.beginColumn+").");
+		cons.put(t.image, a);
+	}
+}
+
+Shape3D sdlShape() :
+{
+	Token t;
+	Vector v;
+	Shape3D u;
+	boolean c=false;
+}
+{
+	(
+		u=sdlPlane()
+	|	u=sdlQuadric()
+	|	u=sdlCSG()
+	|	t=<CONSTANT> "{" {
+			u=(Shape3D)cons.get(t.image); // per usare get(.) devo farne una copia!
+			if(u==null)
+				throw new ParseException("Constant '"+t.image+"' was not assigned (line "+t.beginLine+", column "+t.beginColumn+").");
+			c=true; // set the shape as "to be referenced"
+		}
+	)
+	(
+	//	"rotate" v=sdlVector() { if(c) { u=new ShapeTransform(u); c=false; } u.rotate(v); }
+		"scale" v=sdlVector() { if(c) { u=new ShapeTransform(u); c=false; } u.scale(v); }
+	|	"translate" v=sdlVector() { if(c) { u=new ShapeTransform(u); c=false; } u.translate(v); }
+	| "overturn" { if(c) { u=new ShapeTransform(u); c=false; } u.overturn(); }
+	)*
+	"}"
+	{ return(u); }
+}
+
+Light sdlLight() :
+{
+	Vector o;
+	Color c;
+	double p;
+}
+{
+	"light" "{"
+		o=sdlVector() // posizione
+		c=sdlColor() // colore
+		p=sdlNumber() // potenza
+	"}"
+	{ return(new Light(o, c, p)); }
+}
+
+CSG_Collection sdlCSG() :
+{
+	Shape3D t;
+	CSG_Collection u;
+}
+{
+	(
+		"union" { u=new CSG_Union(); }
+	|	"intersection" { u=new CSG_Intersection(); }
+	) "{"
+		( t=sdlShape() { u.add(t); } )+
+	{ return(u); }
+}
+
+Plane sdlPlane() :
+{
+	Vector o;
+	double d;
+	Texture t;
+}
+{
+	"plane" "{"
+		o=sdlVector() "," d=sdlNumber()
+		t=sdlTexture()
+	{ return(new Plane(o, d, t)); }
+}
+
+Quadric sdlQuadric() :
+{
+	double a[];
+	Texture t;
+}
+{
+	"quadric" "{"
+		(
+			a=sdlArray(10)
+		|	"sphere" { a=Quadric.SFERA; }
+		|	"cylinder" { a=Quadric.CIL_Y; }
+		|	"cone" { a=Quadric.CONO_Y; }
+		|	"paraboloid" { a=Quadric.PARA_Y; }
+		|	"hyperboloid" { a=Quadric.IPE_Y; }
+		)
+		t=sdlTexture()
+	{
+		Quadric u=new Quadric(a, t);
+		return(u);
+	}
+}
+
+Texture sdlTexture() :
+{
+	Texture u;
+	TransformMatrix m=TransformMatrix.IDENTITY;
+	Vector t;
+	double a[];
+}
+{
+	(
+		u=sdlTexturePlain()
+	|	u=sdlTextureChecker()
+	|	u=sdlTextureStripes()
+	|	u=sdlTextureMix()
+	|	u=sdlTexturePlasma()
+	)
+	(
+		"tranform" a=sdlArray(12) { m=m.mul(new TransformMatrix(a)); }
+	|	"rotate" t=sdlVector() { m=m.mul(TransformMatrix.Rotate(t.x, t.y, t.z)); }
+	|	"scale" t=sdlVector() { m=m.mul(TransformMatrix.Scale(t.x, t.y, t.z)); }
+	|	"translate" t=sdlVector() { m=m.mul(TransformMatrix.Translate(t.x, t.y, t.z)); }
+	)*
+	"}"
+// ...
+	{
+		if(m!=TransformMatrix.IDENTITY)
+			u=new TextureTransform(u, m);
+		return(u);
+	}
+}
+
+TexturePlain sdlTexturePlain() :
+{
+	Color c;
+	double r=0.0;
+}
+{
+	"plain" "{"
+		"color" c=sdlColor()
+		[ "reflect " r=sdlNumber() ]
+	{ return(new TexturePlain(c, r)); }
+}
+
+TextureChecker sdlTextureChecker() :
+{
+	Texture a, b;
+}
+{
+	"checker" "{"
+		a=sdlTexture()
+		b=sdlTexture()
+	{ return(new TextureChecker(a, b)); }
+}
+
+TextureStripes sdlTextureStripes() :
+{
+	Texture a, b;
+}
+{
+	"stripes" "{"
+		a=sdlTexture()
+		b=sdlTexture()
+	{ return(new TextureStripes(a, b)); }
+}
+
+TextureMix sdlTextureMix() :
+{
+	Texture a, b;
+	double da, db;
+}
+{
+	"mix" "{"
+		da=sdlNumber() a=sdlTexture()
+		db=sdlNumber() b=sdlTexture()
+	{ return(new TextureMix(a, da, b, db)); }
+}
+
+TexturePlasma sdlTexturePlasma() :
+{
+	Texture a, b;
+}
+{
+	"plasma" "{"
+		a=sdlTexture()
+		b=sdlTexture()
+	{ return(new TexturePlasma(a, b)); }
+}
+
+Color sdlColor() :
+{
+	Vector t;
+}
+{(
+	t=sdlVector() {
+		if((t.x<0.0)||(t.y<0.0)||(t.z<0.0))
+			throw new ParseException("Components of a color must be positive (<"+t.x+", "+t.y+", "+t.z+"> on line "+getNextToken().beginLine+")");
+		return(new Color(t.x, t.y, t.z));
+	}
+|	"black"  { return(Color.BLACK); }
+|	"red"    { return(Color.RED); }
+|	"green"  { return(Color.GREEN); }
+|	"blue"   { return(Color.BLUE); }
+|	"yellow" { return(Color.YELLOW); }
+|	"cyan"   { return(Color.CYAN); }
+|	"purple" { return(Color.PURPLE); }
+|	"white"  { return(Color.WHITE); }
+)}
+
+double[] sdlArray(int dim) :
+{
+	double u[]=new double[dim];
+	int n=1;
+}
+{
+	"[" u[0]=sdlNumber() ( "," {
+		if(n>=dim)
+			throw new ParseException("Found more than "+dim+" fields in an array on line "+getNextToken().beginLine);
+	} u[n++]=sdlNumber() )* "]"
+	{
+		if(n!=dim) throw new ParseException("Found less than "+dim+" fields in an array on line "+getNextToken().beginLine);
+		return(u);
+	}
+}
+
+Vector sdlVector() :
+{
+	Vector a, b;
+}
+{
+	a=sdlVectorialAddend()
+	(
+		"+v" b=sdlVectorialAddend() { a.addU(b); }
+	|	"-v" b=sdlVectorialAddend() { a.subU(b); }
+	)*
+	{ return(a); }
+}
+
+Vector sdlVectorialAddend() :
+{
+	Vector a, b;
+}
+{
+	a=sdlVectorialFactor()
+	(
+		"x" b=sdlVectorialFactor() { a=a.cross(b); }
+	)*
+	{ return(a); }
+}
+
+Vector sdlVectorialFactor() :
+{
+	double x, y, z;
+	Vector a, b;
+}
+{
+	"<" x=sdlNumber() { z=y=x; } [ "," y=sdlNumber() "," z=sdlNumber() ] ">" { return(new Vector(x, y, z)); }
+}
+
+double sdlNumber() :
+{
+	double a, b;
+}
+{
+	(
+		[ "+" ] a=sdlNumericAddend()
+	|	"-" a=sdlNumericAddend() { a=-a; }
+	)
+	(
+		"+" b=sdlNumericAddend() { a+=b; }
+	|	"-" b=sdlNumericAddend() { a-=b; }
+	)*
+	{ return(a); }
+}
+
+double sdlNumericAddend() :
+{
+	double a, b;
+}
+{
+	a=sdlNumericFactor()
+	(
+		"*" b=sdlNumericFactor() { a*=b; }
+	|	"/" b=sdlNumericFactor() { a/=b; }
+	)*
+	{ return(a); }
+}
+
+double sdlNumericFactor() :
+{
+	Token t;
+	Vector a, b;
+	double d;
+}
+{
+	(
+		t=<NUMERIC_CONSTANT> { d=Double.parseDouble(t.image); }
+	|	t=<PERCENT_CONSTANT> { d=0.01*Double.parseDouble(t.image.substring(0, t.image.length()-1)); }
+	|	"(" (
+			d=sdlNumber()
+		|	a=sdlVector() "." b=sdlVector() { d=a.dot(b); }
+		) ")"
+	)
+	{ return(d); }
+}

@@ -1,0 +1,108 @@
+mettere texture in trasformazione
+
+$pavimento=plane {
+	<0.0, 1.0, 0.0>, 0.5
+	checker {
+		plain {
+			color <1, 1, 1>
+			reflect 50%
+		}
+		plain {
+			color <1, 1, 0>
+			reflect 50%
+		}
+	}
+}
+
+$luna=quadric {
+	sphere
+	mix {
+		0.6 stripes {
+			plain { color cyan }
+			plain { color red }
+			rotate <0, 0, 5>
+			scale <50%>
+		}
+		0.4 stripes {
+			plain { color white }
+			plain { color <80%> } // <80%> => <0.8, 0.8, 0.8> => gray 80%
+		}
+		scale <10%>
+	}
+	scale <60%, 40%, 35%>
+	translate <0.8, 1.0,-0.8>
+}
+
+union {
+	$pavimento {
+	}
+	$luna {
+	}
+	quadric {
+		hyperboloid
+		checker {
+			plain { color blue }
+			plain { color yellow }
+			scale <20%>
+		}
+		scale <25%>
+	}
+	quadric {
+		sphere
+		plain { color purple }
+		scale <20%>
+		translate <0.5, 0.0,-2.0>
+	}
+	intersection {
+		plane {
+			<0, 0,-1>, -2.9
+			plasma {
+				plain { color green }
+				plain { color <0, 0.5, 0> }				//plain { color 50%*green }
+				rotate <0, 0, 30>
+				scale <10%>
+			}
+		}
+		quadric {
+			paraboloid
+			plasma {
+				plain { color green }
+				plain { color <0, 0.5, 0> }				//plain { color 50%*green }
+				rotate <0, 0, 30>
+				scale <10%>
+			}
+			scale <0.5,-1.0, 0.5>
+			translate <-0.2, 0.0,-2.7>
+		}
+	}
+	intersection {
+		plane {
+			<1.0, 1.0,-0.8>, -0.5
+			plain {
+				color red
+				reflect 0.3
+			}
+		}
+		quadric {
+			cylinder
+			plain {
+				color red
+				reflect 0.3
+			}
+			scale <25%>
+			translate <-1.0, 0.0, -1.0>
+		}
+	}
+}
+
+light {
+	< 1.0, 3.0,-5.0>
+	<1, 1, 1>
+	20
+}
+
+light {
+	<-1.0, 2.0,-4.0>
+	<1, 0, 0>
+	5
+}

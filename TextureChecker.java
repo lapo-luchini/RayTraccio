@@ -1,0 +1,17 @@
+class TextureChecker extends Texture {
+  private Texture c[];
+TextureChecker(Texture a, Texture b) {
+	c = new Texture[2];
+	c[0] = a;
+	c[1] = b;
+}
+public Color color(Vector p) {
+	return (c[ (((int) Math.floor(p.x)) ^ ((int) Math.floor(p.y)) ^ ((int) Math.floor(p.z))) & 1].color(p));
+}
+public double reflect(Vector p) {
+	return (c[ (((int) Math.floor(p.x)) ^ ((int) Math.floor(p.y)) ^ ((int) Math.floor(p.z))) & 1].reflect(p));
+}
+public String toString() {
+	return ("TextureChecker[" + c[0] + "," + c[1] + "]");
+}
+}
