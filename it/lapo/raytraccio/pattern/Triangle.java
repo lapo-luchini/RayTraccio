@@ -1,10 +1,5 @@
-package it.lapo.raytraccio.pattern;
-
-import it.lapo.raytraccio.Pattern;
-import it.lapo.raytraccio.Vector3D;
-
 // RayTraccio ray-tracing library Copyright (c) 2001-2004 Lapo Luchini <lapo@lapo.it>
-// $Header: /usr/local/cvsroot/RayTraccio/PatternTriangle.java,v 1.8 2002/02/23 16:41:16 lapo Exp $
+// $Header: /usr/local/cvsroot/RayTraccio/it/lapo/raytraccio/pattern/Triangle.java,v 1.1 2004/12/16 23:09:56 lapo Exp $
 
 // This file is part of RayTraccio.
 //
@@ -22,36 +17,42 @@ import it.lapo.raytraccio.Vector3D;
 // along with RayTraccio; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+package it.lapo.raytraccio.pattern;
+
+import it.lapo.raytraccio.Pattern;
+import it.lapo.raytraccio.Vector3D;
 
 /**
- * Modifica un altro pattern modificando il suo range <code>1.0-2.0*abs(x-0.5)</code>.
+ * Modifica un altro pattern modificando il suo range
+ * <code>1.0-2.0*abs(x-0.5)</code>.
+ * 
  * @author: Lapo Luchini <lapo@lapo.it>
  */
-class Triangle extends Pattern {
+public class Triangle extends Pattern {
 
-  /** pattern da modificare */
-  Pattern pat;
+    /** pattern da modificare */
+    Pattern pat;
 
-  public Triangle(Pattern p) {
-    pat=p;
-  }
-
-  public double scalar(Vector3D p) {
-    double u=pat.scalar(p);
-    if(u>0.5)
-      u=1.0-u;
-    u*=2;
-    return(u);
-  }
-
-  public double[] vectorial(Vector3D p, byte dim) {
-    double u[]=pat.vectorial(p, dim);
-    while(dim-->0) {
-      if(u[dim]>0.5)
-	u[dim]=1.0-u[dim];
-      u[dim]*=2;
+    public Triangle(Pattern p) {
+        pat = p;
     }
-    return(u);
-  }
+
+    public double scalar(Vector3D p) {
+        double u = pat.scalar(p);
+        if (u > 0.5)
+            u = 1.0 - u;
+        u *= 2;
+        return (u);
+    }
+
+    public double[] vectorial(Vector3D p, byte dim) {
+        double u[] = pat.vectorial(p, dim);
+        while (dim-- > 0) {
+            if (u[dim] > 0.5)
+                u[dim] = 1.0 - u[dim];
+            u[dim] *= 2;
+        }
+        return (u);
+    }
 
 }

@@ -1,10 +1,5 @@
-package it.lapo.raytraccio.pattern;
-
-import it.lapo.raytraccio.Pattern;
-import it.lapo.raytraccio.Vector3D;
-
 // RayTraccio ray-tracing library Copyright (c) 2001-2004 Lapo Luchini <lapo@lapo.it>
-// $Header: /usr/local/cvsroot/RayTraccio/PatternSine.java,v 1.8 2002/02/23 16:41:16 lapo Exp $
+// $Header: /usr/local/cvsroot/RayTraccio/it/lapo/raytraccio/pattern/Sine.java,v 1.1 2004/12/16 23:09:56 lapo Exp $
 
 // This file is part of RayTraccio.
 //
@@ -22,29 +17,35 @@ import it.lapo.raytraccio.Vector3D;
 // along with RayTraccio; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+package it.lapo.raytraccio.pattern;
+
+import it.lapo.raytraccio.Pattern;
+import it.lapo.raytraccio.Vector3D;
 
 /**
- * Modifica un altro pattern modificando il suo range comprimendolo agli estremi <code>0.5+0.5*sin((PI/2)*(x-0.5))</code>.
+ * Modifica un altro pattern modificando il suo range comprimendolo agli estremi
+ * <code>0.5+0.5*sin((PI/2)*(x-0.5))</code>.
+ * 
  * @author: Lapo Luchini <lapo@lapo.it>
  */
-class Sine extends Pattern {
+public class Sine extends Pattern {
 
-  /** pattern da modificare */
-  Pattern pat;
+    /** pattern da modificare */
+    Pattern pat;
 
-  public Sine(Pattern p) {
-    pat=p;
-  }
+    public Sine(Pattern p) {
+        pat = p;
+    }
 
-  public double scalar(Vector3D p) {
-    return(0.5+0.5*Math.sin(Math.PI*(pat.scalar(p)-0.5)));
-  }
+    public double scalar(Vector3D p) {
+        return (0.5 + 0.5 * Math.sin(Math.PI * (pat.scalar(p) - 0.5)));
+    }
 
-  public double[] vectorial(Vector3D p, byte dim) {
-    double u[]=pat.vectorial(p, dim);
-    while(dim-->0)
-      u[dim]=Math.sin(Math.PI*u[dim]);
-    return(u);
-  }
+    public double[] vectorial(Vector3D p, byte dim) {
+        double u[] = pat.vectorial(p, dim);
+        while (dim-- > 0)
+            u[dim] = Math.sin(Math.PI * u[dim]);
+        return (u);
+    }
 
 }

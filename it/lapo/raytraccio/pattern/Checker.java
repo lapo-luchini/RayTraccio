@@ -1,10 +1,5 @@
-package it.lapo.raytraccio.pattern;
-
-import it.lapo.raytraccio.Pattern;
-import it.lapo.raytraccio.Vector3D;
-
 // RayTraccio ray-tracing library Copyright (c) 2001-2004 Lapo Luchini <lapo@lapo.it>
-// $Header: /usr/local/cvsroot/RayTraccio/PatternChecker.java,v 1.7 2002/02/23 16:41:16 lapo Exp $
+// $Header: /usr/local/cvsroot/RayTraccio/it/lapo/raytraccio/pattern/Checker.java,v 1.1 2004/12/16 23:09:56 lapo Exp $
 
 // This file is part of RayTraccio.
 //
@@ -22,24 +17,31 @@ import it.lapo.raytraccio.Vector3D;
 // along with RayTraccio; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+package it.lapo.raytraccio.pattern;
+
+import it.lapo.raytraccio.Pattern;
+import it.lapo.raytraccio.Vector3D;
 
 /**
  * Campo scalare che vale <code>0.0</code> e <code>1.0</code>
  * alternativamente in ogni cubo unitario.
+ * 
  * @author: Lapo Luchini
  */
 public class Checker extends Pattern {
 
-  public double scalar(Vector3D p) {
-    return((((int)Math.floor(p.x))^((int)Math.floor(p.y))^((int)Math.floor(p.z)))&1);
-  }
+    public double scalar(Vector3D p) {
+        return ((((int) Math.floor(p.x)) ^ ((int) Math.floor(p.y)) ^ ((int) Math
+                .floor(p.z))) & 1);
+    }
 
-  public double[] vectorial(Vector3D p, byte dim) {
-    double[] v=new double[dim];
-    double nv=(((int)Math.floor(p.x))^((int)Math.floor(p.y))^((int)Math.floor(p.z)))&1;
-    while(dim-->0)
-      v[dim]=nv;
-    return(v);
-  }
+    public double[] vectorial(Vector3D p, byte dim) {
+        double[] v = new double[dim];
+        double nv = (((int) Math.floor(p.x)) ^ ((int) Math.floor(p.y)) ^ ((int) Math
+                .floor(p.z))) & 1;
+        while (dim-- > 0)
+            v[dim] = nv;
+        return (v);
+    }
 
 }

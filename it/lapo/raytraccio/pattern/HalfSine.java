@@ -1,10 +1,5 @@
-package it.lapo.raytraccio.pattern;
-
-import it.lapo.raytraccio.Pattern;
-import it.lapo.raytraccio.Vector3D;
-
 // RayTraccio ray-tracing library Copyright (c) 2001-2004 Lapo Luchini <lapo@lapo.it>
-// $Header: /usr/local/cvsroot/RayTraccio/PatternHalfSine.java,v 1.8 2002/02/23 16:41:16 lapo Exp $
+// $Header: /usr/local/cvsroot/RayTraccio/it/lapo/raytraccio/pattern/HalfSine.java,v 1.1 2004/12/16 23:09:56 lapo Exp $
 
 // This file is part of RayTraccio.
 //
@@ -22,31 +17,37 @@ import it.lapo.raytraccio.Vector3D;
 // along with RayTraccio; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+package it.lapo.raytraccio.pattern;
+
+import it.lapo.raytraccio.Pattern;
+import it.lapo.raytraccio.Vector3D;
 
 /**
- * Modifica un altro pattern modificando il suo range comprimendolo
- * sulla parte alta <code>sin((PI/2)*x)</code>.
+ * Modifica un altro pattern modificando il suo range comprimendolo sulla parte
+ * alta <code>sin((PI/2)*x)</code>.
+ * 
  * @author: Lapo Luchini <lapo@lapo.it>
  */
-class HalfSine extends Pattern {
+public class HalfSine extends Pattern {
 
-  // pattern da modificare
-  Pattern pat;
-  public final static double PI2 = 1.5707963267948966192313216916397514420985847;
+    /** pattern da modificare */
+    Pattern pat;
 
-  public HalfSine(Pattern p) {
-    pat=p;
-  }
+    public final static double PI2 = 1.5707963267948966192313216916397514420985847;
 
-  public double scalar(Vector3D p) {
-    return(Math.sin(PI2*pat.scalar(p)));
-  }
+    public HalfSine(Pattern p) {
+        pat = p;
+    }
 
-  public double[] vectorial(Vector3D p, byte dim) {
-    double u[]=pat.vectorial(p, dim);
-    while(dim-->0)
-      u[dim]=Math.sin(PI2*u[dim]);
-    return(u);
-  }
+    public double scalar(Vector3D p) {
+        return (Math.sin(PI2 * pat.scalar(p)));
+    }
+
+    public double[] vectorial(Vector3D p, byte dim) {
+        double u[] = pat.vectorial(p, dim);
+        while (dim-- > 0)
+            u[dim] = Math.sin(PI2 * u[dim]);
+        return (u);
+    }
 
 }
