@@ -1,7 +1,5 @@
-package it.lapo.raytraccio;
-
 // RayTraccio ray-tracing library Copyright (c) 2001-2004 Lapo Luchini <lapo@lapo.it>
-// $Header: /usr/local/cvsroot/RayTraccio/Light.java,v 1.9 2002/02/23 16:41:16 lapo Exp $
+// $Header: /usr/local/cvsroot/RayTraccio/it/lapo/raytraccio/Light.java,v 1.1 2004/12/16 23:09:56 lapo Exp $
 
 // This file is part of RayTraccio.
 //
@@ -19,37 +17,47 @@ package it.lapo.raytraccio;
 // along with RayTraccio; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+package it.lapo.raytraccio;
+
 /**
  * Luce puntiforme.
+ * 
  * @author: Lapo Luchini <lapo@lapo.it>
  */
-class Light {
+public class Light {
 
-  /** Vettore posizione */
-  protected Vector3D o;
-  /** Colore della luce (alla distanza <code>p</code>) */
-  protected Color c;
-  /** Potenza della luce (distanza alla quale usare il colore <code>c</code> invariato) */
-  protected double p;
+    /** Vettore posizione */
+    protected Vector3D o;
 
-  /**
-   * Crea una luce puntiforme cno parametri dati. <br>
-   * @param o Vettore posizione
-   * @param c Colore
-   * @param p Potenza
-   */
-  Light(Vector3D o, Color c, double p) {
-    this.o = o;
-    this.c = c;
-    this.p = p;
-  }
+    /** Colore della luce (alla distanza <code>p</code>) */
+    protected Color c;
 
-  /**
-   * Rappresentazione testuale dell'oggetto. <br>
-   * Esempio: <code>Light[Vector3D[1.0,2.0,3.0],Color[1.0,0.0,0.0],5.0]</code> <br>
-   */
-  public String toString() {
-    return ("Light[" + o + "," + c + "," + p + "]");
-  }
+    /**
+     * Potenza della luce (distanza alla quale usare il colore <code>c</code>
+     * invariato)
+     */
+    protected double p;
+
+    /**
+     * Crea una luce puntiforme cno parametri dati. <br>
+     * 
+     * @param o Vettore posizione
+     * @param c Colore
+     * @param p Potenza
+     */
+    public Light(Vector3D o, Color c, double p) {
+        this.o = o;
+        this.c = c;
+        this.p = p;
+    }
+
+    /**
+     * Rappresentazione testuale dell'oggetto. <br>
+     * Esempio: <code>Light[Vector3D[1.0,2.0,3.0],Color[1.0,0.0,0.0],5.0]</code>
+     * <br>
+     */
+    public String toString() {
+        return ("Light[" + o + "," + c + "," + p + "]");
+    }
 
 }

@@ -18,7 +18,8 @@ import it.lapo.raytraccio.texture.*;
  */
 public class SDL {
 
-	public java.util.Hashtable cons=new java.util.Hashtable();
+	//TODO:[javacc ancora on gli piace] //public java.util.Hashtable<String, Object> cons = new java.util.Hashtable<String, Object>();
+	public java.util.Hashtable cons = new java.util.Hashtable();
 
 	public static void main(String args[]) throws ParseException {
 		SDL parser = new SDL(System.in);
