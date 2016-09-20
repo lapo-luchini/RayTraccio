@@ -26,9 +26,11 @@ import java.awt.Frame;
  */
 public class RayTraccioSDL extends RayTraccio {
 
+    private String sdl = "examples/default.sdl";
+
     public void init() {
         super.init();
-        initRenderer(loadScene("examples/default.sdl"));
+        initRenderer(loadScene(sdl));
     }
 
     public Scene loadScene(String str) {
@@ -94,9 +96,9 @@ public class RayTraccioSDL extends RayTraccio {
         Frame f = new Frame("RayTraccio");
         RayTraccioSDL RT = new RayTraccioSDL();
         RT.setRenderSize(new Dimension(dimX, dimY), scala);
-        RT.init();
         if (filename != null)
-            RT.loadScene(filename);
+            RT.sdl = filename;
+        RT.init();
         RT.start();
         f.add("Center", RT);
         f.setSize(dimX + 20, dimY + 40);
