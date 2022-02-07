@@ -50,20 +50,20 @@ public class Hit {
   /**
    * Aggiunge una possibile intersezione. <br>
    * Vengono scartate quelle con coordinata non positiva (si trovano prima del punto di partenza del raggio)
-   * e quelle con coordinata maggiore a quella gi‡ presente (viene quindi mantenuto solo la <i>prima</i>
-   * intersezione del raggio, cosa che andr‡ cambiata se si vogliono supportare le rifrazioni semplificate
+   * e quelle con coordinata maggiore a quella gi√† presente (viene quindi mantenuto solo la <i>prima</i>
+   * intersezione del raggio, cosa che andr√† cambiata se si vogliono supportare le rifrazioni semplificate
    * senza indice di rifazione).<br>
-   * Se l'intersezione Ë accettata il valore {@link #h h} viene posto <code>true</code> e il
+   * Se l'intersezione √® accettata il valore {@link #h h} viene posto <code>true</code> e il
    * valore {@link #t t} prende il valore passato.
    * @param a cordinata parametrica della possibile intersezione
    */
   public void addT(double a) {
-    if (a > 1E-10) { // se Ë un hit "davanti"
-      if (h) {        // se c'era gi‡ un hit
-	if (a < t)     // se questo Ë pi˘ vicino
-	  t = a;        // questo Ë il nuovo hit
+    if (a > 1E-10) { // se √® un hit "davanti"
+      if (h) {        // se c'era gi√† un hit
+	if (a < t)     // se questo √® pi√π vicino
+	  t = a;        // questo √® il nuovo hit
       } else          // altrimenti
-	t = a;         // questo Ë il nuovo hit
+	t = a;         // questo √® il nuovo hit
       h = true;
     }
   }

@@ -47,7 +47,7 @@ public class Blob extends Shape3D {
 
     private double thr;
 
-    /** Entit‡ per la statistica */
+    /** Entit√† per la statistica */
     private static byte stat = ShapeStats.register("Blob");
 
     public Blob(double threshold, Texture tex) {
@@ -82,7 +82,7 @@ public class Blob extends Shape3D {
     public Hit hit(Ray a) {
         // TODO
         // SUM(f:foci,f.s/(p-f.c))
-        // k=f1f/((px-f1x)≤+(py-f1y)≤+(pz-f1z)≤)+f2f/((px-f2x)≤+(py-f2y)≤+(pz-f2z)≤)
+        // k=f1f/((px-f1x)¬≤+(py-f1y)¬≤+(pz-f1z)¬≤)+f2f/((px-f2x)¬≤+(py-f2y)¬≤+(pz-f2z)¬≤)
         // k=f1f*f1l(p)+f2f*f2l(p) v p(t)
         /*
          * Vector3D p = new Vector3D(0.0, 0.0, 0.0); p.x = a.o.x + t * a.c.x;
@@ -93,7 +93,7 @@ public class Blob extends Shape3D {
         double dist;
         for (Focus f : foci) {
             dist = a.dist(f.center);
-            if (dist >= 1E-10) // se Ë "davanti"
+            if (dist >= 1E-10) // se √® "davanti"
                 max.put(new Double(dist), f);
             //System.out.println("Dist " + dist_current + '/' + dist_closest);
         }
@@ -133,7 +133,7 @@ public class Blob extends Shape3D {
     }
 
     public Vector3D normal(Vector3D p) {
-        // ma sar‡ "corretto", cosÏ, o semplicemente ci si accontenta? ^_^
+        // ma sar√† "corretto", cos√¨, o semplicemente ci si accontenta? ^_^
         Vector3D u = p.mul(foci.size());
         for (Focus f : foci)
             u.subU(f.center);

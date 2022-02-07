@@ -35,7 +35,7 @@ public class ShapePoly extends ShapeTextured {
   private int n = 0;
   /** Potenza totale massima degli addendi */
   private byte maxp = 0;
-  /** Entit‡ per la statistica */
+  /** Entit√† per la statistica */
   private static byte stat=ShapeStats.register("Poly");
 
   /**
@@ -70,8 +70,8 @@ public class ShapePoly extends ShapeTextured {
 
   /**
    * Aggiunge un addendo al polinomio. <br>
-   * Gli addendi sono contenuti in un array la cui lunghezza Ë aumentata in modo dinamico
-   * per ottimizzare spazio occupato e velocit‡ di aggiunta (in caso manchi spazio
+   * Gli addendi sono contenuti in un array la cui lunghezza √® aumentata in modo dinamico
+   * per ottimizzare spazio occupato e velocit√† di aggiunta (in caso manchi spazio
    * l'array viene aumentato del 50%+1).
    * @param px potenza in X dell'addendo
    * @param py potenza in Y dell'addendo
@@ -96,7 +96,7 @@ public class ShapePoly extends ShapeTextured {
   }
 
   /**
-   * Calcola l'intersezione tra un dato raggio e la figura (questa versione non Ë ottimizzata).
+   * Calcola l'intersezione tra un dato raggio e la figura (questa versione non √® ottimizzata).
    * @param a il raggio voluto
    */
   public Hit hit(EyeRays a) {

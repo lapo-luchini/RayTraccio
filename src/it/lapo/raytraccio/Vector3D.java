@@ -100,7 +100,7 @@ public final class Vector3D {
   /**
    * Confronto di vettori.
    * @param a vettore da usare
-   * @return <code>true</code> se <code>a</code> è un <code>Vector3D</code> con uguali componenti<br><code>false</code> in caso contrario
+   * @return <code>true</code> se <code>a</code> Ã¨ un <code>Vector3D</code> con uguali componenti<br><code>false</code> in caso contrario
    */
   public boolean equals(Object a) {
     if (!(a instanceof Vector3D))
@@ -128,7 +128,7 @@ public final class Vector3D {
 
   /**
    * Modulo quadro del vettore.<br>
-   * Più veloce di {@link #mod() mod()} in quanto non ha bisogno di usare <code>Math.sqrt(double)</code>.
+   * PiÃ¹ veloce di {@link #mod() mod()} in quanto non ha bisogno di usare <code>Math.sqrt(double)</code>.
    * @return modulo^2
    */
   public double mod2() {

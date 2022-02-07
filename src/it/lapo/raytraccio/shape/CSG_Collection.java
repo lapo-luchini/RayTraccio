@@ -37,8 +37,8 @@ abstract public class CSG_Collection extends Shape3D {
 
     /**
      * Aggiunge una figura alla collezione. <br>
-     * Le figure sono contenute in un array la cui lunghezza Ë aumentata in modo
-     * dinamico per ottimizzare spazio occupato e velocit‡ di aggiunta (in caso
+     * Le figure sono contenute in un array la cui lunghezza √® aumentata in modo
+     * dinamico per ottimizzare spazio occupato e velocit√† di aggiunta (in caso
      * manchi spazio l'array viene aumentato del 50%+1).
      *
      * @param a figura da aggiungere

@@ -21,8 +21,8 @@ import it.lapo.raytraccio.Vector3D;
 /**
  * Campo di rumore tridimensionale a spettro 1/f. <br>
  * &Egrave; una versione leggermente semplificata della versione di <a
- * href="http://mrl.nyu.edu/~perlin/">Ken Perlin </a>, pi˘ rapida da calcolare
- * ma pi˘ "cubettosa" se usata con poche ottave (Ë un pattern sommatoria di
+ * href="http://mrl.nyu.edu/~perlin/">Ken Perlin </a>, pi√π rapida da calcolare
+ * ma pi√π "cubettosa" se usata con poche ottave (√® un pattern sommatoria di
  * componenti anisotrope, isotropo solo in somma).
  *
  * @author: Lapo Luchini <lapo@lapo.it>

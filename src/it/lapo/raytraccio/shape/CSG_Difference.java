@@ -30,7 +30,7 @@ public class CSG_Difference extends CSG_Collection {
 
     /**
      * Calcola l'intersezione tra un dato raggio e la figura (questa versione
-     * non è ottimizzata).
+     * non Ã¨ ottimizzata).
      *
      * @param a il raggio voluto
      */
@@ -41,22 +41,22 @@ public class CSG_Difference extends CSG_Collection {
         if (n > 0) {
             l = s[0].hit(a);
             for (i = 1; (l.h) && (i < n); i++) {
-                if (s[i].value(l.point()) < 0.0) { // se questo oggetto è
+                if (s[i].value(l.point()) < 0.0) { // se questo oggetto Ã¨
                                                     // "dentro"
-                    l.h = false; // allora quell'hit non è più valido
+                    l.h = false; // allora quell'hit non Ã¨ piÃ¹ valido
                     a2 = new Ray(a); // fai un nuovo raggio identico a questo
                     a2.o = l.point(); // ma lo fa partire da questo hit
                     z = s[i].hit(a2); // cerca il "foro d'uscita"
-                    if (z.h) // se è un hit
-                        if (z.t > 1E-10) // se è "davanti"
+                    if (z.h) // se Ã¨ un hit
+                        if (z.t > 1E-10) // se Ã¨ "davanti"
                             if (s[0].value(z.point()) < 0.0) { // se l'oggetto
-                                                                // principale è
+                                                                // principale Ã¨
                                                                 // ancora
                                                                 // "dentro"
                                 z.t += l.t; // aggiusta la distanza sul raggio
                                             // originale
                                 l = new HitTransform(z, a, null, null, true); // allora
-                                                                                // è il
+                                                                                // Ã¨ il
                                                                                 // nuovo
                                                                                 // hit
                             }
@@ -74,16 +74,16 @@ public class CSG_Difference extends CSG_Collection {
         if (n > 0) {
             l = s[0].hit(a);
             for (i = 1; (l.h) && (i < n); i++) {
-                if (s[i].value(l.point()) < 0.0) { // se questo oggetto è "dentro"
-                    l.h = false; // allora quell'hit non è più valido
+                if (s[i].value(l.point()) < 0.0) { // se questo oggetto Ã¨ "dentro"
+                    l.h = false; // allora quell'hit non Ã¨ piÃ¹ valido
                     a2 = new Ray(a); // fai un nuovo raggio identico a questo
                     a2.o = l.point(); // ma lo fa partire da questo hit
                     z = s[i].hit(a2); // cerca il "foro d'uscita"
-                    if (z.h) // se è un hit
-                        if (z.t > 1E-10) // se è "davanti"
-                            if (s[0].value(z.point()) < 0.0) { // se l'oggetto principale è ancora "dentro"
+                    if (z.h) // se Ã¨ un hit
+                        if (z.t > 1E-10) // se Ã¨ "davanti"
+                            if (s[0].value(z.point()) < 0.0) { // se l'oggetto principale Ã¨ ancora "dentro"
                                 z.t += l.t; // aggiusta la distanza sul raggio originale
-                                l = new HitTransform(z, a, null, null, true); // allora è il nuovo hit
+                                l = new HitTransform(z, a, null, null, true); // allora Ã¨ il nuovo hit
                             }
                 }
             }

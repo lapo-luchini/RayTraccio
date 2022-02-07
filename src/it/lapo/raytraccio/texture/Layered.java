@@ -19,8 +19,8 @@ import it.lapo.raytraccio.Vector3D;
 
 /**
  * Materiale formato da vari strati di altri materiali. <br>
- * I sotto-materiali vengono passati in ordine di "profondit‡": il primo passato
- * Ë il pi˘ esterno. <br>
+ * I sotto-materiali vengono passati in ordine di "profondit√†": il primo passato
+ * √® il pi√π esterno. <br>
  * Si suppone che tutti i materiali tranne l'ultimo abbiano una trasparenza
  * da qualche parte (alpha &lt; 1.0), in caso contrario i materiali 'sottostanti'
  * resterebbero inutilizzati (non produrrebbe comunque errori, solo uno 'spreco'). <br>
@@ -36,8 +36,8 @@ public class Layered extends Texture {
 
   /**
    * Aggiunge una sotto-texture. <br>
-   * Le figure sono contenute in un array la cui lunghezza Ë aumentata in modo dinamico
-   * per ottimizzare spazio occupato e velocit‡ di aggiunta (in caso manchi spazio
+   * Le figure sono contenute in un array la cui lunghezza √® aumentata in modo dinamico
+   * per ottimizzare spazio occupato e velocit√† di aggiunta (in caso manchi spazio
    * l'array viene aumentato del 50%+1).
    * @param a {@link Texture} da aggiungere
    */

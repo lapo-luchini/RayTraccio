@@ -83,7 +83,7 @@ public final class Poly {
       }
       /*
       ** QUADRATIC EQUATION
-      ** k[2]*x²+k[1]*x+k[0]==0
+      ** k[2]*xÂ²+k[1]*x+k[0]==0
       */
       case 2 : {
 	double sb = (-0.5) * k[1];
@@ -101,7 +101,7 @@ public final class Poly {
       }
       /*
       ** CUBIC EQUATION
-      ** k[3]*x³+k[2]*x²+k[1]*x+a[0]==0
+      ** k[3]*xÂ³+k[2]*xÂ²+k[1]*x+a[0]==0
       */
       case 3 : {
 	double Q, R, Q3, R2, sQ, d, an, theta;
@@ -143,7 +143,7 @@ public final class Poly {
       }
       /*
       ** QUARTIC EQUATION
-      ** k[4]*x²²+k[3]*x³+k[2]*x²+k[1]*x+a[0]==0
+      ** k[4]*xÂ²Â²+k[3]*xÂ³+k[2]*xÂ²+k[1]*x+a[0]==0
       */
       case 4 : {
 	double cubic[] = new double[4];

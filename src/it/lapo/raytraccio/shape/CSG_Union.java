@@ -29,7 +29,7 @@ public class CSG_Union extends CSG_Collection {
 
     /**
      * Calcola l'intersezione tra un dato raggio e la figura (questa versione
-     * non è ottimizzata).
+     * non Ã¨ ottimizzata).
      *
      * @param a il raggio voluto
      */
@@ -66,11 +66,11 @@ public class CSG_Union extends CSG_Collection {
      */
     public double value(Vector3D p) {
         // non sono sicuro che vada
-        double a = 1.0; // di defualt è esterno
+        double a = 1.0; // di defualt Ã¨ esterno
         for (int i = 0; i < n; i++)
             // per ogni sottofigura
-            if (s[i].value(p) * ot < 0.0) // se questa figura è interna
-                a = -1.0; // allora è interno
+            if (s[i].value(p) * ot < 0.0) // se questa figura Ã¨ interna
+                a = -1.0; // allora Ã¨ interno
         return (a);
     }
 

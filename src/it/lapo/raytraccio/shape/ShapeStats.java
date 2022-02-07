@@ -24,7 +24,7 @@ public final class ShapeStats {
   public static byte TYPE_RAY=0;
   /** Tipo di statistica: un raggio a origine fissa &egrave; stato intersecato */
   public static byte TYPE_EYERAY=1;
-  /** Tipo di statistica: un raggio Ë stato calcolato in modo ottimizzato */
+  /** Tipo di statistica: un raggio √® stato calcolato in modo ottimizzato */
   public static byte TYPE_CACHEDRAY=2;
   /** Tipo di statistica: un raggio ha effettivamente colpito la figura */
   public static byte TYPE_HIT=3;
@@ -39,7 +39,7 @@ public final class ShapeStats {
 
   /**
    * Aumenta di uno la statistica voluta.
-   * @param entity indicatore dell'entit‡ da aggiornare
+   * @param entity indicatore dell'entit√† da aggiornare
    * @param type tipo di statistica da aggiornare
    */
   public static void count(byte entity, byte type) {
@@ -48,7 +48,7 @@ public final class ShapeStats {
 
   /**
    * Legge la statistica voluta.
-   * @param entity indicatore dell'entit‡
+   * @param entity indicatore dell'entit√†
    * @param type tipo di statistica
    * @return il valore dell astatistica
    */
@@ -57,26 +57,26 @@ public final class ShapeStats {
   }
 
   /**
-   * Legge il numero di entit‡ registrate.
-   * @return numero di entit‡ registrate
+   * Legge il numero di entit√† registrate.
+   * @return numero di entit√† registrate
    */
   public static int getEntityCount() {
     return (n);
   }
 
   /**
-   * Legge il nome dell'entit‡ voluta.
-   * @param entity indicatore dell'entit‡ voluta
-   * @return nome dell'entit‡
+   * Legge il nome dell'entit√† voluta.
+   * @param entity indicatore dell'entit√† voluta
+   * @return nome dell'entit√†
    */
   public static String getEntityName(byte entity) {
     return(entities[entity]);
   }
 
   /**
-   * Registra una nuova entit‡, con nome dato.
-   * @param name nome voluto dell'entit‡
-   * @return indicatore dell'entit‡, usato da ora in poi per identificarla
+   * Registra una nuova entit√†, con nome dato.
+   * @param name nome voluto dell'entit√†
+   * @return indicatore dell'entit√†, usato da ora in poi per identificarla
    */
   synchronized public static byte register(String name) {
     if (n == entities.length) {

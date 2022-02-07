@@ -141,7 +141,7 @@ public final class Color {
             this.b = 0.0;
         if (this.a < 0.0)
             this.a = 0.0;
-        // le medie non funzionerebbero più...
+        // le medie non funzionerebbero piÃ¹...
         // if (this.a > 1.0)
         // this.a = 1.0;
     }
@@ -181,7 +181,7 @@ public final class Color {
 
     /**
      * Trasforma il colore in formato 24 bit RGB (Red, Green, Blue). <br>
-     * Gli 8 bit più significativi sono fissati a uno.
+     * Gli 8 bit piÃ¹ significativi sono fissati a uno.
      *
      * @return colore in formato RGB
      */

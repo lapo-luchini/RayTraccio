@@ -22,7 +22,7 @@ import it.lapo.raytraccio.Shape3D;
 import it.lapo.raytraccio.Vector3D;
 
 /**
- * Figura virtuale utilizzata per ottimizzare la velocit‡ di calcolo degli {@link Hit} su figure complesse. <br>
+ * Figura virtuale utilizzata per ottimizzare la velocit√† di calcolo degli {@link Hit} su figure complesse. <br>
  * L'{@link Hit} viene eseguito prima sull'oggetto {@link #a} (che deve quindi essere una approssimazione per
  * eccesso dell'oggetto reale) e viene ripetuta sull'oggetto reale solo in caso che la prima abbia avuto successo. <br>
  * Questo produce un aumeto del tempo di calcolo per quei punti che colpiscono il bound (questo primo check &egrave; aggiuntivo
@@ -38,7 +38,7 @@ public class Bound extends Shape3D {
   private Shape3D a;
   /** Oggetto reale */
   private Shape3D b;
-  /** Entit‡ per la statistica */
+  /** Entit√† per la statistica */
   private static byte stat=ShapeStats.register("Bound");
 
   /**

@@ -333,7 +333,7 @@ Texture sdlTexture() :
 	)*
 	"}"
 	{
-		if(m!=TransformMatrix.IDENTITY) //TODO cambiarlo con un test più serio
+		if(m!=TransformMatrix.IDENTITY) //TODO cambiarlo con un test piÃ¹ serio
 			u=new Transform(u, m);
 		return(u);
 	}

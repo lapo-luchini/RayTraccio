@@ -29,7 +29,7 @@ public class CSG_Intersection extends CSG_Collection {
 
     /**
      * Calcola l'intersezione tra un dato raggio e la figura (questa versione
-     * non è ottimizzata).
+     * non Ã¨ ottimizzata).
      *
      * @param a il raggio voluto
      */
@@ -41,7 +41,7 @@ public class CSG_Intersection extends CSG_Collection {
             z = s[i].hit(a);
             if (z.h)
                 if (z.t > 1E-10)
-                    if ((z.t < l.t) || (!l.h)) { // è un hit più vicino, ora controllo se tutti gli altri sono "dentro"
+                    if ((z.t < l.t) || (!l.h)) { // Ã¨ un hit piÃ¹ vicino, ora controllo se tutti gli altri sono "dentro"
                         v = true;
                         for (i2 = 0; (i2 < n) && v; i2++)
                             if (i2 != i)
@@ -62,7 +62,7 @@ public class CSG_Intersection extends CSG_Collection {
             z = s[i].hit(a);
             if (z.h)
                 if (z.t > 1E-10)
-                    if ((z.t < l.t) || (!l.h)) { // è un hit più vicino, ora controllo se tutti gli altri sono "dentro"
+                    if ((z.t < l.t) || (!l.h)) { // Ã¨ un hit piÃ¹ vicino, ora controllo se tutti gli altri sono "dentro"
                         v = true;
                         for (i2 = 0; (i2 < n) && v; i2++)
                             if (i2 != i)
@@ -82,11 +82,11 @@ public class CSG_Intersection extends CSG_Collection {
      */
     public double value(Vector3D p) {
         // non sono sicuro che vada
-        double a = -1.0; // di default è interno
+        double a = -1.0; // di default Ã¨ interno
         for (int i = 0; i < n; i++)
             // per ogni sittifigura
-            if (s[i].value(p) * ot > 0.0) // se questa sottofigura è esterna
-                a = 1.0; // allora è esterno
+            if (s[i].value(p) * ot > 0.0) // se questa sottofigura Ã¨ esterna
+                a = 1.0; // allora Ã¨ esterno
         return (a);
     }
 

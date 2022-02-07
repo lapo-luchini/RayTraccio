@@ -59,7 +59,7 @@ public class ShapeTransform extends Shape3D {
   }
 
   /**
-   * Calcola l'intersezione tra un dato raggio e la figura (questa versione non è ottimizzata).
+   * Calcola l'intersezione tra un dato raggio e la figura (questa versione non Ã¨ ottimizzata).
    * @param a il raggio voluto
    */
   public Hit hit(EyeRays a) {

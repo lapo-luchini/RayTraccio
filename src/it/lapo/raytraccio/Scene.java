@@ -119,7 +119,7 @@ public class Scene {
                                                              * tanto c lo
                                                              * sovrascrivo
                                                              */);
-                rr.c = a.c.mirror(h.normal()); // sovrascrivo c: ok, ok, è un
+                rr.c = a.c.mirror(h.normal()); // sovrascrivo c: ok, ok, Ã¨ un
                 // po' sporco!!
                 Hit hs = s.hit(rr);
                 if (hs.h && (hs.t > 1E-10))
@@ -156,7 +156,7 @@ public class Scene {
                                                              * tanto c lo
                                                              * sovrascrivo
                                                              */);
-                rr.c = a.c.mirror(h.normal()); // sovrascrivo c: ok, ok, è un
+                rr.c = a.c.mirror(h.normal()); // sovrascrivo c: ok, ok, Ã¨ un
                 // po' sporco!!
                 Hit hs = s.hit(rr);
                 if (hs.h && (hs.t > 1E-10))

@@ -15,7 +15,7 @@
 package it.lapo.raytraccio;
 
 /**
- * Intersezione speciale usata per deformare lo spazio e le propriet‡ della figura.
+ * Intersezione speciale usata per deformare lo spazio e le propriet√† della figura.
  * @see ShapeTransform
  * @see TransformMatrix
  * @author: Lapo Luchini <lapo@lapo.it>
@@ -34,7 +34,7 @@ public class HitTransform extends Hit {
   protected Vector3D pt;
 
   /**
-   * Prepara un nuovo oggetto {@link HitTransform HitTransform} deformando lo spazio di un {@link Hit Hit} gi‡ esistente.
+   * Prepara un nuovo oggetto {@link HitTransform HitTransform} deformando lo spazio di un {@link Hit Hit} gi√† esistente.
    * @param h {@link Hit Hit} da deformare
    * @param r vero raggio da usare
    * @param tm matrice di trasformazione da applicare (se <code>null</code> non viene applicata trasformazione)
@@ -73,7 +73,7 @@ public class HitTransform extends Hit {
       else
 	n = tm.transformNormal(g.normal(pointTransform())).mul(tmid);
     }
-    if (ot)                     // se l'oggetto Ë capovolto
+    if (ot)                     // se l'oggetto √® capovolto
       n = Vector3D.ORIGIN.sub(n); // ribalta la normale
     return (n);
   }

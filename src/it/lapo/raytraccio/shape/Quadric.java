@@ -23,14 +23,14 @@ import it.lapo.raytraccio.Vector3D;
 
 /**
  * Quadrica generica. <br>
- * Equazione: <code>k0*x²+k1*xy+k2*y²+k3*xz+k4*yz+k5*z²+k6*x+k7*y+k8*z+k9=0</code>
+ * Equazione: <code>k0*xÂ²+k1*xy+k2*yÂ²+k3*xz+k4*yz+k5*zÂ²+k6*x+k7*y+k8*z+k9=0</code>
  * @author: Lapo Luchini <lapo@lapo.it>
  */
 public class Quadric extends ShapeTextured {
-  // ax²+bxy+cy²+dxz+eyz+fz²+gx+hy+iz+l=0
-  // | a ½b ½d|
-  // |½b  c ½e|
-  // |½d ½e  f|
+  // axÂ²+bxy+cyÂ²+dxz+eyz+fzÂ²+gx+hy+iz+l=0
+  // | a Â½b Â½d|
+  // |Â½b  c Â½e|
+  // |Â½d Â½e  f|
 
   /** Parametri standard di una sfera unitaria centrata nell'origne. */
   public static double SFERA[]= { 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,-1.0};
@@ -60,7 +60,7 @@ public class Quadric extends ShapeTextured {
   private Vector3D b_o=new Vector3D(1E30, 1E30, 1E30);
   /** OTTIMIZAZIONE: parametro cachato */
   private double b_tc, b_tbA, b_tbB, b_tbC, b_tbINC;
-  /** Entità per la statistica */
+  /** EntitÃ  per la statistica */
   private static byte stat=ShapeStats.register("Quadric");
 
   public Quadric(double a[], Texture c) {
@@ -75,7 +75,7 @@ public class Quadric extends ShapeTextured {
    * Versione ottimizzata di hit con un raggio di telecamera.
    */
   public Hit hit(EyeRays a) {
-    // ax²+bxy+cy²+dxz+eyz+fz²+gx+hy+iz+l=0
+    // axÂ²+bxy+cyÂ²+dxz+eyz+fzÂ²+gx+hy+iz+l=0
     // x=o.x+c.x*t
     // y=o.y+c.y*t
     // z=o.z+c.z*t
@@ -132,7 +132,7 @@ public class Quadric extends ShapeTextured {
   }
 
   public Hit hit(Ray a) {
-    // ax²+bxy+cy²+dxz+eyz+fz²+gx+hy+iz+l=0
+    // axÂ²+bxy+cyÂ²+dxz+eyz+fzÂ²+gx+hy+iz+l=0
     // x=o.x+c.x*t
     // y=o.y+c.y*t
     // z=o.z+c.z*t
@@ -176,7 +176,7 @@ public class Quadric extends ShapeTextured {
   }
 
   public Vector3D normal(Vector3D p) {
-    // ax²+bxy+cy²+dxz+eyz+fz²+gx+hy+iz+l=0
+    // axÂ²+bxy+cyÂ²+dxz+eyz+fzÂ²+gx+hy+iz+l=0
     // f'x=2ax+by+dz+g
     // f'y=bx+2cy+ez+h
     // f'z=dx+ey+2fz+i
@@ -193,7 +193,7 @@ public class Quadric extends ShapeTextured {
   }
 
   public void scale(Vector3D i) {
-    // ax²+bxy+cy²+dxz+eyz+fz²+gx+hy+iz+l=0
+    // axÂ²+bxy+cyÂ²+dxz+eyz+fzÂ²+gx+hy+iz+l=0
     // X=zx*x     x=X/zx
     // Y=zy*y ==> y=Y/zy
     // Z=zz*z     z=Z/zz
@@ -213,19 +213,19 @@ public class Quadric extends ShapeTextured {
   }
 
   public void translate(Vector3D i) {
-    // ax²+bxy+cy²+dxz+eyz+fz²+gx+hy+iz+l=0
+    // axÂ²+bxy+cyÂ²+dxz+eyz+fzÂ²+gx+hy+iz+l=0
     // X=zx+x     x=X-zx
     // Y=zy+y ==> y=Y-zy
     // Z=zz+z     z=Z-zz
-    // a(X+x)²+     b(X+x)(Y+y)+    c(Y+y)²+     d(X+x)(Z+z)+    e(Y+y)(Z+z)+    f(Z+z)²+     g(X+x)+h(Y+y)+i(Z+z)+l=0
-    // aX²+2aXx+ax²+bXY+bXy+bYx+bxy+cY²+2cYy+cy²+dXZ+dXz+dZx+dzx+eYZ+eYz+eZy+ezy+fZ²+2fZz+fz²+gX+gx+ hY+hy +iZ+iz +l=0
-    // X²=a XY=b Y²=c XZ=d YZ=e Z²=f
+    // a(X+x)Â²+     b(X+x)(Y+y)+    c(Y+y)Â²+     d(X+x)(Z+z)+    e(Y+y)(Z+z)+    f(Z+z)Â²+     g(X+x)+h(Y+y)+i(Z+z)+l=0
+    // aXÂ²+2aXx+axÂ²+bXY+bXy+bYx+bxy+cYÂ²+2cYy+cyÂ²+dXZ+dXz+dZx+dzx+eYZ+eYz+eZy+ezy+fZÂ²+2fZz+fzÂ²+gX+gx+ hY+hy +iZ+iz +l=0
+    // XÂ²=a XY=b YÂ²=c XZ=d YZ=e ZÂ²=f
     // X =2ax+by+dz+g
     // Y =bx+2cy+ez+h
     // Z =dx+ey+2fz+i
-    //   =ax²+bxy+cy²+dzx+ezy+fz²+gx+hy+iz+l
-    i=Vector3D.ORIGIN.sub(i); // i=i.mul(-1.0) dev'essere più lento
-    k[9]+=(k[0]*i.x*i.x)+(k[2]*i.y*i.y)+(k[5]*i.z*i.z)+ // prima perché usa 678
+    //   =axÂ²+bxy+cyÂ²+dzx+ezy+fzÂ²+gx+hy+iz+l
+    i=Vector3D.ORIGIN.sub(i); // i=i.mul(-1.0) dev'essere piÃ¹ lento
+    k[9]+=(k[0]*i.x*i.x)+(k[2]*i.y*i.y)+(k[5]*i.z*i.z)+ // prima perchÃ© usa 678
 	  (k[1]*i.x*i.y)+(k[3]*i.x*i.z)+(k[4]*i.y*i.z)+
 	  (k[6]*i.x)+(k[7]*i.y)+(k[8]*i.z);
     k[6]+=(2*k[0]*i.x)+(k[1]*i.y)+(k[3]*i.z);
@@ -234,7 +234,7 @@ public class Quadric extends ShapeTextured {
   }
 
   public double value(Vector3D p) {
-    // ax²+bxy+cy²+dxz+eyz+fz²+gx+hy+iz+l
+    // axÂ²+bxy+cyÂ²+dxz+eyz+fzÂ²+gx+hy+iz+l
     return(k[0]*p.x*p.x+k[1]*p.x*p.y+k[2]*p.y*p.y+k[3]*p.x*p.z+k[4]*p.y*p.z+k[5]*p.z*p.z+k[6]*p.x+k[7]*p.y+k[8]*p.z+k[9]);
   }
 

@@ -23,10 +23,10 @@ package it.lapo.raytraccio;
  * viene posto alla media di tutti e nove. <br>
  * Il metodo potrebbe essere reso parametrico o addirittura ricorsivo per fargli
  * tracciare con sempre pi&ugrave; precisione l'edge tra i due colori (in modo da avere
- * sfumature sempre più continue sui bordi). <br>
+ * sfumature sempre piÃ¹ continue sui bordi). <br>
  * Nota: a differenza della classe genitrice questa classe non supporta la ripartizione
  * del proprio lavoro in pi&ugrave; thread, anche perch&eacute; (per immagini particolarmente grandi,
- * dove potrebbe servire) questa classe esegue un compito notevolmente più breve,
+ * dove potrebbe servire) questa classe esegue un compito notevolmente piÃ¹ breve,
  * dovendo tracciare solo le aree dove c'&egrave; un edge.
  * @author: Lapo Luchini <lapo@lapo.it>
  */
@@ -93,7 +93,7 @@ class RenderThreadAntiAlias extends RenderThread {
   c.addU(scn.hit(r.specificRay(i+t, j+t)));
   c.mulU(1.0/9.0);
   buff[tmp]=c.getRGB();
-  bs.clear(i); // così restano tutti a zero
+  bs.clear(i); // cosÃ¬ restano tutti a zero
       }
     rayt.doneLine(j);
     return(cnt);

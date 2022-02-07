@@ -47,7 +47,7 @@ public class Plane extends ShapeTextured {
   public Plane(Vector3D n, double d, Texture c) {
     super(c);
     this.n = n;
-    this.d = d / n.mod(); // scala la costante perché non cambi nulla se n è versore
+    this.d = d / n.mod(); // scala la costante perchÃ© non cambi nulla se n Ã¨ versore
     this.n.versU();
   }
 

@@ -28,11 +28,11 @@ public final class TransformMatrix {
 
   /** Vettore con i valori della matrice (ordinati per righe) */
   protected double a[];
-  /** Matrice identit‡ */
+  /** Matrice identit√† */
   public static final TransformMatrix IDENTITY=new TransformMatrix();
 
   /**
-   * Crea una matrice identit‡.
+   * Crea una matrice identit√†.
    */
   public TransformMatrix() {
     a=new double[12];

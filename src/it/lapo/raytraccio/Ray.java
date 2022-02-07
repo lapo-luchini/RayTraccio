@@ -72,7 +72,7 @@ public class Ray {
 	}
 
 	/**
-	 * Calcola il punto del raggio che passa più vicino al punto dato.
+	 * Calcola il punto del raggio che passa piÃ¹ vicino al punto dato.
 	 *
 	 * @param a il punto dal quale calcolare la distanza
 	 * @return la distanza dal punto dato

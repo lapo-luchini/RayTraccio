@@ -28,7 +28,7 @@ import javax.swing.text.PlainDocument;
  * Comoda interfaccia utente Swing per l'editing delle scene. <br>
  * Il fatto che Swing non funzioni nei browser mi ha spinto a creare
  * un'interfaccia alternativa direttamente in HTML/Javascript. <br>
- * Lo sviluppo di RayDE è attualmente fermo.
+ * Lo sviluppo di RayDE Ã¨ attualmente fermo.
  *
  * @author: Lapo Luchini <lapo@lapo.it>
  */
@@ -755,7 +755,7 @@ public class RayDE extends javax.swing.JApplet implements WindowListener,
      */
     public void insertUpdate(javax.swing.event.DocumentEvent e) {
         time_mod = System.currentTimeMillis();
-        getTraccia().setEnabled(false); // attivo solo dopo che la scena è
+        getTraccia().setEnabled(false); // attivo solo dopo che la scena Ã¨
                                         // parsata
     }
 
@@ -796,7 +796,7 @@ public class RayDE extends javax.swing.JApplet implements WindowListener,
      */
     public void removeUpdate(javax.swing.event.DocumentEvent e) {
         time_mod = System.currentTimeMillis();
-        getTraccia().setEnabled(false); // attivo solo dopo che la scena è
+        getTraccia().setEnabled(false); // attivo solo dopo che la scena Ã¨
                                         // parsata
     }
 
@@ -828,7 +828,7 @@ public class RayDE extends javax.swing.JApplet implements WindowListener,
                     // document. highlighting
                 }
                 getTraccia().setEnabled(scene != null); // attivo solo se la
-                                                        // scena è parsata
+                                                        // scena Ã¨ parsata
             }
             try {
                 Thread.sleep(1000);
