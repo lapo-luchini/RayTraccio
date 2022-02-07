@@ -2,8 +2,8 @@
 
 scene {
 	camera <0.0, 1.0,-3.0>										// posizione della camera
-	target <0.0,-0.5, 0.0>										// posizione guardata dalla camera (sar‡ al centro dell'immagine)
-	horizon <4.0, 0.0, 0.0>										// vettore (relativo) che definisce l'orizzonte (in questo caso un orizzonte orizzontale e largo 4 unit‡)
+	target <0.0,-0.5, 0.0>										// posizione guardata dalla camera (sar√† al centro dell'immagine)
+	horizon <4.0, 0.0, 0.0>										// vettore (relativo) che definisce l'orizzonte (in questo caso un orizzonte orizzontale e largo 4 unit√†)
 	ratio 1/1																	// ratio orizzontale/verticale, usare 4/3 per immagini a tutto schermo
 }
 

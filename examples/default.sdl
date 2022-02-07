@@ -6,8 +6,8 @@
 
 scene {
   camera <0.0, 1.0,-5.0>                    // posizione della camera
-  target <0.0,-0.5, 0.0>                    // posizione guardata dalla camera (sarà al centro dell'immagine)
-  horizon <4.0, 0.0, 0.0>                   // vettore (relativo) che definisce l'orizzonte (in questo caso un orizzonte orizzontale e largo 4 unità)
+  target <0.0,-0.5, 0.0>                    // posizione guardata dalla camera (sarÃ  al centro dell'immagine)
+  horizon <4.0, 0.0, 0.0>                   // vettore (relativo) che definisce l'orizzonte (in questo caso un orizzonte orizzontale e largo 4 unitÃ )
   ratio 1/1                                 // ratio orizzontale/verticale, usare 4/3 per immagini a tutto schermo
 }
 
@@ -19,9 +19,9 @@ T_Crack4 = map {                            // definizione di una costante di ti
   turbulence {                              // pattern usato nella mappa colori: turbulence perturba un altro pattern
     triangle { sawtooth { } }               // un onda triangolare lungo l'asse X
     noise_abs { octaves 5 persistence 0.5 seed 1234567003 } // pattern di perturbazione: un rumore frattale
-    turbulence <1.3>                        // valore vettoriale che indica quando la turbolenza è forte
+    turbulence <1.3>                        // valore vettoriale che indica quando la turbolenza Ã¨ forte
   }
-  0.00 plain { color <1.0, 1.0, 1.0, 0.7> } // definizione della mappa di colori, l'ultimo valore è l'alpha
+  0.00 plain { color <1.0, 1.0, 1.0, 0.7> } // definizione della mappa di colori, l'ultimo valore Ã¨ l'alpha
   0.03 plain { color <1.0, 1.0, 1.0, 0.0> } // che indica la 'presenza' del colore, alpha=0.0 indica trasparenza
   0.03 plain { color <0.0, 0.0, 0.0, 0.3> }
   0.97 plain { color <0.329412, 0.329412, 0.329412, 0.1> }
@@ -68,7 +68,7 @@ T_Grnt8a = map {
   1.000 plain { color <0.310, 0.384, 0.420, 1.0-0.631> }
 }
 
-T_Stone21 = layered {                       // layered indica che più texture sono applicate in sequenza, ovviamente ha senso solo se gli strati esterni hanno trasparenze
+T_Stone21 = layered {                       // layered indica che piÃ¹ texture sono applicate in sequenza, ovviamente ha senso solo se gli strati esterni hanno trasparenze
   T_Crack4 { scale <1.0, 0.6, 1.0> rotate <10, 0, 20> }
   T_Grnt22 { scale <1.0, 2.0, 2.0> rotate < 0, 0,-40> }
   T_Grnt28 { scale <1.3, 2.5, 1.7> rotate < 0, 0,-40> }
@@ -99,7 +99,7 @@ Spavimento=plane {                          // definizione di una costante di ti
 }
 
 Sluna=quadric {                             // definizione di una quadrica
-  sphere                                    // utilizzo di uno dei tipi predefiniti (si può invece usare un array di 10 costanti)
+  sphere                                    // utilizzo di uno dei tipi predefiniti (si puÃ² invece usare un array di 10 costanti)
   scale <60%, 40%, 35%>                     // scala per un determinato vettore <X,Y,Z>
   translate <0.8, 1.0,-0.8>                 // trasla
   texture mix {                             // mix di due texture: media pesata dei loro colori
@@ -157,17 +157,17 @@ Scubo=intersection {                        // primo esempio di CSG: creazione d
 VR=1.0                                      // definizione di una costante di tipo Value: inizia per V maiuscola
 Vr=0.15
 
-Storo=bound {                               // l'oggetto bound serve per rendere più veloce il tracciamento dell'immagine
+Storo=bound {                               // l'oggetto bound serve per rendere piÃ¹ veloce il tracciamento dell'immagine
   poly {                                    // polinomio che genera un toro (la vera figura da disegnare)
     +x4+y4+z4+2x2y2+2x2z2+2y2z2             // i termini di un polinomio sono del tipo <costante>x<grado_di_x>y<grado_di_y>z<grado_di_z>
-    -2*(VR*VR+Vr*Vr)x2+2*(VR*VR-Vr*Vr)y2-2*(VR*VR+Vr*Vr)z2 // come si nota quando serve una costante si può utilizzare una espressione che la generi
+    -2*(VR*VR+Vr*Vr)x2+2*(VR*VR-Vr*Vr)y2-2*(VR*VR+Vr*Vr)z2 // come si nota quando serve una costante si puÃ² utilizzare una espressione che la generi
     +(VR*VR-Vr*Vr)*(VR*VR-Vr*Vr)
   }
   quadric {                                 // una sfera utilizzata come prima approssimazione, per evitare i lunghi calcoli del toro
     sphere
     scale <VR+Vr>                           // di raggio adeguato (somma del raggio interno ed esterno del toro)
   }
-  /*intersection {                          // usare un parallelepipedo poteva essere più veloce se il toro era visto più "di lato", ma è un oggetto complicato di per sé
+  /*intersection {                          // usare un parallelepipedo poteva essere piÃ¹ veloce se il toro era visto piÃ¹ "di lato", ma Ã¨ un oggetto complicato di per sÃ©
     plane { < 1, 0, 0> -(VR+Vr) }
     plane { <-1, 0, 0> -(VR+Vr) }
     plane { < 0, 1, 0> -(Vr) }
@@ -175,8 +175,8 @@ Storo=bound {                               // l'oggetto bound serve per rendere
     plane { < 0, 0, 1> -(VR+Vr) }
     plane { < 0, 0,-1> -(VR+Vr) }
   }*/
-  rotate <10,0,0>                           // le trasformazioni non fatte subito dopo l'elenco dei parametri sono leggermente più lente, ma inquesto caso sono l'unico modo
-  texture T_Stone21 { scale <50%> }         // come si nota andare a capo e indentare è solo una scelta grafica
+  rotate <10,0,0>                           // le trasformazioni non fatte subito dopo l'elenco dei parametri sono leggermente piÃ¹ lente, ma inquesto caso sono l'unico modo
+  texture T_Stone21 { scale <50%> }         // come si nota andare a capo e indentare Ã¨ solo una scelta grafica
 }
 
 Scubettoide=bound {
@@ -191,7 +191,7 @@ Scubettoide=bound {
     scale <1.316074012952492461*20%>        // la massima distanza dall'origine del cubettoide [sulla diagonale x=y=z => 3*x^4=1 => x^4=1/3]
     translate <.45,-.3,-2.85>
   }
-  /*intersection {                          // spazialmente sarebbe un bound più efficente, ma è meno efficende da calcolare di per sé
+  /*intersection {                          // spazialmente sarebbe un bound piÃ¹ efficente, ma Ã¨ meno efficende da calcolare di per sÃ©
     plane { < 1, 0, 0> -1 }
     plane { <-1, 0, 0> -1 }
     plane { < 0, 1, 0> -1 }
@@ -203,7 +203,7 @@ Scubettoide=bound {
 
 //// ZONA FINALE: definizione del singolo oggetto disegnato ////
 
-union {                                     // spessissimo è utile usare questo tipo di CSG per disegnare scene con più oggetti
+union {                                     // spessissimo Ã¨ utile usare questo tipo di CSG per disegnare scene con piÃ¹ oggetti
   Spavimento { }                            // ongi variabile di tipo Shape oTexture ha bisogno di una lista dimodifiche sulla stessa
   Sluna { }
   quadric {
