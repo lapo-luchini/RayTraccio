@@ -1,0 +1,34 @@
+plugins {
+    id 'java'
+    id 'ca.coglinc2.javacc' version '3.0.0'
+}
+
+group = 'it.lapo'
+
+tasks.withType(JavaCompile) {
+    if (JavaVersion.current() <= JavaVersion.VERSION_1_8) {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    } else
+        options.release = 8
+    options.encoding = 'UTF-8'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+            srcDir compileJavacc.outputDirectory
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+compileJavacc {
+    inputDirectory = file('src/it/lapo/raytraccio/parser')
+    outputDirectory = file(project.buildDir.absolutePath + '/generated/javacc/it/lapo/raytraccio/parser')
+//  sourceSets.main.java.srcDirs += outputDirectory
+}
