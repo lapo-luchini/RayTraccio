@@ -14,7 +14,7 @@
 
 package it.lapo.raytraccio.pattern;
 
-import it.lapo.hash.SHA1;
+import it.lapo.raytraccio.PRNG;
 import it.lapo.raytraccio.Pattern;
 import it.lapo.raytraccio.Vector3D;
 
@@ -72,13 +72,10 @@ public class Perlin extends Pattern {
      * @return double[dim] valore del rumore [0.0,+1.0)
      */
     public double scalar(Vector3D p) {
-        // funzione di hash SHA1, segue lo standard FIPS PUB 180-1
-        SHA1 sha = new SHA1();
-        // vettore a cui applicare SHA1: inizializzato con le 3 long della
+        PRNG prng = new PRNG();
+        // vettore a cui applicare PRNG: inizializzato con le 3 long della
         // posizione e la long di seed
         long[] vect = new long[4];
-        // vettore di output di SHA1: 20 byte
-        int[] out;
         // 1.0/4294967296 trasforma un int in un reale in [-0.5,+0.5)
         double amp = 0.00000000023283064365386962890625000000000;
         double x = p.x, y = p.y, z = p.z;
@@ -100,41 +97,25 @@ public class Perlin extends Pattern {
             vect[0] = lx;
             vect[1] = ly;
             vect[2] = lz;
-            sha.update(vect);
-            out = sha.digest32();
-            noises[0] = out[0] * amp;
+            noises[0] = prng.getInt(vect) * amp;
             vect[0] = lx + 1;
-            sha.update(vect);
-            out = sha.digest32();
-            noises[1] = out[0] * amp;
+            noises[1] = prng.getInt(vect) * amp;
             vect[0] = lx;
             vect[1] = ly + 1;
-            sha.update(vect);
-            out = sha.digest32();
-            noises[2] = out[0] * amp;
+            noises[2] = prng.getInt(vect) * amp;
             vect[0] = lx + 1;
-            sha.update(vect);
-            out = sha.digest32();
-            noises[3] = out[0] * amp;
+            noises[3] = prng.getInt(vect) * amp;
             vect[0] = lx;
             vect[1] = ly;
             vect[2] = lz + 1;
-            sha.update(vect);
-            out = sha.digest32();
-            noises[4] = out[0] * amp;
+            noises[4] = prng.getInt(vect) * amp;
             vect[0] = lx + 1;
-            sha.update(vect);
-            out = sha.digest32();
-            noises[5] = out[0] * amp;
+            noises[5] = prng.getInt(vect) * amp;
             vect[0] = lx;
             vect[1] = ly + 1;
-            sha.update(vect);
-            out = sha.digest32();
-            noises[6] = out[0] * amp;
+            noises[6] = prng.getInt(vect) * amp;
             vect[0] = lx + 1;
-            sha.update(vect);
-            out = sha.digest32();
-            noises[7] = out[0] * amp;
+            noises[7] = prng.getInt(vect) * amp;
             // interpola sull'asse X
             intr = 0.5 * (1.0 - Math.cos(fx * Math.PI));
             ints = 1.0 - intr;
@@ -170,12 +151,11 @@ public class Perlin extends Pattern {
      * @param dim numero di dimensioni (massimo 5)
      */
     public double[] vectorial(Vector3D p, byte dim) {
-        // funzione di hash SHA1, segue lo standard FIPS PUB 180-1
-        SHA1 sha = new SHA1();
-        // vettore a cui applicare SHA1: inizializzato con le 3 long della
+        PRNG prng = new PRNG();
+        // vettore a cui applicare PRNG: inizializzato con le 3 long della
         // posizione e la long di seed
         long[] vect = new long[4];
-        // vettore di output di SHA1: 20 byte
+        // vettore di output pseudo-randomico
         int[] out;
         // 1.0/4294967296 trasforma un int in un reale in [-0.5,+0.5)
         double amp = 0.00000000023283064365386962890625000000000;
@@ -199,47 +179,39 @@ public class Perlin extends Pattern {
             vect[0] = lx;
             vect[1] = ly;
             vect[2] = lz;
-            sha.update(vect);
-            out = sha.digest32();
+            out = prng.getInt3(vect);
             for (dims = 0; dims < dim; dims++)
                 noises[dims][0] = out[dims] * amp;
             vect[0] = lx + 1;
-            sha.update(vect);
-            out = sha.digest32();
+            out = prng.getInt3(vect);
             for (dims = 0; dims < dim; dims++)
                 noises[dims][1] = out[dims] * amp;
             vect[0] = lx;
             vect[1] = ly + 1;
-            sha.update(vect);
-            out = sha.digest32();
+            out = prng.getInt3(vect);
             for (dims = 0; dims < dim; dims++)
                 noises[dims][2] = out[dims] * amp;
             vect[0] = lx + 1;
-            sha.update(vect);
-            out = sha.digest32();
+            out = prng.getInt3(vect);
             for (dims = 0; dims < dim; dims++)
                 noises[dims][3] = out[dims] * amp;
             vect[0] = lx;
             vect[1] = ly;
             vect[2] = lz + 1;
-            sha.update(vect);
-            out = sha.digest32();
+            out = prng.getInt3(vect);
             for (dims = 0; dims < dim; dims++)
                 noises[dims][4] = out[dims] * amp;
             vect[0] = lx + 1;
-            sha.update(vect);
-            out = sha.digest32();
+            out = prng.getInt3(vect);
             for (dims = 0; dims < dim; dims++)
                 noises[dims][5] = out[dims] * amp;
             vect[0] = lx;
             vect[1] = ly + 1;
-            sha.update(vect);
-            out = sha.digest32();
+            out = prng.getInt3(vect);
             for (dims = 0; dims < dim; dims++)
                 noises[dims][6] = out[dims] * amp;
             vect[0] = lx + 1;
-            sha.update(vect);
-            out = sha.digest32();
+            out = prng.getInt3(vect);
             for (dims = 0; dims < dim; dims++)
                 noises[dims][7] = out[dims] * amp;
             for (dims = 0; dims < dim; dims++) {
