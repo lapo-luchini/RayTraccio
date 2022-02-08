@@ -72,7 +72,6 @@ public class Perlin extends Pattern {
      * @return double[dim] valore del rumore [0.0,+1.0)
      */
     public double scalar(Vector3D p) {
-        PRNG prng = new PRNG();
         // vettore a cui applicare PRNG: inizializzato con le 3 long della
         // posizione e la long di seed
         long[] vect = new long[4];
@@ -97,25 +96,25 @@ public class Perlin extends Pattern {
             vect[0] = lx;
             vect[1] = ly;
             vect[2] = lz;
-            noises[0] = prng.getInt(vect) * amp;
+            noises[0] = PRNG.getInt(vect) * amp;
             vect[0] = lx + 1;
-            noises[1] = prng.getInt(vect) * amp;
+            noises[1] = PRNG.getInt(vect) * amp;
             vect[0] = lx;
             vect[1] = ly + 1;
-            noises[2] = prng.getInt(vect) * amp;
+            noises[2] = PRNG.getInt(vect) * amp;
             vect[0] = lx + 1;
-            noises[3] = prng.getInt(vect) * amp;
+            noises[3] = PRNG.getInt(vect) * amp;
             vect[0] = lx;
             vect[1] = ly;
             vect[2] = lz + 1;
-            noises[4] = prng.getInt(vect) * amp;
+            noises[4] = PRNG.getInt(vect) * amp;
             vect[0] = lx + 1;
-            noises[5] = prng.getInt(vect) * amp;
+            noises[5] = PRNG.getInt(vect) * amp;
             vect[0] = lx;
             vect[1] = ly + 1;
-            noises[6] = prng.getInt(vect) * amp;
+            noises[6] = PRNG.getInt(vect) * amp;
             vect[0] = lx + 1;
-            noises[7] = prng.getInt(vect) * amp;
+            noises[7] = PRNG.getInt(vect) * amp;
             // interpola sull'asse X
             intr = 0.5 * (1.0 - Math.cos(fx * Math.PI));
             ints = 1.0 - intr;
@@ -151,12 +150,11 @@ public class Perlin extends Pattern {
      * @param dim numero di dimensioni (massimo 5)
      */
     public double[] vectorial(Vector3D p, byte dim) {
-        PRNG prng = new PRNG();
         // vettore a cui applicare PRNG: inizializzato con le 3 long della
         // posizione e la long di seed
         long[] vect = new long[4];
         // vettore di output pseudo-randomico
-        int[] out;
+        int[] out = new int[dim];
         // 1.0/4294967296 trasforma un int in un reale in [-0.5,+0.5)
         double amp = 0.00000000023283064365386962890625000000000;
         double x = p.x, y = p.y, z = p.z;
@@ -179,39 +177,39 @@ public class Perlin extends Pattern {
             vect[0] = lx;
             vect[1] = ly;
             vect[2] = lz;
-            out = prng.getInt3(vect);
+            PRNG.getInt3(vect, out);
             for (dims = 0; dims < dim; dims++)
                 noises[dims][0] = out[dims] * amp;
             vect[0] = lx + 1;
-            out = prng.getInt3(vect);
+            PRNG.getInt3(vect, out);
             for (dims = 0; dims < dim; dims++)
                 noises[dims][1] = out[dims] * amp;
             vect[0] = lx;
             vect[1] = ly + 1;
-            out = prng.getInt3(vect);
+            PRNG.getInt3(vect, out);
             for (dims = 0; dims < dim; dims++)
                 noises[dims][2] = out[dims] * amp;
             vect[0] = lx + 1;
-            out = prng.getInt3(vect);
+            PRNG.getInt3(vect, out);
             for (dims = 0; dims < dim; dims++)
                 noises[dims][3] = out[dims] * amp;
             vect[0] = lx;
             vect[1] = ly;
             vect[2] = lz + 1;
-            out = prng.getInt3(vect);
+            PRNG.getInt3(vect, out);
             for (dims = 0; dims < dim; dims++)
                 noises[dims][4] = out[dims] * amp;
             vect[0] = lx + 1;
-            out = prng.getInt3(vect);
+            PRNG.getInt3(vect, out);
             for (dims = 0; dims < dim; dims++)
                 noises[dims][5] = out[dims] * amp;
             vect[0] = lx;
             vect[1] = ly + 1;
-            out = prng.getInt3(vect);
+            PRNG.getInt3(vect, out);
             for (dims = 0; dims < dim; dims++)
                 noises[dims][6] = out[dims] * amp;
             vect[0] = lx + 1;
-            out = prng.getInt3(vect);
+            PRNG.getInt3(vect, out);
             for (dims = 0; dims < dim; dims++)
                 noises[dims][7] = out[dims] * amp;
             for (dims = 0; dims < dim; dims++) {

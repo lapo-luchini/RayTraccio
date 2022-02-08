@@ -1,42 +1,42 @@
 package it.lapo.raytraccio;
 
-import java.nio.ByteBuffer;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * PRNG based on SplitMix64 by Sebastiano Vigna (vigna@acm.org)
+ * https://prng.di.unimi.it/splitmix64.c
+ */
 public final class PRNG {
 
-    private final MessageDigest sha1;
+    private PRNG() {} // static class
 
-    public PRNG() {
-        try {
-            sha1 = MessageDigest.getInstance("SHA-1");
-        } catch (NoSuchAlgorithmException e) {
-            throw new InternalError("SHA-1 is always available", e);
+    private static long mix(long z) {
+        z = (z ^ (z >>> 30)) * 0xbf58476d1ce4e5b9L;
+        z = (z ^ (z >>> 27)) * 0x94d049bb133111ebL;
+        return z ^ (z >>> 31);
+    }
+
+    private static long mixSeed(long[] seed) {
+        long x = 0;
+        for (long l : seed) {
+            x ^= l;
+            x = mix(x);
         }
+        return x;
     }
 
-    private ByteBuffer hash(long[] seed) {
-        ByteBuffer bb = ByteBuffer.allocate(seed.length * 8);
-        for (long l : seed)
-            bb.putLong(l);
-        bb.rewind();
-        sha1.update(bb);
-        return ByteBuffer.wrap(sha1.digest());
+    public static int getInt(long[] seed) {
+        long x = mixSeed(seed);
+        return (int) x;
     }
 
-    public int getInt(long[] seed) {
-//        ByteBuffer bb = hash(seed);
-//        System.out.println("H: " + Arrays.toString(bb.array()));
-        int i = hash(seed).getInt();
-//        System.out.println(Arrays.toString(seed) + " -> " + i);
-        return i;
-    }
-
-    public int[] getInt3(long[] seed) {
-        ByteBuffer bb = hash(seed);
-        return new int[]{ bb.getInt(), bb.getInt(), bb.getInt() };
+    public static void getInt3(long[] seed, int[] val) {
+        long x = mixSeed(seed);
+        val[0] = (int) x;
+        x += 0x9e3779b97f4a7c15L;
+        val[1] = (int) mix(x);
+        x += 0x9e3779b97f4a7c15L;
+        val[2] = (int) mix(x);
     }
 
 }
