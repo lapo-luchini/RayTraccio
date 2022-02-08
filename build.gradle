@@ -30,5 +30,16 @@ repositories {
 compileJavacc {
     inputDirectory = file('src/it/lapo/raytraccio/parser')
     outputDirectory = file(project.buildDir.absolutePath + '/generated/javacc/it/lapo/raytraccio/parser')
-//  sourceSets.main.java.srcDirs += outputDirectory
+}
+
+task runApp(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'it.lapo.raytraccio.RayTraccioSDL'
+//  args 'appArg1'
+}
+
+jar {
+    manifest {
+        attributes('Main-Class': 'it.lapo.raytraccio.RayTraccioSDL')
+    }
 }
