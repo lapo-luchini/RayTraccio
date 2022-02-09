@@ -1,6 +1,6 @@
-package it.lapo.raytraccio;
+// RayTraccio ray-tracing library Copyright (c) 2001-2022 Lapo Luchini <lapo@lapo.it>
 
-import java.util.concurrent.atomic.AtomicInteger;
+package it.lapo.raytraccio;
 
 /**
  * PRNG based on SplitMix64 by Sebastiano Vigna (vigna@acm.org)

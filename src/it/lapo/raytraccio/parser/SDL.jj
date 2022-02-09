@@ -4,6 +4,8 @@ options {
 
 PARSER_BEGIN(SDL)
 
+// RayTraccio ray-tracing library Copyright (c) 2001-2022 Lapo Luchini <lapo@lapo.it>
+
 package it.lapo.raytraccio.parser;
 
 import java.util.Hashtable;
